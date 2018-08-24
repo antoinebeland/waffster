@@ -1,5 +1,5 @@
 {
-  "name": "BudgetViz",
+  "name": "budgetviz",
   "version": "1.0.0",
   "description": "Budget visualization tool",
   "main": "gulpfile.js",

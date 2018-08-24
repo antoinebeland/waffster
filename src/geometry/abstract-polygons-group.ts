@@ -272,7 +272,7 @@ export abstract class AbstractPolygonsGroup {
 
   protected getBoundingBox(position: { x, y }, isIncludedTemporaryCount = true) {
     let count = this.count;
-    if (isIncludedTemporaryCount) {
+    if (isIncludedTemporaryCount && this.temporaryCount > 0) {
       count += this.temporaryCount;
     }
     let countPerLine = this._maxCountPerLine;

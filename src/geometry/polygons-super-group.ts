@@ -13,6 +13,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
   private readonly _children: AbstractPolygonsGroup[];
   private _spacing: number;
   private _state: PolygonsSuperGroupState;
+  private _temporaryCount: number;
 
   /**
    * Initializes a new instance of the PolygonsSuperGroup class.
@@ -25,6 +26,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
     this._children = [];
     this._spacing = spacing;
     this._state = PolygonsSuperGroupState.COLLAPSED;
+    this._temporaryCount = 0;
   }
 
   /**
@@ -48,7 +50,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
     if (count < 0) {
       throw new RangeError('Invalid count specified.');
     }
-    if (this.temporaryCount > 0) {
+    if (this.temporaryCount !== 0) {
       throw new Error('You should not have temporary element before to set a new count.');
     }
     let diffCount = 0;
@@ -93,27 +95,43 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
   }
 
   get temporaryCount(): number {
-    return this._children.reduce((total, child) => total + child.temporaryCount, 0);
+    return this._temporaryCount;
   }
 
   set temporaryCount(count: number) {
     if (this.temporaryCount === count) {
       return;
     }
-    if (count < 0) {
-      throw new RangeError('Invalid count specified.');
-    }
     const children = this.children;
     if (children.length <= 0) {
       return;
     }
-    if (this.count > 0) {
-      // Put temporary element to last element of the group.
-      children[children.length - 1].temporaryCount = count;
+    count = Math.max(-this.count, count);
+
+    // Create new elements
+    if (count > 0) {
+      if (this.count > 0) {
+        children[children.length - 1].temporaryCount = count; // Put temporary element to last element of the group.
+      } else {
+        children[0].temporaryCount = count; // If there is no element, put it in the first.
+      }
     } else {
-      // If there is no element, put it in the first.
-      children[0].temporaryCount = count;
+      if (this._temporaryCount > 0) {
+        children.forEach(c => c.temporaryCount = 0);
+      }
+      let remainingCount = count;
+      for (let i = children.length - 1; i >= 0; --i) {
+        const child = children[i];
+        if (Math.abs(remainingCount) - child.count >= 0) {
+          child.temporaryCount = -child.count;
+          remainingCount += child.count;
+        } else {
+          child.temporaryCount = remainingCount;
+          remainingCount = 0;
+        }
+      }
     }
+    this._temporaryCount = count;
   }
 
   /**

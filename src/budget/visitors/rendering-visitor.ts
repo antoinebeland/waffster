@@ -115,6 +115,8 @@ export class RenderingVisitor implements BudgetElementVisitor {
       .classed('focused', element.hasFocus)
       .classed('selected', d => d.isSelected)
       .classed('temporary', d => d.isTemporary)
+      .classed('added', d => d.isTemporary && element.temporaryAmount > 0)
+      .classed('removed', d => d.isTemporary && element.temporaryAmount < 0)
       .transition()
       .duration(this._transitionDuration)
       .attr('points', d => d.points.map(e => `${e.x} ${e.y}`).join(', '));

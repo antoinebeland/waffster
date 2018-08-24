@@ -254,7 +254,7 @@ define("geometry/abstract-polygons-group", ["require", "exports", "geometry/boun
         }
         getBoundingBox(position, isIncludedTemporaryCount = true) {
             let count = this.count;
-            if (isIncludedTemporaryCount) {
+            if (isIncludedTemporaryCount && this.temporaryCount > 0) {
                 count += this.temporaryCount;
             }
             let countPerLine = this._maxCountPerLine;
@@ -293,6 +293,7 @@ define("geometry/polygons-super-group", ["require", "exports", "d3", "geometry/a
             this._children = [];
             this._spacing = spacing;
             this._state = PolygonsSuperGroupState.COLLAPSED;
+            this._temporaryCount = 0;
         }
         get count() {
             return this._children.reduce((total, child) => total + child.count, 0);
@@ -304,7 +305,7 @@ define("geometry/polygons-super-group", ["require", "exports", "d3", "geometry/a
             if (count < 0) {
                 throw new RangeError('Invalid count specified.');
             }
-            if (this.temporaryCount > 0) {
+            if (this.temporaryCount !== 0) {
                 throw new Error('You should not have temporary element before to set a new count.');
             }
             let diffCount = 0;
@@ -342,25 +343,43 @@ define("geometry/polygons-super-group", ["require", "exports", "d3", "geometry/a
             return [].concat.apply([], this.children.map(c => c.polygons));
         }
         get temporaryCount() {
-            return this._children.reduce((total, child) => total + child.temporaryCount, 0);
+            return this._temporaryCount;
         }
         set temporaryCount(count) {
             if (this.temporaryCount === count) {
                 return;
             }
-            if (count < 0) {
-                throw new RangeError('Invalid count specified.');
-            }
             const children = this.children;
             if (children.length <= 0) {
                 return;
             }
-            if (this.count > 0) {
-                children[children.length - 1].temporaryCount = count;
+            count = Math.max(-this.count, count);
+            if (count > 0) {
+                if (this.count > 0) {
+                    children[children.length - 1].temporaryCount = count;
+                }
+                else {
+                    children[0].temporaryCount = count;
+                }
             }
             else {
-                children[0].temporaryCount = count;
+                if (this._temporaryCount > 0) {
+                    children.forEach(c => c.temporaryCount = 0);
+                }
+                let remainingCount = count;
+                for (let i = children.length - 1; i >= 0; --i) {
+                    const child = children[i];
+                    if (Math.abs(remainingCount) - child.count >= 0) {
+                        child.temporaryCount = -child.count;
+                        remainingCount += child.count;
+                    }
+                    else {
+                        child.temporaryCount = remainingCount;
+                        remainingCount = 0;
+                    }
+                }
             }
+            this._temporaryCount = count;
         }
         get children() {
             return this._children.sort((a, b) => d3.descending(a.count, b.count));
@@ -653,7 +672,7 @@ define("geometry/squares-group", ["require", "exports", "d3", "geometry/abstract
             if (count < 0) {
                 throw new RangeError(`Invalid count specified (${count}).`);
             }
-            if (this._temporaryCount > 0) {
+            if (this._temporaryCount !== 0) {
                 throw new Error('You should not have temporary element before to set a new count.');
             }
             this.updateCount(this._count, count);
@@ -670,10 +689,20 @@ define("geometry/squares-group", ["require", "exports", "d3", "geometry/abstract
             if (this._temporaryCount === count) {
                 return;
             }
-            if (this._temporaryCount < 0) {
-                throw new RangeError(`Invalid count specified (${count}).`);
+            count = Math.max(-this._count, count);
+            if (count >= 0) {
+                if (this._temporaryCount <= 0) {
+                    this._temporaryCount = 0;
+                    this._squares.forEach(s => s.isTemporary = false);
+                }
+                this.updateCount(this._count + this._temporaryCount, this._count + count, true);
             }
-            this.updateCount(this._count + this._temporaryCount, this._count + count, true);
+            else {
+                if (this._temporaryCount > 0) {
+                    this.updateCount(this._count + this._temporaryCount, this._count, true);
+                }
+                this._squares.forEach((s, i) => s.isTemporary = i >= this._count + count);
+            }
             this._temporaryCount = count;
             this.updateBoundingBox();
         }
@@ -869,9 +898,6 @@ define("budget/budget-element", ["require", "exports", "config"], function (requ
             return this.polygonsGroup.temporaryCount * config_3.Config.MIN_AMOUNT;
         }
         set temporaryAmount(temporaryAmount) {
-            if (temporaryAmount < 0) {
-                temporaryAmount = 0;
-            }
             this.polygonsGroup.temporaryCount = Math.ceil(temporaryAmount / config_3.Config.MIN_AMOUNT);
         }
     }
@@ -1181,6 +1207,8 @@ define("budget/visitors/rendering-visitor", ["require", "exports", "config"], fu
                 .classed('focused', element.hasFocus)
                 .classed('selected', d => d.isSelected)
                 .classed('temporary', d => d.isTemporary)
+                .classed('added', d => d.isTemporary && element.temporaryAmount > 0)
+                .classed('removed', d => d.isTemporary && element.temporaryAmount < 0)
                 .transition()
                 .duration(this._transitionDuration)
                 .attr('points', d => d.points.map(e => `${e.x} ${e.y}`).join(', '));
@@ -1326,13 +1354,13 @@ define("budget/commands/delete-command", ["require", "exports"], function (requi
     Object.defineProperty(exports, "__esModule", { value: true });
     class DeleteCommand {
         constructor(element, rendering, layout) {
-            this._amount = element.selectedAmount;
+            this._amount = Math.abs(element.temporaryAmount);
             this._element = element;
             this._rendering = rendering;
             this._layout = layout;
         }
         execute() {
-            this._element.selectedAmount = 0;
+            this._element.temporaryAmount = 0;
             this._element.amount -= this._amount;
             this.update();
         }
@@ -1353,56 +1381,7 @@ define("budget/commands/delete-command", ["require", "exports"], function (requi
     }
     exports.DeleteCommand = DeleteCommand;
 });
-define("budget/commands/transfer-command", ["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class TransferCommand {
-        constructor(source, destination, renderingVisitor, layout) {
-            this._isFirstTime = true;
-            if (source.type !== destination.type) {
-                throw new Error('Invalid transfer. The transfer must be done between same type elements.');
-            }
-            this._amount = source.selectedAmount;
-            this._source = source;
-            this._destination = destination;
-            this._renderingVisitor = renderingVisitor;
-            this._layout = layout;
-        }
-        execute() {
-            this._source.selectedAmount = 0;
-            this._source.amount -= this._amount;
-            this._destination.amount += this._amount;
-            this.update();
-        }
-        undo() {
-            this._source.amount += this._amount;
-            this._destination.amount -= this._amount;
-            this.update();
-        }
-        update() {
-            this._destination.selectedAmount = 0;
-            this._renderingVisitor.transitionDuration = 0;
-            this._source.accept(this._renderingVisitor);
-            this._destination.accept(this._renderingVisitor);
-            this._renderingVisitor.resetTransitionDuration();
-            if (this._isFirstTime) {
-                this._destination.selectedAmount = this._amount;
-            }
-            const root1 = this._source.root;
-            const root2 = this._destination.root;
-            if (root1 !== root2 && root1 !== this._source) {
-                root1.accept(this._renderingVisitor);
-            }
-            if (this._isFirstTime || root2 !== this._destination) {
-                root2.accept(this._renderingVisitor);
-            }
-            this._layout.render();
-            this._isFirstTime = false;
-        }
-    }
-    exports.TransferCommand = TransferCommand;
-});
-define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "config", "geometry/squares-group", "budget/budget-element-group", "budget/commands/add-command", "budget/commands/command-invoker", "budget/commands/transfer-command", "budget/visitors/rendering-visitor"], function (require, exports, d3, d3Tip, config_7, squares_group_2, budget_element_group_2, add_command_1, command_invoker_1, transfer_command_1, rendering_visitor_1) {
+define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "config", "budget/commands/add-command", "budget/commands/command-invoker", "budget/visitors/rendering-visitor", "budget/commands/delete-command"], function (require, exports, d3, d3Tip, config_7, add_command_1, command_invoker_1, rendering_visitor_1, delete_command_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class BudgetVisualization {
@@ -1429,11 +1408,8 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                 throw new Error('The visualization is already initialized.');
             }
             const self = this;
-            let isDragging = false;
             let hoveredElement = undefined;
             let selectedElement = undefined;
-            let selectionSquaresGroup;
-            let mustExecuteAddCommand = false;
             this._layout.initialize();
             const tip = d3Tip()
                 .html(d => {
@@ -1442,33 +1418,25 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                 return str;
             });
             this._svgElement.call(tip);
-            const selectionGroup = this._svgElement.append('g')
-                .attr('id', 'selection')
-                .style('display', 'none')
-                .style('opacity', 0.5);
-            const executeAddCommand = () => {
-                mustExecuteAddCommand = false;
+            const executeCommand = () => {
                 if (selectedElement !== undefined) {
-                    this._commandInvoker.invoke(new add_command_1.AddCommand(selectedElement, this._rendering, this._layout));
+                    if (selectedElement.temporaryAmount > 0) {
+                        this._commandInvoker.invoke(new add_command_1.AddCommand(selectedElement, this._rendering, this._layout));
+                    }
+                    else {
+                        this._commandInvoker.invoke(new delete_command_1.DeleteCommand(selectedElement, this._rendering, this._layout));
+                    }
                 }
             };
             d3.select('body')
                 .on('wheel', () => {
                 if (selectedElement) {
                     const delta = d3.event.deltaY;
-                    if (selectedElement.selectedAmount <= 0 && delta > 0 || selectedElement.temporaryAmount > 0) {
-                        mustExecuteAddCommand = true;
-                        selectedElement.temporaryAmount += delta / 100 * config_7.Config.MIN_AMOUNT;
-                        this._rendering.transitionDuration = 0;
-                        selectedElement.root.accept(this._rendering);
-                        this._rendering.resetTransitionDuration();
-                        this._layout.render();
-                    }
-                    else {
-                        mustExecuteAddCommand = false;
-                        selectedElement.selectedAmount += -1 * delta / 100 * config_7.Config.MIN_AMOUNT;
-                        selectedElement.accept(this._rendering);
-                    }
+                    selectedElement.temporaryAmount += delta / 100 * config_7.Config.MIN_AMOUNT;
+                    this._rendering.transitionDuration = 0;
+                    selectedElement.root.accept(this._rendering);
+                    this._rendering.resetTransitionDuration();
+                    this._layout.render();
                 }
             })
                 .on('click', () => {
@@ -1476,57 +1444,11 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                     selectedElement.hasFocus = false;
                     selectedElement.accept(this._rendering);
                 }
-                if (mustExecuteAddCommand) {
-                    executeAddCommand();
+                if (selectedElement && selectedElement.temporaryAmount !== 0) {
+                    executeCommand();
                 }
                 selectedElement = undefined;
             });
-            this._svgElement.call(d3.drag()
-                .container(function () {
-                return this;
-            })
-                .filter(() => selectedElement !== undefined && selectedElement.selectedAmount > 0)
-                .on('start', () => {
-                isDragging = true;
-                selectedElement.svgElement.classed('drag', true);
-                const selectionCount = selectedElement.polygonsGroup.selectionCount;
-                const polygonsGroupConfig = selectedElement.polygonsGroup.config;
-                if (selectedElement.polygonsGroup.selectionCount >= polygonsGroupConfig.maxCountPerLine) {
-                    polygonsGroupConfig.startingPosition = (selectedElement.polygonsGroup.count - selectionCount)
-                        % polygonsGroupConfig.maxCountPerLine;
-                }
-                else {
-                    polygonsGroupConfig.startingPosition = 0;
-                }
-                selectionSquaresGroup = new squares_group_2.SquaresGroup(selectionCount, polygonsGroupConfig);
-                const polygons = selectionGroup.selectAll('polygon')
-                    .data(selectionSquaresGroup.polygons);
-                polygons.enter()
-                    .append('polygon')
-                    .merge(polygons)
-                    .attr('class', 'squares')
-                    .attr('points', d => d.points.map(e => `${e.x} ${e.y}`).join(', '));
-                polygons.exit()
-                    .remove();
-                selectionGroup.attr('transform', `translate(${d3.event.x -
-                    selectionSquaresGroup.boundingBox.width / 2}, ${d3.event.y - selectionSquaresGroup.boundingBox.height / 2})`)
-                    .style('display', 'block');
-            })
-                .on('drag', () => {
-                selectionGroup.attr('transform', `translate(${d3.event.x -
-                    selectionSquaresGroup.boundingBox.width / 2}, ${d3.event.y - selectionSquaresGroup.boundingBox.height / 2})`);
-            })
-                .on('end', () => {
-                isDragging = false;
-                selectedElement.svgElement.classed('drag', false);
-                selectionGroup.style('display', 'none');
-                if (hoveredElement !== undefined && selectedElement !== hoveredElement) {
-                    tip.hide();
-                    this._commandInvoker.invoke(new transfer_command_1.TransferCommand(selectedElement, hoveredElement, this._rendering, this._layout));
-                }
-                else if (selectedElement !== hoveredElement) {
-                }
-            }));
             const events = new (class {
                 visitBudgetElementGroup(group) {
                     this.subscribe(group);
@@ -1537,15 +1459,6 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                             .offset([0, -8])
                             .attr('class', 'd3-tip level-tip')
                             .show.call(group.svgElement.node(), group);
-                        d3.timeout(() => {
-                            if (isDragging && hoveredElement === group && group.activeLevel > 0) {
-                                group.activeLevel -= 1;
-                                group.hasFocus = false;
-                                group.root.accept(self._rendering);
-                                self._layout.render();
-                                tip.hide();
-                            }
-                        }, config_7.Config.LEVEL_CHANGE_DELAY);
                     })
                         .on('mouseleave', () => {
                         hoveredElement = undefined;
@@ -1553,8 +1466,8 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                     })
                         .on('click', () => {
                         d3.event.stopPropagation();
-                        if (mustExecuteAddCommand) {
-                            executeAddCommand();
+                        if (selectedElement.temporaryAmount !== 0) {
+                            executeCommand();
                         }
                         tip.hide();
                         group.activeLevel = group.level;
@@ -1584,8 +1497,8 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                             if (selectedElement && selectedElement !== element && selectedElement.hasFocus) {
                                 selectedElement.hasFocus = false;
                                 selectedElement.accept(self._rendering);
-                                if (mustExecuteAddCommand) {
-                                    executeAddCommand();
+                                if (selectedElement.temporaryAmount !== 0) {
+                                    executeCommand();
                                 }
                             }
                             selectedElement = element;
@@ -1594,27 +1507,14 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                         }
                     });
                     element.svgElement.on('mouseenter', () => {
-                        if (element.isActive && (!isDragging || isDragging &&
-                            selectedElement !== element && selectedElement.type === element.type)) {
+                        if (element.isActive) {
                             hoveredElement = element;
                             hoveredElement.svgElement.classed('hovered', true);
                             showTooltip();
-                            if (isDragging && element !== selectedElement && element instanceof budget_element_group_2.BudgetElementGroup) {
-                                d3.timeout(() => {
-                                    if (isDragging && hoveredElement === element) {
-                                        element.activeLevel += 1;
-                                        element.root.accept(self._rendering);
-                                        self._layout.render();
-                                        hoveredElement.svgElement.classed('hovered', false);
-                                        tip.hide();
-                                    }
-                                }, config_7.Config.LEVEL_CHANGE_DELAY);
-                            }
                         }
                     });
                     element.svgElement.on('mouseover', () => {
-                        if (element.isActive && !hoveredElement && (!isDragging || isDragging &&
-                            selectedElement !== element && selectedElement.type === element.type)) {
+                        if (element.isActive) {
                             hoveredElement = element;
                             hoveredElement.svgElement.classed('hovered', true);
                             showTooltip();
@@ -1629,8 +1529,8 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                     });
                     element.svgElement.on('dblclick', () => {
                         if (element.isActive) {
-                            if (mustExecuteAddCommand) {
-                                executeAddCommand();
+                            if (selectedElement.temporaryAmount !== 0) {
+                                executeCommand();
                             }
                             selectedElement = undefined;
                             element.activeLevel += 1;
@@ -2156,6 +2056,55 @@ define("app", ["require", "exports", "d3", "budget/budget", "budget/budget-visua
         const budgetVisualization = new budget_visualization_1.BudgetVisualization(budget, svg, visualizationConfigs[0].layout, commandInvoker);
         budgetVisualization.initialize();
     });
+});
+define("budget/commands/transfer-command", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class TransferCommand {
+        constructor(source, destination, renderingVisitor, layout) {
+            this._isFirstTime = true;
+            if (source.type !== destination.type) {
+                throw new Error('Invalid transfer. The transfer must be done between same type elements.');
+            }
+            this._amount = source.selectedAmount;
+            this._source = source;
+            this._destination = destination;
+            this._renderingVisitor = renderingVisitor;
+            this._layout = layout;
+        }
+        execute() {
+            this._source.selectedAmount = 0;
+            this._source.amount -= this._amount;
+            this._destination.amount += this._amount;
+            this.update();
+        }
+        undo() {
+            this._source.amount += this._amount;
+            this._destination.amount -= this._amount;
+            this.update();
+        }
+        update() {
+            this._destination.selectedAmount = 0;
+            this._renderingVisitor.transitionDuration = 0;
+            this._source.accept(this._renderingVisitor);
+            this._destination.accept(this._renderingVisitor);
+            this._renderingVisitor.resetTransitionDuration();
+            if (this._isFirstTime) {
+                this._destination.selectedAmount = this._amount;
+            }
+            const root1 = this._source.root;
+            const root2 = this._destination.root;
+            if (root1 !== root2 && root1 !== this._source) {
+                root1.accept(this._renderingVisitor);
+            }
+            if (this._isFirstTime || root2 !== this._destination) {
+                root2.accept(this._renderingVisitor);
+            }
+            this._layout.render();
+            this._isFirstTime = false;
+        }
+    }
+    exports.TransferCommand = TransferCommand;
 });
 class Formatter {
     static formatAmount(amount) {

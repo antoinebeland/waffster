@@ -76,7 +76,7 @@ export class SquaresGroup extends AbstractPolygonsGroup {
     if (count < 0) {
       throw new RangeError(`Invalid count specified (${count}).`);
     }
-    if (this._temporaryCount > 0) {
+    if (this._temporaryCount !== 0) {
       throw new Error('You should not have temporary element before to set a new count.');
     }
     this.updateCount(this._count, count);
@@ -101,10 +101,19 @@ export class SquaresGroup extends AbstractPolygonsGroup {
     if (this._temporaryCount === count) {
       return;
     }
-    if (this._temporaryCount < 0) {
-      throw new RangeError(`Invalid count specified (${count}).`);
+    count = Math.max(-this._count, count);
+    if (count >= 0) {
+      if (this._temporaryCount <= 0) {
+        this._temporaryCount = 0;
+        this._squares.forEach(s => s.isTemporary = false);
+      }
+      this.updateCount(this._count + this._temporaryCount, this._count + count, true);
+    } else {
+      if (this._temporaryCount > 0) {
+        this.updateCount(this._count + this._temporaryCount, this._count, true);
+      }
+      this._squares.forEach((s, i) => s.isTemporary = i >= this._count + count);
     }
-    this.updateCount(this._count + this._temporaryCount, this._count + count, true);
     this._temporaryCount = count;
     this.updateBoundingBox();
   }

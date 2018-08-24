@@ -1,22 +1,19 @@
 import * as d3 from 'd3';
-import { DragContainerElement } from 'd3';
 import * as d3Tip from 'd3-tip';
 
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
-import { SquaresGroup } from '../geometry/squares-group';
 
 import { Budget } from './budget';
 import { BudgetElement } from './budget-element';
 import { BudgetElementGroup } from './budget-element-group';
 import { AddCommand } from './commands/add-command';
 import { CommandInvoker } from './commands/command-invoker';
-import { DeleteCommand } from './commands/delete-command';
-import { TransferCommand } from './commands/transfer-command';
 import { Layout } from './layouts/layout';
 import { SimpleBudgetElement } from './simple-budget-element';
 import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 import { RenderingVisitor } from './visitors/rendering-visitor';
+import { DeleteCommand } from './commands/delete-command';
 
 export class BudgetVisualization {
   private readonly _budget: Budget;
@@ -54,17 +51,15 @@ export class BudgetVisualization {
       throw new Error('The visualization is already initialized.');
     }
     const self = this;
-    let isDragging = false;
     let hoveredElement: BudgetElement = undefined;
     let selectedElement: BudgetElement = undefined;
-    let selectionSquaresGroup;
-    let mustExecuteAddCommand = false;
 
     this._layout.initialize();
 
     // Tooltip initialization
     const tip = d3Tip()
       .html(d => {
+        // TODO: Remove H1
         let str = `<h1>${d.name} (${Formatter.formatAmount(d.amount)})</h1>`;
         str += d.description ? `<p>${d.description}</p>` : '';
         return str;
@@ -72,37 +67,26 @@ export class BudgetVisualization {
 
     this._svgElement.call(tip);
 
-    // TODO: Maybe put in member variables
-    const selectionGroup = this._svgElement.append('g')
-      .attr('id', 'selection')
-      .style('display', 'none')
-      .style('opacity', 0.5);
-
-    const executeAddCommand = () => {
-      mustExecuteAddCommand = false;
+    const executeCommand = () => {
       if (selectedElement !== undefined) {
-        this._commandInvoker.invoke(new AddCommand(selectedElement, this._rendering, this._layout));
+        if (selectedElement.temporaryAmount > 0) {
+          this._commandInvoker.invoke(new AddCommand(selectedElement, this._rendering, this._layout));
+        } else {
+          this._commandInvoker.invoke(new DeleteCommand(selectedElement, this._rendering, this._layout));
+        }
       }
     };
 
-    // Selection / creation
+    // Creation / Deletion
     d3.select('body')
       .on('wheel', () => {
         if (selectedElement) {
           const delta = d3.event.deltaY;
-          if (selectedElement.selectedAmount <= 0 && delta > 0 || selectedElement.temporaryAmount > 0) {
-            mustExecuteAddCommand = true;
-            selectedElement.temporaryAmount += delta / 100 * Config.MIN_AMOUNT;
-
-            this._rendering.transitionDuration = 0;
-            selectedElement.root.accept(this._rendering);
-            this._rendering.resetTransitionDuration();
-            this._layout.render();
-          } else {
-            mustExecuteAddCommand = false;
-            selectedElement.selectedAmount += -1 * delta / 100 * Config.MIN_AMOUNT;
-            selectedElement.accept(this._rendering);
-          }
+          selectedElement.temporaryAmount += delta / 100 * Config.MIN_AMOUNT; // TODO: Put min amount in variable.
+          this._rendering.transitionDuration = 0;
+          selectedElement.root.accept(this._rendering);
+          this._rendering.resetTransitionDuration();
+          this._layout.render();
         }
       })
       .on('click', () => {
@@ -110,68 +94,11 @@ export class BudgetVisualization {
           selectedElement.hasFocus = false;
           selectedElement.accept(this._rendering);
         }
-        if (mustExecuteAddCommand) {
-          executeAddCommand();
+        if (selectedElement && selectedElement.temporaryAmount !== 0) {
+          executeCommand();
         }
         selectedElement = undefined;
       });
-
-    // Drag and drop
-    this._svgElement.call(d3.drag()
-      .container(function () {
-        return this as DragContainerElement;
-      })
-      .filter(() => selectedElement !== undefined && selectedElement.selectedAmount > 0)
-      .on('start', () => {
-        isDragging = true;
-        selectedElement.svgElement.classed('drag', true);
-
-        const selectionCount = selectedElement.polygonsGroup.selectionCount;
-        const polygonsGroupConfig = selectedElement.polygonsGroup.config;
-
-        if (selectedElement.polygonsGroup.selectionCount >= polygonsGroupConfig.maxCountPerLine) {
-          polygonsGroupConfig.startingPosition = (selectedElement.polygonsGroup.count - selectionCount)
-            % polygonsGroupConfig.maxCountPerLine;
-        } else {
-          polygonsGroupConfig.startingPosition = 0;
-        }
-        selectionSquaresGroup = new SquaresGroup(selectionCount, polygonsGroupConfig);
-        const polygons = selectionGroup.selectAll('polygon')
-          .data(selectionSquaresGroup.polygons);
-
-        polygons.enter()
-          .append('polygon')
-          .merge(polygons)
-          .attr('class', 'squares')
-          .attr('points', d => d.points.map(e => `${e.x} ${e.y}`).join(', '));
-
-        polygons.exit()
-          .remove();
-
-        selectionGroup.attr('transform',
-          `translate(${d3.event.x -
-          selectionSquaresGroup.boundingBox.width / 2}, ${d3.event.y - selectionSquaresGroup.boundingBox.height / 2})`)
-          .style('display', 'block');
-      })
-      .on('drag', () => {
-        selectionGroup.attr('transform',
-          `translate(${d3.event.x -
-          selectionSquaresGroup.boundingBox.width / 2}, ${d3.event.y - selectionSquaresGroup.boundingBox.height / 2})`);
-      })
-      .on('end', () => {
-        isDragging = false;
-        selectedElement.svgElement.classed('drag', false);
-
-        selectionGroup.style('display', 'none');
-        if (hoveredElement !== undefined && selectedElement !== hoveredElement) {
-          tip.hide();
-          this._commandInvoker.invoke(
-            new TransferCommand(selectedElement, hoveredElement, this._rendering, this._layout));
-        } else if (selectedElement !== hoveredElement) {
-          //this._commandInvoker.invoke(new DeleteCommand(selectedElement, this._rendering, this._layout));
-        }
-      })
-    );
 
     // Events
     const events = new (class implements BudgetElementVisitor {
@@ -185,16 +112,6 @@ export class BudgetVisualization {
               .offset([0, -8])
               .attr('class', 'd3-tip level-tip')
               .show.call(group.svgElement.node(), group);
-
-            d3.timeout(() => {
-              if (isDragging && hoveredElement === group && group.activeLevel > 0) {
-                group.activeLevel -= 1;
-                group.hasFocus = false;
-                group.root.accept(self._rendering);
-                self._layout.render();
-                tip.hide();
-              }
-            }, Config.LEVEL_CHANGE_DELAY);
           })
           .on('mouseleave', () => {
             hoveredElement = undefined;
@@ -202,8 +119,8 @@ export class BudgetVisualization {
           })
           .on('click', () => {
             d3.event.stopPropagation();
-            if (mustExecuteAddCommand) {
-              executeAddCommand();
+            if (selectedElement.temporaryAmount !== 0) {
+              executeCommand();
             }
             tip.hide();
             group.activeLevel = group.level;
@@ -237,8 +154,8 @@ export class BudgetVisualization {
             if (selectedElement && selectedElement !== element && selectedElement.hasFocus) {
               selectedElement.hasFocus = false;
               selectedElement.accept(self._rendering);
-              if (mustExecuteAddCommand) {
-                executeAddCommand();
+              if (selectedElement.temporaryAmount !== 0) {
+                executeCommand();
               }
             }
             selectedElement = element;
@@ -247,28 +164,14 @@ export class BudgetVisualization {
           }
         });
         element.svgElement.on('mouseenter', () => {
-          if (element.isActive && (!isDragging || isDragging &&
-            selectedElement !== element && selectedElement.type === element.type)) {
+          if (element.isActive) {
             hoveredElement = element;
             hoveredElement.svgElement.classed('hovered', true);
             showTooltip();
-
-            if (isDragging && element !== selectedElement && element instanceof BudgetElementGroup) {
-              d3.timeout(() => {
-                if (isDragging && hoveredElement === element) {
-                  element.activeLevel += 1;
-                  element.root.accept(self._rendering);
-                  self._layout.render();
-                  hoveredElement.svgElement.classed('hovered', false);
-                  tip.hide();
-                }
-              }, Config.LEVEL_CHANGE_DELAY);
-            }
           }
         });
         element.svgElement.on('mouseover', () => {
-          if (element.isActive && !hoveredElement && (!isDragging || isDragging &&
-            selectedElement !== element && selectedElement.type === element.type)) {
+          if (element.isActive) {
             hoveredElement = element;
             hoveredElement.svgElement.classed('hovered', true);
             showTooltip();
@@ -283,8 +186,8 @@ export class BudgetVisualization {
         });
         element.svgElement.on('dblclick', () => {
           if (element.isActive) {
-            if (mustExecuteAddCommand) {
-              executeAddCommand();
+            if (selectedElement.temporaryAmount !== 0) {
+              executeCommand();
             }
             selectedElement = undefined;
             element.activeLevel += 1;

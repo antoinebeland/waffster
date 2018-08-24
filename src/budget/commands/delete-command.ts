@@ -11,14 +11,14 @@ export class DeleteCommand implements UndoableCommand {
   private readonly _layout: Layout;
 
   constructor(element: BudgetElement, rendering: RenderingVisitor, layout: Layout) {
-    this._amount = element.selectedAmount;
+    this._amount = Math.abs(element.temporaryAmount);
     this._element = element;
     this._rendering = rendering;
     this._layout = layout;
   }
 
   execute() {
-    this._element.selectedAmount = 0;
+    this._element.temporaryAmount = 0;
     this._element.amount -= this._amount;
     this.update();
   }

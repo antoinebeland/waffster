@@ -146,9 +146,6 @@ export abstract class BudgetElement {
   }
 
   set temporaryAmount(temporaryAmount: number) {
-    if (temporaryAmount < 0) {
-      temporaryAmount = 0;
-    }
     this.polygonsGroup.temporaryCount = Math.ceil(temporaryAmount / Config.MIN_AMOUNT);
   }
 

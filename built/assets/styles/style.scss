@@ -273,15 +273,19 @@ main > svg {
   }
 
   .income.selected:not(.focused) {
-    animation: new-income-animation 1.5s ease-out;
+    animation: new-income-animation 0.5s ease-out;
   }
 
   .spending.selected:not(.focused) {
-    animation: new-spending-animation 1.5s ease-out;
+    animation: new-spending-animation 0.5s ease-out;
   }
 
-  .temporary {
+  .added {
     fill: #31a354;
+  }
+
+  .removed {
+    fill: red;
   }
 
   &.drag .selected,

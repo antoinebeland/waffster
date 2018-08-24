@@ -99,7 +99,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
   }
 
   set temporaryCount(count: number) {
-    if (this.temporaryCount === count) {
+    if (this._temporaryCount === count) {
       return;
     }
     const children = this.children;
@@ -221,7 +221,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
   }
 
   private updateBoundingBox() {
-    const count = this.count + this.temporaryCount;
+    const count = this.count + Math.max(0, this.temporaryCount);
     const maximums = {
       height: this._sideLength,
       width: this._sideLength

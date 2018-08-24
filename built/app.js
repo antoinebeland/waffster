@@ -346,7 +346,7 @@ define("geometry/polygons-super-group", ["require", "exports", "d3", "geometry/a
             return this._temporaryCount;
         }
         set temporaryCount(count) {
-            if (this.temporaryCount === count) {
+            if (this._temporaryCount === count) {
                 return;
             }
             const children = this.children;
@@ -444,7 +444,7 @@ define("geometry/polygons-super-group", ["require", "exports", "d3", "geometry/a
             this.updateBoundingBox();
         }
         updateBoundingBox() {
-            const count = this.count + this.temporaryCount;
+            const count = this.count + Math.max(0, this.temporaryCount);
             const maximums = {
                 height: this._sideLength,
                 width: this._sideLength
@@ -1419,7 +1419,7 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
             });
             this._svgElement.call(tip);
             const executeCommand = () => {
-                if (selectedElement !== undefined) {
+                if (selectedElement !== undefined && selectedElement.temporaryAmount !== 0) {
                     if (selectedElement.temporaryAmount > 0) {
                         this._commandInvoker.invoke(new add_command_1.AddCommand(selectedElement, this._rendering, this._layout));
                     }
@@ -1444,9 +1444,7 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                     selectedElement.hasFocus = false;
                     selectedElement.accept(this._rendering);
                 }
-                if (selectedElement && selectedElement.temporaryAmount !== 0) {
-                    executeCommand();
-                }
+                executeCommand();
                 selectedElement = undefined;
             });
             const events = new (class {
@@ -1466,9 +1464,7 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                     })
                         .on('click', () => {
                         d3.event.stopPropagation();
-                        if (selectedElement.temporaryAmount !== 0) {
-                            executeCommand();
-                        }
+                        executeCommand();
                         tip.hide();
                         group.activeLevel = group.level;
                         group.root.accept(self._rendering);
@@ -1497,9 +1493,7 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                             if (selectedElement && selectedElement !== element && selectedElement.hasFocus) {
                                 selectedElement.hasFocus = false;
                                 selectedElement.accept(self._rendering);
-                                if (selectedElement.temporaryAmount !== 0) {
-                                    executeCommand();
-                                }
+                                executeCommand();
                             }
                             selectedElement = element;
                             element.hasFocus = true;
@@ -1529,9 +1523,7 @@ define("budget/budget-visualization", ["require", "exports", "d3", "d3-tip", "co
                     });
                     element.svgElement.on('dblclick', () => {
                         if (element.isActive) {
-                            if (selectedElement.temporaryAmount !== 0) {
-                                executeCommand();
-                            }
+                            executeCommand();
                             selectedElement = undefined;
                             element.activeLevel += 1;
                             element.root.accept(self._rendering);

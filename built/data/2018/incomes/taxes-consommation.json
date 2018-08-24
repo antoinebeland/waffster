@@ -1,0 +1,21 @@
+{
+  "name": "Taxes à la consommation",
+  "children": [
+    {
+      "name": "Taxes de vente",
+      "amount": 16967000
+    },
+    {
+      "name": "Carburant",
+      "amount": 2321000
+    },
+    {
+      "name": "Produit du tabac",
+      "amount": 993000
+    },
+    {
+      "name": "Boissons alcooliques",
+      "amount": 640000
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "Développement durable, Environnement et Lutte contre les changements climatiques",
+  "children": [
+    {
+      "name": "Protection de l'environnement",
+      "children": [
+        {
+          "name": "Politiques environnementales",
+          "amount": 27764.2
+        },
+        {
+          "name": "Développement durable, évaluations et suivi de l'environnement",
+          "amount": 15665.9
+        },
+        {
+          "name": "Analyse et expertise régionales",
+          "amount": 28835.9
+        },
+        {
+          "name": "Centre de contrôle environnemental du Québec",
+          "amount": 18289.3
+        },
+        {
+          "name": "Centre d'expertise en analyse environnementale du Québec",
+          "amount": 5270.6
+        },
+        {
+          "name": "Gestion des barrages et du domaine hydrique",
+          "amount": 30615.8
+        },
+        {
+          "name": "Direction",
+          "amount": 9873.5
+        },
+        {
+          "name": "Services à la gestion",
+          "amount": 50550.0
+        }
+      ]
+    },
+    {
+      "name": "Bureau d'audiences publiques sur l'environnement",
+      "amount": 5160.5
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "name": "Finances",
+  "children": [
+    {
+      "name": "Direction et administration",
+      "amount": 29755.5
+    },
+    {
+      "name": "Activités en matière économique, fiscale, budgétaire et financière",
+      "children": [
+        {
+          "name": "Politiques budgétaires, fiscales, économiques et encadrement du secteur financier",
+          "amount": 17269.6
+        },
+        {
+          "name": "Financement, gestion de la dette et opérations financières",
+          "amount": 7270.5
+        },
+        {
+          "name": "Soutien aux affaires fiscales, financières et économiques et à la recherche",
+          "amount": 17875.0
+        },
+        {
+          "name": "Contrôleur des finances",
+          "amount": 15964.6
+        }
+      ]
+    },
+    {
+      "name": "Contributions, frais de services bancaires et provisions pour transférer des crédits",
+      "children": [
+        {
+          "name": "Contribution à l'Institut de la statistique du Québec",
+          "amount": 15984.5
+        },
+        {
+          "name": "Frais de services bancaires",
+          "amount": 9492.7
+        },
+        {
+          "name": "Provision pour augmenter, avec l'approbation du Conseil du trésor, tout crédit pour des initiatives concernant les revenus",
+          "amount": 58826.0
+        },
+        {
+          "name": "Provision pour augmenter, avec l'approbation du Conseil du trésor, tout crédit pour moderniser les systèmes d'information dans le secteur de la santé",
+          "amount": 30000.0
+        }
+      ]
+    },
+    {
+      "name": "Service de la dette",
+      "children": [
+        {
+          "name": "Service de la dette directe",
+          "amount": 5821000.0
+        },
+        {
+          "name": "Intérêts sur le compte des régimes de retraite",
+          "amount": 1394000.0
+        },
+        {
+          "name": "Intérêts sur le régime de rentes de survivants",
+          "amount": 1000.0
+        }
+      ]
+    }
+  ]
+}

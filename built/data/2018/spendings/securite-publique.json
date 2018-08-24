@@ -1,0 +1,80 @@
+{
+  "name": "Sécurité publique",
+  "children": [
+    {
+      "name": "Sécurité, prévention et gestion interne",
+      "children": [
+        {
+          "name": "Direction et services supports à la gestion",
+          "amount": 23375.8
+        },
+        {
+          "name": "Services correctionnels",
+          "amount": 359110.2
+        },
+        {
+          "name": "Expertises judiciaires",
+          "amount": 9643.8
+        },
+        {
+          "name": "Affaires policières et sécurité-protection",
+          "amount": 119488.6
+        },
+        {
+          "name": "Sécurité civile et sécurité incendie",
+          "amount": 110547.4
+        },
+        {
+          "name": "Éléments de gestion centrale",
+          "amount": 230973.8
+        }
+      ]
+    },
+    {
+      "name": "Sûreté du Québec",
+      "children": [
+        {
+          "name": "Protection de la société, des citoyens et de leurs biens",
+          "amount": 439885.5
+        },
+        {
+          "name": "Gestion interne et soutien",
+          "amount": 256826.9
+        }
+      ]
+    },
+    {
+      "name": "Organismes relevant du ministre",
+      "children": [
+        {
+          "name": "Régie des alcools, des courses et des jeux",
+          "amount": 17470.9
+        },
+        {
+          "name": "Commission québécoise des libérations conditionnelles",
+          "amount": 4815.5
+        },
+        {
+          "name": "Bureau du coroner",
+          "amount": 7773.6
+        },
+        {
+          "name": "Commissaire à la déontologie policière",
+          "amount": 3440.1
+        },
+        {
+          "name": "Comité de déontologie policière",
+          "amount": 1872.0
+        },
+        {
+          "name": "Commissaire à la lutte contre la corruption",
+          "amount": 12130.5
+        },
+        {
+          "name": "Bureau des enquêtes indépendantes",
+          "amount": 6252.8
+        }
+      ]
+    }
+  ]
+}

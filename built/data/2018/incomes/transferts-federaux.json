@@ -1,0 +1,21 @@
+{
+  "name": "Transferts fédéraux",
+  "children": [
+    {
+      "name": "Péréquation",
+      "amount": 11732000
+    },
+    {
+      "name": "Transferts pour la santé",
+      "amount": 6431000
+    },
+    {
+      "name": "Transferts pour l’enseignement postsecondaire et les autres programmes sociaux",
+      "amount": 1659000
+    },
+    {
+      "name": "Autres programmes",
+      "amount": 3852000
+    }
+  ]
+}

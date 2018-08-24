@@ -1,0 +1,17 @@
+{
+  "name": "Revenus provenant des entreprises du gouvernement",
+  "children": [
+    {
+      "name": "Hydro-Québec",
+      "amount": 2075000
+    },
+    {
+      "name": "Loto-Québec",
+      "amount": 1236000
+    },
+    {
+      "name": "Société des alcools du Québec",
+      "amount": 1112000
+    }
+  ]
+}

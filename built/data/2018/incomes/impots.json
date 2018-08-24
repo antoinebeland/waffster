@@ -1,0 +1,21 @@
+{
+  "name": "Impôts",
+  "children": [
+    {
+      "name": "Impôt des particuliers",
+      "amount": 30549000
+    },
+    {
+      "name": "Cotisations pour les services de santé",
+      "amount": 6028000
+    },
+    {
+      "name": "Impôts des sociétés",
+      "amount": 8028000
+    },
+    {
+      "name": "Impôt foncier scolaire",
+      "amount": 1817000
+    }
+  ]
+}

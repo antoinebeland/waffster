@@ -1,0 +1,94 @@
+{
+  "name": "Famille",
+  "children": [
+    {
+      "name": "Planification, recherche et administration",
+      "children": [
+        {
+          "name": "Direction et administration",
+          "amount": 25289.4
+        },
+        {
+          "name": "Planification, politique et recherche",
+          "amount": 35466.9
+        }
+      ]
+    },
+    {
+      "name": "Mesures d'aide à la famille",
+      "children": [
+        {
+          "name": "Soutien financier lié aux services à la famille",
+          "amount": 35438.3
+        },
+        {
+          "name": "Administration du Soutien aux enfants",
+          "amount": 33458.0
+        },
+        {
+          "name": "Soutien financier aux organismes communautaires",
+          "amount": 19731.2
+        }
+      ]
+    },
+    {
+      "name": "Services de garde",
+      "children": [
+        {
+          "name": "Entente avec le Gouvernement de la nation crie",
+          "amount": 18381.4
+        },
+        {
+          "name": "Subvention pour le financement des infrastructures des centres de la petite enfance",
+          "amount": 42719.3
+        },
+        {
+          "name": "Régime de retraite à l'intention d'employés oeuvrant dans le domaine des services de garde à l'enfance",
+          "amount": 99482.1
+        },
+        {
+          "name": "Régimes d'assurance collective et de congés de maternité",
+          "amount": 37383.6
+        },
+        {
+          "name": "Soutien financier aux centres de la petite enfance",
+          "amount": 1174127.3
+        },
+        {
+          "name": "Soutien financier aux garderies",
+          "amount": 480075.1
+        },
+        {
+          "name": "Soutien financier aux bureaux coordonnateurs de la garde en milieu familial et aux personnes responsables d'un service de garde en milieu familial",
+          "amount": 571118.5
+        }
+      ]
+    },
+    {
+      "name": "Condition des aînés",
+      "children": [
+        {
+          "name": "Vieillissement actif",
+          "amount": 20020.4
+        },
+        {
+          "name": "Soutien aux personnes aînées en situation de vulnérabilité",
+          "amount": 10209.6
+        }
+      ]
+    },
+    {
+      "name": "Curateur public",
+      "children": [
+        {
+          "name": "Direction et administration du Curateur public",
+          "amount": 21625.1
+        },
+        {
+          "name": "Mesures de protection",
+          "amount": 27702.9
+        }
+      ]
+    }
+  ]
+}

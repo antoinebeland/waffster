@@ -1,0 +1,21 @@
+{
+  "name": "Tourisme",
+  "children": [
+    {
+      "name": "Tourisme Québec",
+      "amount": 90594.3
+    },
+    {
+      "name": "Société du Centre des congrès de Québec",
+      "amount": 19045.8
+    },
+    {
+      "name": "Société du Palais des congrès de Montréal",
+      "amount": 34433.5
+    },
+    {
+      "name": "Régie des installations olympiques",
+      "amount": 41367.3
+    }
+  ]
+}

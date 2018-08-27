@@ -1,5 +1,6 @@
 import { Config } from '../config';
 import { AbstractPolygonsGroup } from '../geometry/abstract-polygons-group';
+import { Formatter } from '../utils/formatter';
 
 import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 

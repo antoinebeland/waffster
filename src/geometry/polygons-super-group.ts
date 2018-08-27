@@ -13,7 +13,6 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
   private readonly _children: AbstractPolygonsGroup[];
   private _spacing: number;
   private _state: PolygonsSuperGroupState;
-  private _temporaryCount: number;
 
   /**
    * Initializes a new instance of the PolygonsSuperGroup class.
@@ -26,7 +25,6 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
     this._children = [];
     this._spacing = spacing;
     this._state = PolygonsSuperGroupState.COLLAPSED;
-    this._temporaryCount = 0;
   }
 
   /**
@@ -95,11 +93,12 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
   }
 
   get temporaryCount(): number {
-    return this._temporaryCount;
+    return this._children.reduce((total, child) => total + child.temporaryCount, 0);
   }
 
   set temporaryCount(count: number) {
-    if (this._temporaryCount === count) {
+    const temporaryCount = this.temporaryCount;
+    if (this.temporaryCount === count) {
       return;
     }
     const children = this.children;
@@ -116,7 +115,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
         children[0].temporaryCount = count; // If there is no element, put it in the first.
       }
     } else {
-      if (this._temporaryCount > 0) {
+      if (this.temporaryCount > 0) {
         children.forEach(c => c.temporaryCount = 0);
       }
       let remainingCount = count;
@@ -131,7 +130,6 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
         }
       }
     }
-    this._temporaryCount = count;
   }
 
   /**

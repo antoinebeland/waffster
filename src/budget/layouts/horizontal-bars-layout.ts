@@ -1,10 +1,10 @@
-import d3 = require('d3');
+import * as d3 from 'd3';
 
+import { Config } from '../../config';
 import { Budget } from '../budget';
 
 import { Layout } from './layout';
 import { isLayoutConfig, LayoutConfig } from './layout-config';
-import { Config } from '../../config';
 
 export class HorizontalBarsLayout extends Layout {
   private readonly _config: LayoutConfig;

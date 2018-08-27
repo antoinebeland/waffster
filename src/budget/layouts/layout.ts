@@ -1,7 +1,8 @@
 import * as d3 from 'd3';
+import SimpleGauge from 'd3-simple-gauge';
 
-import { SimpleGauge } from '../../../node_modules/d3-simple-gauge/dist/d3-simple-gauge';
 import { Config } from '../../config';
+import { Formatter } from '../../utils/formatter';
 import { Budget } from '../budget';
 import { BudgetElement } from '../budget-element';
 

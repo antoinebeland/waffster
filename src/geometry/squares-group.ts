@@ -36,7 +36,7 @@ export class SquaresGroup extends AbstractPolygonsGroup {
    * @returns {PolygonsGroupConfig}         The configuration of the group.
    */
   get config(): PolygonsGroupConfig {
-    return super.config;
+    return super.getBaseConfig();
   }
 
   /**
@@ -45,7 +45,7 @@ export class SquaresGroup extends AbstractPolygonsGroup {
    * @param {PolygonsGroupConfig} config    The configuration to set.
    */
   set config(config: PolygonsGroupConfig) {
-    super.config = config;
+    super.setBaseConfig(config);
     if (this._squares) {
       this._squares.forEach((square, i) => {
         square.position = this.getSquarePosition(i + this._startingPosition);

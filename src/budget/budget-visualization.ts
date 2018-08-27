@@ -1,19 +1,20 @@
 import * as d3 from 'd3';
-import * as d3Tip from 'd3-tip';
+import d3Tip from 'd3-tip';
 
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
+import { Formatter } from '../utils/formatter';
 
 import { Budget } from './budget';
 import { BudgetElement } from './budget-element';
 import { BudgetElementGroup } from './budget-element-group';
 import { AddCommand } from './commands/add-command';
 import { CommandInvoker } from './commands/command-invoker';
+import { DeleteCommand } from './commands/delete-command';
 import { Layout } from './layouts/layout';
 import { SimpleBudgetElement } from './simple-budget-element';
 import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 import { RenderingVisitor } from './visitors/rendering-visitor';
-import { DeleteCommand } from './commands/delete-command';
 
 export class BudgetVisualization {
   private readonly _budget: Budget;
@@ -60,7 +61,7 @@ export class BudgetVisualization {
     const tip = d3Tip()
       .html(d => {
         // TODO: Remove H1
-        let str = `<h1>${d.name} (${Formatter.formatAmount(d.amount)})</h1>`;
+        let str = `<h1>${d.name} (${Formatter.formatAmount(d.amount + d.temporaryAmount)})</h1>`;
         str += d.description ? `<p>${d.description}</p>` : '';
         return str;
       });
@@ -203,6 +204,10 @@ export class BudgetVisualization {
     // Layout initialisation
     this._layout.render();
     this._isInitialized = true;
+  }
+
+  reset() {
+    // ...
   }
 
   update(layout: Layout, polygonsGroupConfig?: PolygonsGroupConfig) {

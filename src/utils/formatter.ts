@@ -1,4 +1,4 @@
-class Formatter {
+export class Formatter {
   static formatAmount(amount: number): string {
     let result = amount / Math.pow(10, 6);
     if (Math.abs(result) >= 1) {

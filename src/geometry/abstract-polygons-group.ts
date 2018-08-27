@@ -73,12 +73,7 @@ export abstract class AbstractPolygonsGroup {
    * @returns {PolygonsGroupConfig}         The configuration of the group.
    */
   get config(): PolygonsGroupConfig {
-    return {
-      maxCountPerLine: this._maxCountPerLine,
-      orientation: this._orientation,
-      sideLength: this._sideLength,
-      startingPosition: this._startingPosition
-    };
+    return this.getBaseConfig();
   }
 
   /**
@@ -87,13 +82,7 @@ export abstract class AbstractPolygonsGroup {
    * @param {PolygonsGroupConfig} config    The configuration to set.
    */
   set config(config: PolygonsGroupConfig) {
-    if (!isPolygonsGroupConfig(config)) {
-      throw new TypeError('Invalid configuration specified.');
-    }
-    this._maxCountPerLine = config.maxCountPerLine;
-    this._orientation = config.orientation || PolygonsGroupOrientation.HORIZONTAL;
-    this._sideLength = config.sideLength;
-    this._startingPosition = config.startingPosition || 0;
+    this.setBaseConfig(config);
   }
 
   get selectionCount(): number {
@@ -144,6 +133,25 @@ export abstract class AbstractPolygonsGroup {
       this._translation.x = offset;
       this._translation.y = 0;
     }
+  }
+
+  protected getBaseConfig(): PolygonsGroupConfig {
+    return {
+      maxCountPerLine: this._maxCountPerLine,
+      orientation: this._orientation,
+      sideLength: this._sideLength,
+      startingPosition: this._startingPosition
+    };
+  }
+
+  protected setBaseConfig(config: PolygonsGroupConfig) {
+    if (!isPolygonsGroupConfig(config)) {
+      throw new TypeError('Invalid configuration specified.');
+    }
+    this._maxCountPerLine = config.maxCountPerLine;
+    this._orientation = config.orientation || PolygonsGroupOrientation.HORIZONTAL;
+    this._sideLength = config.sideLength;
+    this._startingPosition = config.startingPosition || 0;
   }
 
   /**

@@ -1,12 +1,14 @@
 {
-  "name": "BudgetViz",
+  "name": "budgetviz",
   "version": "1.0.0",
   "description": "Budget visualization tool",
-  "main": "gulpfile.js",
+  "main": "dist/budgetviz.js",
   "scripts": {
     "start": "gulp",
     "test": "nyc mocha -r ts-node/register test/**/*.ts",
-    "data": "cd ./built/data/ && node ./script.js"
+    "data": "cd ./built/data/ && node ./script.js",
+    "build": "rollup -c",
+    "watch": "rollup -cw"
   },
   "private": true,
   "author": "Antoine Béland",
@@ -40,12 +42,17 @@
     "nyc": "^11.8.0",
     "open": "0.0.5",
     "pump": "^3.0.0",
+    "rollup": "^0.65.0",
+    "rollup-plugin-commonjs": "^9.1.6",
+    "rollup-plugin-scss": "^0.4.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-typescript2": "^0.16.1",
     "source-map-support": "^0.5.6",
     "ts-node": "^6.0.3",
     "tslint": "^5.10.0",
     "tslint-consistent-codestyle": "^1.13.0",
     "tslint-eslint-rules": "^5.3.1",
-    "typescript": "^2.8.3"
+    "typescript": "^2.9.2"
   },
   "nyc": {
     "extension": [

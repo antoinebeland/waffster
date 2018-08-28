@@ -1,6 +1,6 @@
 import { descending } from 'd3-array';
 import * as d3 from 'd3-selection';
-import SimpleGauge from 'd3-simple-gauge';
+import d3SimpleGauge from 'd3-simple-gauge';
 
 import { Config } from '../../config';
 import { Formatter } from '../../utils/formatter';
@@ -57,7 +57,7 @@ export abstract class Layout {
         .attr('y', 95);
 
       // Associate the gauge with the group.
-      this._gaugeGroup.datum(new SimpleGauge({
+      this._gaugeGroup.datum(new d3SimpleGauge.SimpleGauge({
         barWidth: Config.GAUGE_CONFIG.barWidth,
         el: this._gaugeGroup.append('g'),
         height: Config.GAUGE_CONFIG.height,

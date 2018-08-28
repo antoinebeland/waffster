@@ -82,4 +82,44 @@ describe('Square class', () => {
       validatePosition(square.points[3], { x: 2, y: 4 });
     });
   });
+  describe('#sideLength', () => {
+    it('should get the right side length', () => {
+      const position = {
+        x: 1,
+        y: 1
+      };
+      const sideLength = 5;
+      const square = new Square(position, sideLength);
+      expect(square.sideLength).to.equal(sideLength);
+    });
+    it('should set the right side length and update the square', () => {
+      const position = {
+        x: 2,
+        y: 2
+      };
+      const sideLength = 2;
+      const newSideLength = 5;
+      const square = new Square(position, sideLength);
+      square.sideLength = newSideLength;
+      expect(square.sideLength).to.equal(newSideLength);
+
+      expect(square.boundingBox.width).to.equal(newSideLength);
+      expect(square.boundingBox.height).to.equal(newSideLength);
+
+      expect(square.points.length).to.equal(4);
+      validatePosition(square.points[0], { x: 2, y: 2 });
+      validatePosition(square.points[1], { x: 7, y: 2 });
+      validatePosition(square.points[2], { x: 7, y: 7 });
+      validatePosition(square.points[3], { x: 2, y: 7 });
+    });
+    it('should throw an exception with the side length to set is invalid', () => {
+      const position = {
+        x: 2,
+        y: 2
+      };
+      const sideLength = 2;
+      const square = new Square(position, sideLength);
+      expect(() => square.sideLength = -1).to.throw('The specified side length is invalid.');
+    });
+  });
 });

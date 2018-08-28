@@ -1,3 +1,5 @@
+import 'd3-transition';
+
 import { Config } from '../../config';
 import { BudgetElement } from '../budget-element';
 import { BudgetElementGroup } from '../budget-element-group';

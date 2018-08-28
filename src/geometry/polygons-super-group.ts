@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { descending } from 'd3-array';
 
 import { AbstractPolygonsGroup } from './abstract-polygons-group';
 import { Polygon } from './polygon';
@@ -138,7 +138,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
    * @returns {AbstractPolygonsGroup[]}     The children of the super group.
    */
   get children(): AbstractPolygonsGroup[] {
-    return this._children.sort((a, b) => d3.descending(a.count, b.count));
+    return this._children.sort((a, b) => descending(a.count, b.count));
   }
 
   /**

@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { descending } from 'd3-array';
 
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
@@ -108,7 +108,7 @@ export class BudgetElementGroup extends BudgetElement {
 
   get children() {
     // TODO: If all the elements are equals, sort by id or name?
-    return this._children.sort((a, b) => d3.descending(a.amount, b.amount));
+    return this._children.sort((a, b) => descending(a.amount, b.amount));
   }
 
   accept(visitor: BudgetElementVisitor) {

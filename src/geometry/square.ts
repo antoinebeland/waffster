@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { range } from 'd3-array';
 
 import { BoundingBox } from './bounding-box';
 import { Point } from './point';
@@ -117,7 +117,7 @@ export class Square implements Polygon {
       x: this._position.x + this._sideLength / 2,
       y: this._position.y + this._sideLength / 2
     };
-    this._points = d3.range(4).map(d => {
+    this._points = range(4).map(d => {
       const i = (d < 2) ? d % 2 : (d + 1) % 2;
       const j = Math.floor(d / 2);
       return {

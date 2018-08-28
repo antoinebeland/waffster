@@ -1,4 +1,6 @@
-import * as d3 from 'd3';
+import { max } from 'd3-array';
+import * as d3 from 'd3-selection';
+import 'd3-transition';
 
 import { Config } from '../../config';
 import { Budget } from '../budget';
@@ -19,7 +21,7 @@ export class HorizontalBarsLayout extends Layout {
 
   protected initializeLayout() {
     const self = this;
-    const maxLengthName = d3.max(this._budget.elements, d => d.name.length);
+    const maxLengthName = max(this._budget.elements, d => d.name.length);
     let maxLabelWidth = 0;
 
     function initializeLabel(d) {

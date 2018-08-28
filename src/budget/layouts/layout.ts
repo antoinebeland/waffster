@@ -1,4 +1,5 @@
-import * as d3 from 'd3';
+import { descending } from 'd3-array';
+import * as d3 from 'd3-selection';
 import SimpleGauge from 'd3-simple-gauge';
 
 import { Config } from '../../config';
@@ -116,9 +117,9 @@ export abstract class Layout {
         .select('.amount')
         .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
     }
-    this._incomeGroups = this._incomeGroups.sort((a, b) => d3.descending(a.amount, b.amount))
+    this._incomeGroups = this._incomeGroups.sort((a, b) => descending(a.amount, b.amount))
       .each(updateAmount);
-    this._spendingGroups = this._spendingGroups.sort((a, b) => d3.descending(a.amount, b.amount))
+    this._spendingGroups = this._spendingGroups.sort((a, b) => descending(a.amount, b.amount))
       .each(updateAmount);
 
     const delta = this._budget.summary.delta;

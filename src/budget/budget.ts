@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { descending } from 'd3-array';
 
 import { Config } from '../config';
 
@@ -54,7 +54,7 @@ export class Budget {
       } else if (Budget.isAcceptableAmount(e.amount)) {
         elements.push(new SimpleBudgetElement(e.amount, e.name, e.description || '', type));
       }
-      elements.sort((a, b) => d3.descending(a.amount, b.amount));
+      elements.sort((a, b) => descending(a.amount, b.amount));
     }
     budgetConfig.incomes.forEach(e => initialize(e, BudgetElementType.INCOME, this.incomes));
     budgetConfig.spendings.forEach(e => initialize(e, BudgetElementType.SPENDING, this.spendings));
@@ -68,7 +68,7 @@ export class Budget {
    */
   get elements(): BudgetElement[] {
    return this.incomes.concat(this.spendings)
-     .sort((a, b) => d3.descending(a.amount, b.amount));
+     .sort((a, b) => descending(a.amount, b.amount));
   }
 
   /**

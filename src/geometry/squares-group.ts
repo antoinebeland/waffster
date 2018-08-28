@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { range } from 'd3-array';
 
 import { AbstractPolygonsGroup } from './abstract-polygons-group';
 import { Point } from './point';
@@ -24,7 +24,7 @@ export class SquaresGroup extends AbstractPolygonsGroup {
     super(config);
     this._count = count;
     this._position = { x: 0, y: 0 };
-    this._squares = d3.range(this._startingPosition, this._count + this._startingPosition)
+    this._squares = range(this._startingPosition, this._count + this._startingPosition)
       .map(i => new Square(this.getSquarePosition(i), this._sideLength));
     this._temporaryCount = 0;
     this.updateBoundingBox();
@@ -187,7 +187,7 @@ export class SquaresGroup extends AbstractPolygonsGroup {
       this._squares = this._squares.slice(0, newCount);
     } else { // Add new squares.
       this._squares = this._squares.concat(
-        d3.range(currentCount + this._startingPosition,
+        range(currentCount + this._startingPosition,
           newCount + this._startingPosition)
           .map(i => {
             const square = new Square(this.getSquarePosition(i), this._sideLength);

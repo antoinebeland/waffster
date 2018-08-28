@@ -1,4 +1,5 @@
-import * as d3 from 'd3';
+import * as d3 from 'd3-selection';
+import 'd3-transition';
 
 import { Config } from '../../config';
 import { Budget } from '../budget';

@@ -1,4 +1,6 @@
-import * as d3 from 'd3';
+import { sum } from 'd3-array';
+import * as d3 from 'd3-selection';
+import 'd3-transition';
 
 import { Config } from '../../config';
 import { Budget } from '../budget';
@@ -156,7 +158,7 @@ export class GridLayout extends Layout {
       .transition()
       .duration(this._config.transitionDuration)
       .attr('viewBox', () => {
-        const computedHeight = d3.sum(maxHeights) + 2 * self._config.verticalPadding +
+        const computedHeight = sum(maxHeights) + 2 * self._config.verticalPadding +
           (maxHeights.length - 1) * self._config.verticalMinSpacing + 100;
 
         const ratio = computedHeight / this._height;

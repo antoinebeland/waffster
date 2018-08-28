@@ -8,7 +8,7 @@
     "lint": "npm run sass-lint && tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
     "sass-lint": "sass-lint -c sass-lint.yml -v -q",
     "start": "concurrently \"http-server ./ -s\" \"npm run watch\"",
-    "test": "nyc mocha -r ts-node/register test/**/*.ts",
+    "test": "nyc mocha",
     "watch": "rollup -cw"
   },
   "private": true,
@@ -43,6 +43,7 @@
     "rollup-plugin-terser": "^1.0.1",
     "rollup-plugin-typescript2": "^0.16.1",
     "sass-lint": "^1.12.1",
+    "source-map-support": "^0.5.9",
     "ts-node": "^6.0.3",
     "tslint": "^5.10.0",
     "tslint-consistent-codestyle": "^1.13.0",
@@ -56,10 +57,15 @@
     "include": [
       "src"
     ],
+    "require": [
+      "ts-node/register"
+    ],
     "reporter": [
       "html",
       "text"
     ],
-    "all": false
+    "all": false,
+    "instrument": true,
+    "sourceMap": true
   }
 }

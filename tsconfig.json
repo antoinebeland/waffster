@@ -6,7 +6,7 @@
       "dom",
       "es6"
     ],
-    "module": "es6",
+    "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "outDir": "./dist",

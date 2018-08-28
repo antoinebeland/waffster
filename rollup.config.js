@@ -11,7 +11,12 @@ const mainFileName = pkg.main.toString();
 
 const defaultPlugins = [
   typescript({
-    typescript: require('typescript')
+    tsconfigOverride: {
+      compilerOptions: {
+        module: 'es6'
+      },
+    },
+    typescript: require('typescript'),
   }),
   commonjs({
     include: 'node_modules/**'

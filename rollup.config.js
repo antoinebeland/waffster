@@ -7,6 +7,8 @@ import { terser } from "rollup-plugin-terser";
 import pkg from './package.json'
 
 const copyright = `/*! ${pkg.name} v${pkg.version} | (c) ${pkg.author} | GNU GPLv3 */`;
+const mainFileName = pkg.main.toString();
+
 const defaultPlugins = [
   typescript({
     typescript: require('typescript')
@@ -14,7 +16,10 @@ const defaultPlugins = [
   commonjs({
     include: 'node_modules/**'
   }),
-  resolve()
+  resolve(),
+  scss({
+    output: `${mainFileName.substr(0, mainFileName.indexOf('.'))}.css`
+  })
 ];
 const externals = [
   "d3-array",
@@ -36,7 +41,6 @@ const globals = {
   'd3-tip': 'd3Tip',
   'd3-transition': 'd3',
 };
-const mainFileName = pkg.main.toString();
 
 export default [
   {
@@ -54,10 +58,7 @@ export default [
     ],
     plugins: [
       ...defaultPlugins,
-      sourcemaps(),
-      scss({
-        output: `${mainFileName.substr(0, mainFileName.indexOf('.'))}.css`
-      })
+      sourcemaps()
     ],
   },
   {

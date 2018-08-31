@@ -1,4 +1,5 @@
 import { descending } from 'd3-array';
+import { Selection } from 'd3-selection';
 
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
@@ -12,7 +13,7 @@ export class BudgetElementGroup extends BudgetElement {
   private readonly _group: PolygonsSuperGroup;
 
   private _hasFocus: boolean;
-  private _svgElement: any;
+  private _svgElement: Selection<any, any, any, any>;
 
   constructor(name = '', description: '', type: BudgetElementType = BudgetElementType.SPENDING,
               polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
@@ -71,11 +72,11 @@ export class BudgetElementGroup extends BudgetElement {
     this._children.forEach(c => c.level = level + 1);
   }
 
-  get svgElement(): any {
+  get svgElement(): Selection<any, any, any, any> {
     return this._svgElement;
   }
 
-  set svgElement(svgElement: any) {
+  set svgElement(svgElement: Selection<any, any, any, any>) {
     if (!svgElement) {
       throw ReferenceError('The specified element is undefined.');
     }

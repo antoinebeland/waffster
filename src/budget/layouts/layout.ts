@@ -9,7 +9,7 @@ import { BudgetElement } from '../budget-element';
 
 export abstract class Layout {
   protected readonly _budget: Budget;
-  protected readonly _svgElement: any;
+  protected readonly _svgElement: d3.Selection<any, any, any, any>;
 
   protected _layout: any;
   protected _budgetGroup: any;
@@ -20,7 +20,7 @@ export abstract class Layout {
   protected _height: number;
   protected _width: number;
 
-  protected constructor(budget: Budget, svgElement: any) {
+  protected constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>) {
     this._budget = budget;
     this._svgElement = svgElement;
 

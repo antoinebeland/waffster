@@ -25,7 +25,6 @@
           (config.startingPosition === undefined ||
               config.startingPosition >= 0 && config.startingPosition < config.maxCountPerLine);
   }
-  //# sourceMappingURL=polygons-group-configs.js.map
 
   var Config = (function () {
       function Config() {
@@ -53,7 +52,6 @@
       };
       return Config;
   }());
-  //# sourceMappingURL=config.js.map
 
   function isBudgetElement(budgetElement) {
       var isValid = false;
@@ -71,7 +69,6 @@
           budgetConfig.spendings.length > 0 &&
           budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
   }
-  //# sourceMappingURL=budget-config.js.map
 
   var Formatter = (function () {
       function Formatter() {
@@ -90,7 +87,6 @@
       };
       return Formatter;
   }());
-  //# sourceMappingURL=formatter.js.map
 
   var BudgetElementType;
   (function (BudgetElementType) {
@@ -99,25 +95,30 @@
       BudgetElementType["SPENDING"] = "spending";
   })(BudgetElementType || (BudgetElementType = {}));
   var BudgetElement = (function () {
-      function BudgetElement(name, description, type) {
+      function BudgetElement(name, description, type, minAmount) {
           if (description === void 0) { description = ''; }
           if (type === void 0) { type = BudgetElementType.SPENDING; }
+          if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           this._activeLevel = 0;
           this._level = 0;
+          if (minAmount <= 0) {
+              throw new RangeError('The min amount must be greater than 0.');
+          }
           this.id = Formatter.formatId(name);
           this.name = name;
           this.description = description;
           this.type = type;
+          this._minAmount = minAmount;
       }
       Object.defineProperty(BudgetElement.prototype, "amount", {
           get: function () {
-              return this.polygonsGroup.count * Config.MIN_AMOUNT;
+              return this.polygonsGroup.count * this._minAmount;
           },
           set: function (amount) {
               if (amount < 0) {
                   throw new TypeError('Invalid amount specified.');
               }
-              this.polygonsGroup.count = Math.ceil(amount / Config.MIN_AMOUNT);
+              this.polygonsGroup.count = Math.ceil(amount / this._minAmount);
           },
           enumerable: true,
           configurable: true
@@ -142,7 +143,7 @@
       });
       Object.defineProperty(BudgetElement.prototype, "selectedAmount", {
           get: function () {
-              return this.polygonsGroup.selectionCount * Config.MIN_AMOUNT;
+              return this.polygonsGroup.selectionCount * this._minAmount;
           },
           set: function (selectedAmount) {
               if (selectedAmount < 0) {
@@ -152,24 +153,23 @@
                   return;
               }
               selectedAmount = Math.min(selectedAmount, this.amount);
-              this.polygonsGroup.selectionCount = Math.ceil(selectedAmount / Config.MIN_AMOUNT);
+              this.polygonsGroup.selectionCount = Math.ceil(selectedAmount / this._minAmount);
           },
           enumerable: true,
           configurable: true
       });
       Object.defineProperty(BudgetElement.prototype, "temporaryAmount", {
           get: function () {
-              return this.polygonsGroup.temporaryCount * Config.MIN_AMOUNT;
+              return this.polygonsGroup.temporaryCount * this._minAmount;
           },
           set: function (temporaryAmount) {
-              this.polygonsGroup.temporaryCount = Math.ceil(temporaryAmount / Config.MIN_AMOUNT);
+              this.polygonsGroup.temporaryCount = Math.ceil(temporaryAmount / this._minAmount);
           },
           enumerable: true,
           configurable: true
       });
       return BudgetElement;
   }());
-  //# sourceMappingURL=budget-element.js.map
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -238,7 +238,6 @@
       };
       return BoundingBox;
   }());
-  //# sourceMappingURL=bounding-box.js.map
 
   var AbstractPolygonsGroup = (function () {
       function AbstractPolygonsGroup(config) {
@@ -449,7 +448,6 @@
       };
       return AbstractPolygonsGroup;
   }());
-  //# sourceMappingURL=abstract-polygons-group.js.map
 
   var PolygonsSuperGroupState;
   (function (PolygonsSuperGroupState) {
@@ -659,7 +657,6 @@
       };
       return PolygonsSuperGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=polygons-super-group.js.map
 
   var BudgetElementGroup = (function (_super) {
       __extends(BudgetElementGroup, _super);
@@ -792,7 +789,6 @@
       };
       return BudgetElementGroup;
   }(BudgetElement));
-  //# sourceMappingURL=budget-element-group.js.map
 
   var Square = (function () {
       function Square(position, sideLength) {
@@ -873,7 +869,6 @@
       Square._currentId = 0;
       return Square;
   }());
-  //# sourceMappingURL=square.js.map
 
   var SquaresGroup = (function (_super) {
       __extends(SquaresGroup, _super);
@@ -1043,7 +1038,6 @@
       };
       return SquaresGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=squares-group.js.map
 
   var SimpleBudgetElement = (function (_super) {
       __extends(SimpleBudgetElement, _super);
@@ -1054,7 +1048,7 @@
           if (type === void 0) { type = BudgetElementType.SPENDING; }
           if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
           var _this = _super.call(this, name, description, type) || this;
-          _this._group = new SquaresGroup(Math.round(amount / Config.MIN_AMOUNT), polygonsGroupConfig);
+          _this._group = new SquaresGroup(Math.round(amount / _this._minAmount), polygonsGroupConfig);
           _this._hasFocus = false;
           return _this;
       }
@@ -1128,7 +1122,6 @@
       };
       return SimpleBudgetElement;
   }(BudgetElement));
-  //# sourceMappingURL=simple-budget-element.js.map
 
   var BudgetState;
   (function (BudgetState) {
@@ -1137,27 +1130,32 @@
       BudgetState["SURPLUS"] = "surplus";
   })(BudgetState || (BudgetState = {}));
   var Budget = (function () {
-      function Budget(budgetConfig) {
+      function Budget(budgetConfig, minAmount) {
+          if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           var _this = this;
           this.incomes = [];
           this.spendings = [];
           if (!isBudgetConfig(budgetConfig)) {
               throw new TypeError('Invalid configuration specified.');
           }
-          function initialize(e, type, elements) {
+          if (minAmount <= 0) {
+              throw new RangeError('The min amount must be greater than 0.');
+          }
+          this.minAmount = minAmount;
+          this.year = budgetConfig.year;
+          var initialize = function (e, type, elements) {
               if (e.children && e.children.length > 0) {
                   var group_1 = new BudgetElementGroup(e.name, e.description || '', type);
-                  e.children.forEach(function (c) { return Budget.initializeBudgetElement(c, type, group_1); });
+                  e.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_1); });
                   elements.push(group_1);
               }
-              else if (Budget.isAcceptableAmount(e.amount)) {
+              else if (_this.isAcceptableAmount(e.amount)) {
                   elements.push(new SimpleBudgetElement(e.amount, e.name, e.description || '', type));
               }
               elements.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); });
-          }
+          };
           budgetConfig.incomes.forEach(function (e) { return initialize(e, BudgetElementType.INCOME, _this.incomes); });
           budgetConfig.spendings.forEach(function (e) { return initialize(e, BudgetElementType.SPENDING, _this.spendings); });
-          this.year = budgetConfig.year;
       }
       Object.defineProperty(Budget.prototype, "elements", {
           get: function () {
@@ -1189,17 +1187,18 @@
           enumerable: true,
           configurable: true
       });
-      Budget.initializeBudgetElement = function (data, type, parent) {
+      Budget.prototype.initializeBudgetElement = function (data, type, parent) {
+          var _this = this;
           if (data.children && data.children.length > 0) {
               Budget._amountStack.push(0);
               var group_2 = new BudgetElementGroup(data.name, data.description || '', type);
-              data.children.forEach(function (c) { return Budget.initializeBudgetElement(c, type, group_2); });
+              data.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_2); });
               var totalAmount = Budget._amountStack[Budget._amountStack.length - 1];
               if (parent) {
-                  if (Budget.isAcceptableAmount(group_2.amount) && group_2.children.length > 1) {
+                  if (this.isAcceptableAmount(group_2.amount) && group_2.children.length > 1) {
                       parent.addChild(group_2);
                   }
-                  else if (Budget.isAcceptableAmount(totalAmount)) {
+                  else if (this.isAcceptableAmount(totalAmount)) {
                       parent.addChild(new SimpleBudgetElement(totalAmount, data.name, data.description || '', type));
                   }
               }
@@ -1208,20 +1207,19 @@
                   Budget._amountStack[Budget._amountStack.length - 1] += totalAmount;
               }
           }
-          else if (parent && Budget.isAcceptableAmount(data.amount)) {
+          else if (parent && this.isAcceptableAmount(data.amount)) {
               if (Budget._amountStack.length > 0) {
                   Budget._amountStack[Budget._amountStack.length - 1] += data.amount;
               }
               parent.addChild(new SimpleBudgetElement(data.amount, data.name, data.description || '', type));
           }
       };
-      Budget.isAcceptableAmount = function (amount) {
-          return Math.round(amount / Config.MIN_AMOUNT) > 0;
+      Budget.prototype.isAcceptableAmount = function (amount) {
+          return Math.round(amount / this.minAmount) > 0;
       };
       Budget._amountStack = [];
       return Budget;
   }());
-  //# sourceMappingURL=budget.js.map
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1605,7 +1603,6 @@
       };
       return AddCommand;
   }());
-  //# sourceMappingURL=add-command.js.map
 
   var Event = (function () {
       function Event() {
@@ -1628,7 +1625,6 @@
       };
       return Event;
   }());
-  //# sourceMappingURL=event.js.map
 
   function isCommand(command) {
       return command !== undefined && command.execute !== undefined;
@@ -1636,7 +1632,6 @@
   function isUndoableCommand(command) {
       return isCommand(command) && command.undo !== undefined;
   }
-  //# sourceMappingURL=command.js.map
 
   var CommandInvoker = (function () {
       function CommandInvoker() {
@@ -1681,7 +1676,6 @@
       };
       return CommandInvoker;
   }());
-  //# sourceMappingURL=command-invoker.js.map
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
@@ -1711,7 +1705,6 @@
       };
       return DeleteCommand;
   }());
-  //# sourceMappingURL=delete-command.js.map
 
   var RenderingVisitor = (function () {
       function RenderingVisitor(defaultTransitionDuration) {
@@ -1840,7 +1833,6 @@
       };
       return RenderingVisitor;
   }());
-  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -2071,7 +2063,6 @@
       };
       return BudgetVisualization;
   }());
-  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2550,7 +2541,6 @@
       };
       return Layout;
   }());
-  //# sourceMappingURL=layout.js.map
 
   function isLayoutConfig(config) {
       return !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
@@ -2561,7 +2551,6 @@
           !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
           !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
   }
-  //# sourceMappingURL=layout-config.js.map
 
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
@@ -2672,7 +2661,6 @@
       };
       return BarsLayout;
   }(Layout));
-  //# sourceMappingURL=bars-layout.js.map
 
   var GridLayout = (function (_super) {
       __extends(GridLayout, _super);
@@ -2813,7 +2801,6 @@
       };
       return GridLayout;
   }(Layout));
-  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
@@ -2930,9 +2917,6 @@
       };
       return HorizontalBarsLayout;
   }(Layout));
-  //# sourceMappingURL=horizontal-bars-layout.js.map
-
-  //# sourceMappingURL=main.js.map
 
   exports.Budget = Budget;
   exports.BudgetVisualization = BudgetVisualization;

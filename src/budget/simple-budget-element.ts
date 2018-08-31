@@ -1,3 +1,5 @@
+import { Selection } from 'd3-selection';
+
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
 import { SquaresGroup } from '../geometry/squares-group';
@@ -8,12 +10,12 @@ import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 export class SimpleBudgetElement extends BudgetElement {
   private readonly _group: SquaresGroup;
   private _hasFocus: boolean;
-  private _svgElement: any;
+  private _svgElement: Selection<any, any, any, any>;
 
   constructor(amount = 0, name = '', description = '', type: BudgetElementType = BudgetElementType.SPENDING,
               polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
     super(name, description, type);
-    this._group = new SquaresGroup(Math.round(amount / Config.MIN_AMOUNT), polygonsGroupConfig);
+    this._group = new SquaresGroup(Math.round(amount / this._minAmount), polygonsGroupConfig);
     this._hasFocus = false;
   }
 
@@ -52,11 +54,11 @@ export class SimpleBudgetElement extends BudgetElement {
     this._level = level;
   }
 
-  get svgElement(): any {
+  get svgElement(): Selection<any, any, any, any> {
     return this._svgElement;
   }
 
-  set svgElement(svgElement: any) {
+  set svgElement(svgElement: Selection<any, any, any, any>) {
     if (!svgElement) {
       throw ReferenceError('The specified element is undefined.');
     }

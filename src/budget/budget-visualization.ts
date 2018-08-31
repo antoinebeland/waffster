@@ -19,13 +19,13 @@ import { RenderingVisitor } from './visitors/rendering-visitor';
 export class BudgetVisualization {
   private readonly _budget: Budget;
   private readonly _commandInvoker: CommandInvoker;
-  private readonly _svgElement: any;
+  private readonly _svgElement: d3.Selection<any, any, any, any>;
   private readonly _rendering: RenderingVisitor;
 
   private _layout: Layout;
   private _isInitialized = false;
 
-  constructor(budget: Budget, svgElement: any, layout: Layout,
+  constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>, layout: Layout,
               commandInvoker: CommandInvoker = new CommandInvoker(),
               rendering: RenderingVisitor = new RenderingVisitor(Config.TRANSITION_DURATION)) {
     this._budget = budget;

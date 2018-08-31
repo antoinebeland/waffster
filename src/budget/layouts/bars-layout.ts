@@ -10,7 +10,7 @@ import { isLayoutConfig, LayoutConfig } from './layout-config';
 export class BarsLayout extends Layout {
   private readonly _config: LayoutConfig;
 
-  constructor(budget: Budget, svgElement: any, config: LayoutConfig) {
+  constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>, config: LayoutConfig) {
     super(budget, svgElement);
     if (!isLayoutConfig(config)) {
       throw new TypeError('Invalid configuration specified.');

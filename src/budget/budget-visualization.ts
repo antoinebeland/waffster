@@ -54,7 +54,9 @@ export class BudgetVisualization {
 
   set isEnabled(isEnabled: boolean) {
     this._isEnabled = isEnabled;
-    this.activeLevel = 0;
+    if (!isEnabled) {
+      this.activeLevel = 0;
+    }
   }
 
   initialize() {

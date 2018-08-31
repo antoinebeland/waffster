@@ -1,5 +1,4 @@
 import './styles/style.scss';
-
 export { Budget } from './budget/budget';
 export { BudgetConfig } from './budget/budget-config';
 export { BudgetVisualization } from './budget/budget-visualization';

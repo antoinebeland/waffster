@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "declaration": false,
-    "declarationDir": "./dist",
+    "declaration": true,
+    "declarationDir": "./dist/types",
     "lib": [
       "dom",
       "es6"

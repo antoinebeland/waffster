@@ -1838,6 +1838,7 @@
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
           if (commandInvoker === void 0) { commandInvoker = new CommandInvoker(); }
           if (rendering === void 0) { rendering = new RenderingVisitor(Config.TRANSITION_DURATION); }
+          this._isEnabled = true;
           this._isInitialized = false;
           this._budget = budget;
           this._svgElement = svgElement;
@@ -1845,13 +1846,6 @@
           this._commandInvoker = commandInvoker;
           this._rendering = rendering;
       }
-      Object.defineProperty(BudgetVisualization.prototype, "budget", {
-          get: function () {
-              return this._budget;
-          },
-          enumerable: true,
-          configurable: true
-      });
       Object.defineProperty(BudgetVisualization.prototype, "activeLevel", {
           set: function (activeLevel) {
               var _this = this;
@@ -1860,6 +1854,26 @@
                   e.accept(_this._rendering);
               });
               this._layout.render();
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(BudgetVisualization.prototype, "budget", {
+          get: function () {
+              return this._budget;
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(BudgetVisualization.prototype, "isEnabled", {
+          get: function () {
+              return this._isEnabled;
+          },
+          set: function (isEnabled) {
+              this._isEnabled = isEnabled;
+              if (!isEnabled) {
+                  this.activeLevel = 0;
+              }
           },
           enumerable: true,
           configurable: true
@@ -1893,7 +1907,7 @@
           };
           d3.select('body')
               .on('wheel', function () {
-              if (selectedElement) {
+              if (_this._isEnabled && selectedElement) {
                   var delta = d3.event.deltaY;
                   selectedElement.temporaryAmount += delta / 100 * _this._budget.minAmount;
                   _this._rendering.transitionDuration = 0;
@@ -1903,7 +1917,7 @@
               }
           })
               .on('keydown', function () {
-              if (selectedElement) {
+              if (_this._isEnabled && selectedElement) {
                   var isValidKey = false;
                   switch (d3.event.key) {
                       case 'ArrowUp':
@@ -1925,7 +1939,7 @@
               }
           })
               .on('click', function () {
-              if (selectedElement && selectedElement.hasFocus) {
+              if (_this._isEnabled && selectedElement && selectedElement.hasFocus) {
                   selectedElement.hasFocus = false;
                   selectedElement.accept(_this._rendering);
               }
@@ -1976,7 +1990,7 @@
                       }
                   }
                   element.svgElement.on('click', function () {
-                      if (element.isActive) {
+                      if (self._isEnabled && element.isActive) {
                           d3.event.stopPropagation();
                           if (selectedElement && selectedElement !== element && selectedElement.hasFocus) {
                               selectedElement.hasFocus = false;
@@ -1989,28 +2003,28 @@
                       }
                   });
                   element.svgElement.on('mouseenter', function () {
-                      if (element.isActive) {
+                      if (self._isEnabled && element.isActive) {
                           hoveredElement = element;
                           hoveredElement.svgElement.classed('hovered', true);
                           showTooltip();
                       }
                   });
                   element.svgElement.on('mouseover', function () {
-                      if (element.isActive) {
+                      if (self._isEnabled && element.isActive) {
                           hoveredElement = element;
                           hoveredElement.svgElement.classed('hovered', true);
                           showTooltip();
                       }
                   });
                   element.svgElement.on('mouseleave', function () {
-                      if (element.isActive && hoveredElement) {
+                      if (self._isEnabled && element.isActive && hoveredElement) {
                           hoveredElement.svgElement.classed('hovered', false);
                           hoveredElement = undefined;
                           tip.hide();
                       }
                   });
                   element.svgElement.on('dblclick', function () {
-                      if (element.isActive) {
+                      if (self._isEnabled && element.isActive) {
                           executeCommand();
                           selectedElement = undefined;
                           element.activeLevel += 1;
@@ -2925,6 +2939,7 @@
   exports.GridLayout = GridLayout;
   exports.HorizontalBarsLayout = HorizontalBarsLayout;
   exports.Config = Config;
+  exports.RenderingVisitor = RenderingVisitor;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

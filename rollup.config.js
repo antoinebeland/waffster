@@ -17,6 +17,7 @@ const defaultPlugins = [
       },
     },
     typescript: require('typescript'),
+    useTsconfigDeclarationDir: true
   }),
   commonjs({
     include: 'node_modules/**'

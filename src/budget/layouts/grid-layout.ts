@@ -57,12 +57,12 @@ export class GridLayout extends Layout {
       const textGroup = g.select('.text-group')
         .attr('transform', '');
 
-      textGroup.select('.amount')
+      textGroup.select('.element-amount')
         .attr('text-anchor', 'middle')
         .attr('x', self._config.polygonLength / 2)
         .attr('y', 0);
 
-      const labelLines = textGroup.select('.label')
+      const labelLines = textGroup.select('.element-name')
         .attr('text-anchor', 'middle')
         .attr('y', 5)
         .selectAll('tspan')

@@ -61,8 +61,7 @@ export class BudgetVisualization {
     // Tooltip initialization
     const tip = d3Tip()
       .html(d => {
-        // TODO: Remove H1
-        let str = `<h1>${d.name} (${Formatter.formatAmount(d.amount + d.temporaryAmount)})</h1>`;
+        let str = `<strong>${d.name} (${Formatter.formatAmount(d.amount + d.temporaryAmount)})</strong>`;
         str += d.description ? `<p>${d.description}</p>` : '';
         return str;
       });

@@ -43,6 +43,13 @@
   margin: -4px 0 0 -1px;
   content: '\25B6'; }
 
+.budget-visualization * {
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; }
+
 .budget-visualization text {
   font-size: 0.6em; }
   .budget-visualization text::selection {
@@ -86,6 +93,10 @@
 
 .budget-visualization .removed {
   fill: #a34646; }
+
+.budget-visualization .empty {
+  fill: #fff;
+  stroke: #444; }
 
 .budget-visualization .boundary {
   display: none;

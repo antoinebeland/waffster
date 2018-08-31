@@ -7,8 +7,8 @@ $gray: #999;
 $light-gray: #eee;
 $white: #fff;
 $orange: #f19c56;
-$blue: #4c7d95; //#92b1c1;
-$yellow: #ffC759;
+$blue: #4c7d95;
+$yellow: #ffc759;
 
 // Dimensions
 $header-height: 50px;
@@ -22,11 +22,6 @@ $font: 'Roboto', sans-serif;
 // ***** General Style *****
 * {
   box-sizing: border-box;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 html {

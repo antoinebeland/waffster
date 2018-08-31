@@ -3,6 +3,16 @@
 
 // ***** Classes *****
 .budget-visualization {
+
+  // sass-lint:disable no-vendor-prefixes
+  * {
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
   text {
     font-size: $default-font-size;
 
@@ -60,6 +70,11 @@
 
   .removed {
     fill: $red;
+  }
+
+  .empty {
+    fill: $white;
+    stroke: $dark-gray;
   }
 
   .boundary {

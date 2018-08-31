@@ -34,12 +34,10 @@ export abstract class BudgetElement {
    *
    * @param name          The name of the element.
    * @param description   The element description.
-   * @param [type]        The element type. By default, the element is a spending.
-   * @param [minAmount]   The min amount to use. By default, the budget uses the min amount specified in
-   *                      the Config class.
+   * @param type          The element type.
+   * @param minAmount     The min amount to use.
    */
-  protected constructor(name: string, description = '',
-                        type: BudgetElementType = BudgetElementType.SPENDING, minAmount: number = Config.MIN_AMOUNT) {
+  protected constructor(name: string, description = '', type: BudgetElementType, minAmount: number) {
     if (minAmount <= 0) {
       throw new RangeError('The min amount must be greater than 0.');
     }

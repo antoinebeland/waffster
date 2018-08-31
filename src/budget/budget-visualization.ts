@@ -83,7 +83,7 @@ export class BudgetVisualization {
       .on('wheel', () => {
         if (selectedElement) {
           const delta = d3.event.deltaY;
-          selectedElement.temporaryAmount += delta / 100 * Config.MIN_AMOUNT; // TODO: Put min amount in variable.
+          selectedElement.temporaryAmount += delta / 100 * this._budget.minAmount;
           this._rendering.transitionDuration = 0;
           selectedElement.root.accept(this._rendering);
           this._rendering.resetTransitionDuration();
@@ -96,11 +96,11 @@ export class BudgetVisualization {
           switch (d3.event.key) {
             case 'ArrowUp':
               isValidKey = true;
-              selectedElement.temporaryAmount -= Config.MIN_AMOUNT;
+              selectedElement.temporaryAmount -= this._budget.minAmount;
               break;
             case 'ArrowDown':
               isValidKey = true;
-              selectedElement.temporaryAmount += Config.MIN_AMOUNT;
+              selectedElement.temporaryAmount += this._budget.minAmount;
               break;
           }
           if (!isValidKey) {

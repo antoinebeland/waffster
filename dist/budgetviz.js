@@ -97,8 +97,6 @@
   var BudgetElement = (function () {
       function BudgetElement(name, description, type, minAmount) {
           if (description === void 0) { description = ''; }
-          if (type === void 0) { type = BudgetElementType.SPENDING; }
-          if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           this._activeLevel = 0;
           this._level = 0;
           if (minAmount <= 0) {
@@ -660,11 +658,12 @@
 
   var BudgetElementGroup = (function (_super) {
       __extends(BudgetElementGroup, _super);
-      function BudgetElementGroup(name, description, type, polygonsGroupConfig) {
+      function BudgetElementGroup(name, description, type, minAmount, polygonsGroupConfig) {
           if (name === void 0) { name = ''; }
           if (type === void 0) { type = BudgetElementType.SPENDING; }
+          if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
-          var _this = _super.call(this, name, description, type) || this;
+          var _this = _super.call(this, name, description, type, minAmount) || this;
           _this._children = [];
           _this._group = new PolygonsSuperGroup(polygonsGroupConfig, Config.BUDGET_SUB_ELEMENTS_SPACING);
           _this._hasFocus = false;
@@ -1041,13 +1040,14 @@
 
   var SimpleBudgetElement = (function (_super) {
       __extends(SimpleBudgetElement, _super);
-      function SimpleBudgetElement(amount, name, description, type, polygonsGroupConfig) {
+      function SimpleBudgetElement(amount, name, description, type, minAmount, polygonsGroupConfig) {
           if (amount === void 0) { amount = 0; }
           if (name === void 0) { name = ''; }
           if (description === void 0) { description = ''; }
           if (type === void 0) { type = BudgetElementType.SPENDING; }
+          if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
-          var _this = _super.call(this, name, description, type) || this;
+          var _this = _super.call(this, name, description, type, minAmount) || this;
           _this._group = new SquaresGroup(Math.round(amount / _this._minAmount), polygonsGroupConfig);
           _this._hasFocus = false;
           return _this;
@@ -1145,12 +1145,12 @@
           this.year = budgetConfig.year;
           var initialize = function (e, type, elements) {
               if (e.children && e.children.length > 0) {
-                  var group_1 = new BudgetElementGroup(e.name, e.description || '', type);
+                  var group_1 = new BudgetElementGroup(e.name, e.description || '', type, _this.minAmount);
                   e.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_1); });
                   elements.push(group_1);
               }
               else if (_this.isAcceptableAmount(e.amount)) {
-                  elements.push(new SimpleBudgetElement(e.amount, e.name, e.description || '', type));
+                  elements.push(new SimpleBudgetElement(e.amount, e.name, e.description || '', type, _this.minAmount));
               }
               elements.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); });
           };
@@ -1191,7 +1191,7 @@
           var _this = this;
           if (data.children && data.children.length > 0) {
               Budget._amountStack.push(0);
-              var group_2 = new BudgetElementGroup(data.name, data.description || '', type);
+              var group_2 = new BudgetElementGroup(data.name, data.description || '', type, this.minAmount);
               data.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_2); });
               var totalAmount = Budget._amountStack[Budget._amountStack.length - 1];
               if (parent) {
@@ -1199,7 +1199,7 @@
                       parent.addChild(group_2);
                   }
                   else if (this.isAcceptableAmount(totalAmount)) {
-                      parent.addChild(new SimpleBudgetElement(totalAmount, data.name, data.description || '', type));
+                      parent.addChild(new SimpleBudgetElement(totalAmount, data.name, data.description || '', type, this.minAmount));
                   }
               }
               Budget._amountStack.pop();
@@ -1211,7 +1211,7 @@
               if (Budget._amountStack.length > 0) {
                   Budget._amountStack[Budget._amountStack.length - 1] += data.amount;
               }
-              parent.addChild(new SimpleBudgetElement(data.amount, data.name, data.description || '', type));
+              parent.addChild(new SimpleBudgetElement(data.amount, data.name, data.description || '', type, this.minAmount));
           }
       };
       Budget.prototype.isAcceptableAmount = function (amount) {
@@ -1895,7 +1895,7 @@
               .on('wheel', function () {
               if (selectedElement) {
                   var delta = d3.event.deltaY;
-                  selectedElement.temporaryAmount += delta / 100 * Config.MIN_AMOUNT;
+                  selectedElement.temporaryAmount += delta / 100 * _this._budget.minAmount;
                   _this._rendering.transitionDuration = 0;
                   selectedElement.root.accept(_this._rendering);
                   _this._rendering.resetTransitionDuration();
@@ -1908,11 +1908,11 @@
                   switch (d3.event.key) {
                       case 'ArrowUp':
                           isValidKey = true;
-                          selectedElement.temporaryAmount -= Config.MIN_AMOUNT;
+                          selectedElement.temporaryAmount -= _this._budget.minAmount;
                           break;
                       case 'ArrowDown':
                           isValidKey = true;
-                          selectedElement.temporaryAmount += Config.MIN_AMOUNT;
+                          selectedElement.temporaryAmount += _this._budget.minAmount;
                           break;
                   }
                   if (!isValidKey) {

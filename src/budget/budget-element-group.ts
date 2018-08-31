@@ -16,8 +16,9 @@ export class BudgetElementGroup extends BudgetElement {
   private _svgElement: Selection<any, any, any, any>;
 
   constructor(name = '', description: '', type: BudgetElementType = BudgetElementType.SPENDING,
+              minAmount: number = Config.MIN_AMOUNT,
               polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
-    super(name, description, type);
+    super(name, description, type, minAmount);
     this._children = [];
     this._group = new PolygonsSuperGroup(polygonsGroupConfig, Config.BUDGET_SUB_ELEMENTS_SPACING);
     this._hasFocus = false;

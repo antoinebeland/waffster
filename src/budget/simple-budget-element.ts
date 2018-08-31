@@ -13,8 +13,9 @@ export class SimpleBudgetElement extends BudgetElement {
   private _svgElement: Selection<any, any, any, any>;
 
   constructor(amount = 0, name = '', description = '', type: BudgetElementType = BudgetElementType.SPENDING,
+              minAmount: number = Config.MIN_AMOUNT,
               polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
-    super(name, description, type);
+    super(name, description, type, minAmount);
     this._group = new SquaresGroup(Math.round(amount / this._minAmount), polygonsGroupConfig);
     this._hasFocus = false;
   }

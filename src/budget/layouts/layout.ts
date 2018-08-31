@@ -24,6 +24,7 @@ export abstract class Layout {
     this._budget = budget;
     this._svgElement = svgElement;
 
+    // TODO: Bug with Firefox here. Client width and height return 0.
     const element = this._svgElement.node();
     this._width = element.clientWidth;
     this._height = element.clientHeight;
@@ -44,7 +45,8 @@ export abstract class Layout {
     this._gaugeGroup = this._layout.select('#budget-gauge-group');
     if (this._gaugeGroup.size() <= 0) {
       this._gaugeGroup = this._layout.append('g')
-        .attr('id', 'budget-gauge-group');
+        .attr('id', 'budget-gauge-group')
+        .attr('class', 'budget-gauge-group');
 
       this._gaugeGroup.append('rect')
         .attr('width', Config.GAUGE_CONFIG.width)
@@ -81,11 +83,11 @@ export abstract class Layout {
         .attr('class', 'text-group');
 
       textGroup.append('text')
-        .attr('class', 'amount')
+        .attr('class', 'element-amount')
         .text(Formatter.formatAmount(d.amount));
 
       textGroup.append('text')
-        .attr('class', 'label');
+        .attr('class', 'element-name');
 
       d.svgElement = g.append('g')
         .attr('class', 'polygons-group');
@@ -114,7 +116,7 @@ export abstract class Layout {
   render() {
     function updateAmount(d) {
       d3.select(this)
-        .select('.amount')
+        .select('.element-amount')
         .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
     }
     this._incomeGroups = this._incomeGroups.sort((a, b) => descending(a.amount, b.amount))

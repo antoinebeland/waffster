@@ -22,44 +22,59 @@ function validatePolygons(polygons: Polygon[], expectedPolygons: Polygon[]) {
 
 describe('SquaresGroup class', () => {
   describe('#constructor()', () => {
-    it('should initialize a squares group correctly with the first configuration', () => {
-      const squaresGroup = new SquaresGroup({
+    it('should initialize a squares group correctly', () => {
+      const config = {
         count: 4,
         maxCountPerLine: 2,
         sideLength: 2
+      };
+      const squaresGroup = new SquaresGroup(config.count, {
+        maxCountPerLine: config.maxCountPerLine,
+        sideLength: config.sideLength
       });
       expect(squaresGroup.boundingBox.x).to.equal(0);
       expect(squaresGroup.boundingBox.y).to.equal(0);
       expect(squaresGroup.boundingBox.width).to.equal(4);
       expect(squaresGroup.boundingBox.height).to.equal(4);
 
-      expect(squaresGroup.count).to.equal(4);
-      expect(squaresGroup.polygons.length).to.equal(4);
+      expect(squaresGroup.count).to.equal(config.count);
+      expect(squaresGroup.polygons.length).to.equal(config.count);
     });
-    it('should initialize a squares group correctly with the second configuration', () => {
-      const squares = [
-        new Square({ x: 0, y: 0 }, 2),
-        new Square({ x: 2, y: 0 }, 2)
-      ];
-      const squaresGroup = new SquaresGroup({
+    it('should throw an exception when the count is invalid', () => {
+      expect(() => new SquaresGroup(-1, {
         maxCountPerLine: 2,
-        polygons: squares,
-        sideLength: 2,
-        startingPosition: 0
-      });
-      expect(squaresGroup.count).to.equal(2);
-      validatePolygons(squaresGroup.polygons, squares);
-
-      expect(squaresGroup.boundingBox.x).to.equal(0);
-      expect(squaresGroup.boundingBox.y).to.equal(0);
-      expect(squaresGroup.boundingBox.width).to.equal(4);
-      expect(squaresGroup.boundingBox.height).to.equal(2);
+        sideLength: 2
+      })).to.throw('Invalid count specified.');
     });
     it('should throw an exception when the configuration specified is invalid', () => {
-      expect(() => new SquaresGroup(undefined)).to.throw('Invalid configuration specified.');
+      expect(() => new SquaresGroup(2, undefined)).to.throw('Invalid configuration specified.');
     });
   });
-  describe('#polygons', () => {
+  describe('#config', () => {
+    it('should get the right config associated with the group', () => {
+      const config = {
+        count: 4,
+        maxCountPerLine: 2,
+        sideLength: 2,
+        startingPosition: 1
+      };
+      const squaresGroup = new SquaresGroup(config.count, {
+        maxCountPerLine: config.maxCountPerLine,
+        sideLength: config.sideLength,
+        startingPosition: config.startingPosition
+      });
+      const configRetrieved = squaresGroup.config;
+
+      expect(configRetrieved.maxCountPerLine).to.equal(config.maxCountPerLine);
+      expect(configRetrieved.startingPosition).to.equal(config.startingPosition);
+      expect(configRetrieved.orientation).to.equal(PolygonsGroupOrientation.HORIZONTAL);
+      expect(configRetrieved.sideLength).to.equal(config.sideLength);
+    });
+    it('should set the config specified and update the group with the new values', () => {
+
+    });
+  });
+  /*describe('#polygons', () => {
     it('should return the right polygons when the orientation is horizontal', () => {
       const squares = [
         new Square({ x: 0, y: 0 }, 2),
@@ -539,5 +554,5 @@ describe('SquaresGroup class', () => {
       expect(() => squaresGroup.reshape(-1)).to.throw('Invalid starting position specified.');
       expect(() => squaresGroup.reshape(2)).to.throw('Invalid starting position specified.');
     });
-  });
+  });*/
 });

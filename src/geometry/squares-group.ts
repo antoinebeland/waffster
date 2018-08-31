@@ -21,6 +21,9 @@ export class SquaresGroup extends AbstractPolygonsGroup {
    * @param config    The parameters to use to initialize the group.
    */
   constructor(count: number, config: PolygonsGroupConfig) {
+    if (count < 0) {
+      throw new RangeError('Invalid count specified.');
+    }
     super(config);
     this._count = count;
     this._position = { x: 0, y: 0 };

@@ -55,6 +55,7 @@ export class BudgetVisualization {
     let hoveredElement: BudgetElement = undefined;
     let selectedElement: BudgetElement = undefined;
 
+    this._svgElement.attr('class', 'budget-visualization');
     this._layout.initialize();
 
     // Tooltip initialization
@@ -90,6 +91,28 @@ export class BudgetVisualization {
           this._layout.render();
         }
       })
+      .on('keydown', () => {
+        if (selectedElement) {
+          let isValidKey = false;
+          switch (d3.event.key) {
+            case 'ArrowUp':
+              isValidKey = true;
+              selectedElement.temporaryAmount -= Config.MIN_AMOUNT;
+              break;
+            case 'ArrowDown':
+              isValidKey = true;
+              selectedElement.temporaryAmount += Config.MIN_AMOUNT;
+              break;
+          }
+          if (!isValidKey) {
+            return;
+          }
+          this._rendering.transitionDuration = 0;
+          selectedElement.root.accept(this._rendering);
+          this._rendering.resetTransitionDuration();
+          this._layout.render();
+        }
+      })
       .on('click', () => {
         if (selectedElement && selectedElement.hasFocus) {
           selectedElement.hasFocus = false;
@@ -108,7 +131,7 @@ export class BudgetVisualization {
           .on('mouseenter', () => {
             hoveredElement = group;
             tip.direction('w')
-              .offset([0, -8])
+              .offset([0, -8]) // TODO: Put in constant!
               .attr('class', 'd3-tip level-tip')
               .show.call(group.svgElement.node(), group);
           })

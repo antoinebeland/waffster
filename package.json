@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rollup -c",
     "lint": "npm run sass-lint && tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
-    "sass-lint": "sass-lint -c sass-lint.yml -v -q",
+    "sass-lint": "sass-lint -c .sass-lint.yml -v -q",
     "start": "concurrently \"http-server ./ -s\" \"npm run watch\"",
     "test": "nyc mocha",
     "watch": "rollup -cw"

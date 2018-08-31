@@ -25,6 +25,7 @@
           (config.startingPosition === undefined ||
               config.startingPosition >= 0 && config.startingPosition < config.maxCountPerLine);
   }
+  //# sourceMappingURL=polygons-group-configs.js.map
 
   var Config = (function () {
       function Config() {
@@ -52,6 +53,7 @@
       };
       return Config;
   }());
+  //# sourceMappingURL=config.js.map
 
   function isBudgetElement(budgetElement) {
       var isValid = false;
@@ -69,6 +71,7 @@
           budgetConfig.spendings.length > 0 &&
           budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
   }
+  //# sourceMappingURL=budget-config.js.map
 
   var Formatter = (function () {
       function Formatter() {
@@ -87,6 +90,7 @@
       };
       return Formatter;
   }());
+  //# sourceMappingURL=formatter.js.map
 
   var BudgetElementType;
   (function (BudgetElementType) {
@@ -165,6 +169,7 @@
       });
       return BudgetElement;
   }());
+  //# sourceMappingURL=budget-element.js.map
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -233,6 +238,7 @@
       };
       return BoundingBox;
   }());
+  //# sourceMappingURL=bounding-box.js.map
 
   var AbstractPolygonsGroup = (function () {
       function AbstractPolygonsGroup(config) {
@@ -443,6 +449,7 @@
       };
       return AbstractPolygonsGroup;
   }());
+  //# sourceMappingURL=abstract-polygons-group.js.map
 
   var PolygonsSuperGroupState;
   (function (PolygonsSuperGroupState) {
@@ -652,6 +659,7 @@
       };
       return PolygonsSuperGroup;
   }(AbstractPolygonsGroup));
+  //# sourceMappingURL=polygons-super-group.js.map
 
   var BudgetElementGroup = (function (_super) {
       __extends(BudgetElementGroup, _super);
@@ -784,6 +792,7 @@
       };
       return BudgetElementGroup;
   }(BudgetElement));
+  //# sourceMappingURL=budget-element-group.js.map
 
   var Square = (function () {
       function Square(position, sideLength) {
@@ -864,11 +873,16 @@
       Square._currentId = 0;
       return Square;
   }());
+  //# sourceMappingURL=square.js.map
 
   var SquaresGroup = (function (_super) {
       __extends(SquaresGroup, _super);
       function SquaresGroup(count, config) {
-          var _this = _super.call(this, config) || this;
+          var _this = this;
+          if (count < 0) {
+              throw new RangeError('Invalid count specified.');
+          }
+          _this = _super.call(this, config) || this;
           _this._count = count;
           _this._position = { x: 0, y: 0 };
           _this._squares = d3Array.range(_this._startingPosition, _this._count + _this._startingPosition)
@@ -1029,6 +1043,7 @@
       };
       return SquaresGroup;
   }(AbstractPolygonsGroup));
+  //# sourceMappingURL=squares-group.js.map
 
   var SimpleBudgetElement = (function (_super) {
       __extends(SimpleBudgetElement, _super);
@@ -1113,6 +1128,7 @@
       };
       return SimpleBudgetElement;
   }(BudgetElement));
+  //# sourceMappingURL=simple-budget-element.js.map
 
   var BudgetState;
   (function (BudgetState) {
@@ -1205,6 +1221,7 @@
       Budget._amountStack = [];
       return Budget;
   }());
+  //# sourceMappingURL=budget.js.map
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1588,6 +1605,7 @@
       };
       return AddCommand;
   }());
+  //# sourceMappingURL=add-command.js.map
 
   var Event = (function () {
       function Event() {
@@ -1610,6 +1628,7 @@
       };
       return Event;
   }());
+  //# sourceMappingURL=event.js.map
 
   function isCommand(command) {
       return command !== undefined && command.execute !== undefined;
@@ -1617,6 +1636,7 @@
   function isUndoableCommand(command) {
       return isCommand(command) && command.undo !== undefined;
   }
+  //# sourceMappingURL=command.js.map
 
   var CommandInvoker = (function () {
       function CommandInvoker() {
@@ -1661,6 +1681,7 @@
       };
       return CommandInvoker;
   }());
+  //# sourceMappingURL=command-invoker.js.map
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
@@ -1690,6 +1711,7 @@
       };
       return DeleteCommand;
   }());
+  //# sourceMappingURL=delete-command.js.map
 
   var RenderingVisitor = (function () {
       function RenderingVisitor(defaultTransitionDuration) {
@@ -1818,6 +1840,7 @@
       };
       return RenderingVisitor;
   }());
+  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -1857,6 +1880,7 @@
           var self = this;
           var hoveredElement = undefined;
           var selectedElement = undefined;
+          this._svgElement.attr('class', 'budget-visualization');
           this._layout.initialize();
           var tip = C__Users_Antoine_Desktop_budgetviz_node_modules_d3Tip_dist()
               .html(function (d) {
@@ -1880,6 +1904,28 @@
               if (selectedElement) {
                   var delta = d3.event.deltaY;
                   selectedElement.temporaryAmount += delta / 100 * Config.MIN_AMOUNT;
+                  _this._rendering.transitionDuration = 0;
+                  selectedElement.root.accept(_this._rendering);
+                  _this._rendering.resetTransitionDuration();
+                  _this._layout.render();
+              }
+          })
+              .on('keydown', function () {
+              if (selectedElement) {
+                  var isValidKey = false;
+                  switch (d3.event.key) {
+                      case 'ArrowUp':
+                          isValidKey = true;
+                          selectedElement.temporaryAmount -= Config.MIN_AMOUNT;
+                          break;
+                      case 'ArrowDown':
+                          isValidKey = true;
+                          selectedElement.temporaryAmount += Config.MIN_AMOUNT;
+                          break;
+                  }
+                  if (!isValidKey) {
+                      return;
+                  }
                   _this._rendering.transitionDuration = 0;
                   selectedElement.root.accept(_this._rendering);
                   _this._rendering.resetTransitionDuration();
@@ -2025,6 +2071,7 @@
       };
       return BudgetVisualization;
   }());
+  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2429,7 +2476,8 @@
           this._gaugeGroup = this._layout.select('#budget-gauge-group');
           if (this._gaugeGroup.size() <= 0) {
               this._gaugeGroup = this._layout.append('g')
-                  .attr('id', 'budget-gauge-group');
+                  .attr('id', 'budget-gauge-group')
+                  .attr('class', 'budget-gauge-group');
               this._gaugeGroup.append('rect')
                   .attr('width', Config.GAUGE_CONFIG.width)
                   .attr('height', Config.GAUGE_CONFIG.height + 45)
@@ -2459,10 +2507,10 @@
               var textGroup = g.append('g')
                   .attr('class', 'text-group');
               textGroup.append('text')
-                  .attr('class', 'amount')
+                  .attr('class', 'element-amount')
                   .text(Formatter.formatAmount(d.amount));
               textGroup.append('text')
-                  .attr('class', 'label');
+                  .attr('class', 'element-name');
               d.svgElement = g.append('g')
                   .attr('class', 'polygons-group');
           }
@@ -2486,7 +2534,7 @@
       Layout.prototype.render = function () {
           function updateAmount(d) {
               d3.select(this)
-                  .select('.amount')
+                  .select('.element-amount')
                   .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
           }
           this._incomeGroups = this._incomeGroups.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
@@ -2502,6 +2550,7 @@
       };
       return Layout;
   }());
+  //# sourceMappingURL=layout.js.map
 
   function isLayoutConfig(config) {
       return !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
@@ -2512,6 +2561,7 @@
           !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
           !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
   }
+  //# sourceMappingURL=layout-config.js.map
 
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
@@ -2622,6 +2672,7 @@
       };
       return BarsLayout;
   }(Layout));
+  //# sourceMappingURL=bars-layout.js.map
 
   var GridLayout = (function (_super) {
       __extends(GridLayout, _super);
@@ -2762,6 +2813,7 @@
       };
       return GridLayout;
   }(Layout));
+  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
@@ -2878,6 +2930,9 @@
       };
       return HorizontalBarsLayout;
   }(Layout));
+  //# sourceMappingURL=horizontal-bars-layout.js.map
+
+  //# sourceMappingURL=main.js.map
 
   exports.Budget = Budget;
   exports.BudgetVisualization = BudgetVisualization;

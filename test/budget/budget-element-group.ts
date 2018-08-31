@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+/*import { expect } from 'chai';
 import * as d3 from 'd3';
 import 'mocha';
 
@@ -128,9 +128,9 @@ describe('BudgetElementGroup class', () => {
   });
   describe('#render()', () => {
     // TODO
-    /*it('should', () => {
+    //it('should', () => {
 
-    });*/
+    //});
   });
   describe('#addChild()', () => {
     it('should add a new child to the group', () => {
@@ -154,3 +154,4 @@ describe('BudgetElementGroup class', () => {
     });
   });
 });
+*/

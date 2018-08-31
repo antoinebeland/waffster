@@ -1,0 +1,176 @@
+@import 'constants';
+@import 'd3-tip';
+
+// ***** Classes *****
+.budget-visualization {
+  text {
+    font-size: $default-font-size;
+
+    &::selection {
+      background: none;
+    }
+  }
+
+  .element-amount {
+    font-size: $element-amount-font-size;
+    font-weight: bold;
+  }
+
+  .element-name {
+    font-size: $element-name-font-size;
+  }
+
+  .deficit {
+    fill: $yellow;
+  }
+
+  .income {
+    fill: $orange;
+  }
+
+  .square {
+    stroke: $white;
+    stroke-width: $square-stroke-width;
+  }
+
+  .spending {
+    fill: $blue;
+  }
+
+  .focused {
+    transition: none;
+    fill: $light-gray;
+  }
+
+  .focused.selected {
+    fill: $dark-gray;
+  }
+
+  .income.selected:not(.focused) {
+    animation: new-income-animation $animation-duration ease-out;
+  }
+
+  .spending.selected:not(.focused) {
+    animation: new-spending-animation $animation-duration ease-out;
+  }
+
+  .added {
+    fill: $green;
+  }
+
+  .removed {
+    fill: $red;
+  }
+
+  .boundary {
+    display: none;
+    fill: none;
+  }
+
+  &.hovered,
+  .hovered {
+    > .boundary,
+    > * > .boundary {
+      display: block;
+      stroke-width: $boundary-stroke-width;
+    }
+
+    > .boundary {
+      stroke: $dark-gray;
+    }
+
+    > * > .boundary {
+      stroke: $white;
+    }
+  }
+
+  .level-group {
+    &:hover > line {
+      stroke: $medium-gray;
+      stroke-width: $level-group-stroke-width;
+    }
+
+    > rect {
+      fill: transparent;
+    }
+
+    > line {
+      stroke: $gray;
+    }
+  }
+}
+
+// ***** Animations *****
+@keyframes new-income-animation {
+  from {
+    fill: $green;
+  }
+
+  to {
+    fill: $orange;
+  }
+}
+
+@keyframes new-spending-animation {
+  from {
+    fill: $green;
+  }
+
+  to {
+    fill: $blue;
+  }
+}
+
+// ***** Tips *****
+.element-tip,
+.level-tip {
+  padding: $tip-padding;
+
+  strong {
+    margin: 0;
+    font-size: $tip-title-font-size;
+    font-weight: normal;
+  }
+
+  p {
+    margin: $tip-text-margin;
+    font-size: $tip-text-font-size;
+  }
+}
+
+.level-tip {
+  background: $dark-gray-transparent;
+
+  &::after {
+    color: $dark-gray-transparent;
+  }
+}
+
+// ***** Gauge *****
+.arc {
+  opacity: 0.5;
+
+  &.active {
+    opacity: 1;
+  }
+}
+
+.chart-color1 {
+  fill: $blue;
+}
+
+.chart-color2 {
+  fill: $orange;
+}
+
+.needle,
+.needle-center {
+  fill: $dark-gray;
+}
+
+.budget-gauge-group {
+  text {
+    font-size: $gauge-text-font-size;
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,36 @@
+// ***** Colors *****
+$black: #000;
+$dark-gray: #444;
+$medium-gray: #777;
+$gray: #999;
+$light-gray: #aaa;
+$very-light-gray: #eee;
+$blue: #4c7d95;
+$green: #4c914b;
+$orange: #f19c56;
+$red: #a34646;
+$white: #fff;
+$yellow: #ffc759;
+
+$black-transparent: rgba($black, 0.8);
+$dark-gray-transparent: rgba($dark-gray, 0.8);
+
+// ***** Animations *****
+$animation-duration: 0.5s;
+
+// ***** Font sizes *****
+$default-font-size: 0.6em;
+$element-amount-font-size: 0.7em;
+$element-name-font-size: 0.65em;
+$gauge-text-font-size: 0.9em;
+$tip-title-font-size: 0.8em;
+$tip-text-font-size: 0.7em;
+
+// ***** Widths *****
+$square-stroke-width: 1px;
+$boundary-stroke-width: 2px;
+
+// ****** Margins/Padding *****
+$level-group-stroke-width: 2px;
+$tip-padding: 6px;
+$tip-text-margin: 0.7em 0 0;

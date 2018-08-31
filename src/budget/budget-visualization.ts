@@ -23,10 +23,11 @@ export class BudgetVisualization {
   private readonly _rendering: RenderingVisitor;
 
   private _layout: Layout;
+  private _isEnabled = true;
   private _isInitialized = false;
 
-  constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>, layout: Layout,
-              commandInvoker: CommandInvoker = new CommandInvoker(),
+  constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>,
+              layout: Layout, commandInvoker: CommandInvoker = new CommandInvoker(),
               rendering: RenderingVisitor = new RenderingVisitor(Config.TRANSITION_DURATION)) {
     this._budget = budget;
     this._svgElement = svgElement;
@@ -35,16 +36,25 @@ export class BudgetVisualization {
     this._rendering = rendering;
   }
 
-  get budget(): Budget {
-    return this._budget;
-  }
-
   set activeLevel(activeLevel: number) {
     this._budget.elements.forEach(e => {
       e.activeLevel = activeLevel;
       e.accept(this._rendering);
     });
     this._layout.render();
+  }
+
+  get budget(): Budget {
+    return this._budget;
+  }
+
+  get isEnabled(): boolean {
+    return this._isEnabled;
+  }
+
+  set isEnabled(isEnabled: boolean) {
+    this._isEnabled = isEnabled;
+    this.activeLevel = 0;
   }
 
   initialize() {
@@ -81,7 +91,7 @@ export class BudgetVisualization {
     // Creation / Deletion
     d3.select('body')
       .on('wheel', () => {
-        if (selectedElement) {
+        if (this._isEnabled && selectedElement) {
           const delta = d3.event.deltaY;
           selectedElement.temporaryAmount += delta / 100 * this._budget.minAmount;
           this._rendering.transitionDuration = 0;
@@ -91,7 +101,7 @@ export class BudgetVisualization {
         }
       })
       .on('keydown', () => {
-        if (selectedElement) {
+        if (this._isEnabled && selectedElement) {
           let isValidKey = false;
           switch (d3.event.key) {
             case 'ArrowUp':
@@ -113,7 +123,7 @@ export class BudgetVisualization {
         }
       })
       .on('click', () => {
-        if (selectedElement && selectedElement.hasFocus) {
+        if (this._isEnabled && selectedElement && selectedElement.hasFocus) {
           selectedElement.hasFocus = false;
           selectedElement.accept(this._rendering);
         }
@@ -168,7 +178,7 @@ export class BudgetVisualization {
         }
 
         element.svgElement.on('click', () => {
-          if (element.isActive) {
+          if (self._isEnabled && element.isActive) {
             d3.event.stopPropagation();
             if (selectedElement && selectedElement !== element && selectedElement.hasFocus) {
               selectedElement.hasFocus = false;
@@ -181,28 +191,28 @@ export class BudgetVisualization {
           }
         });
         element.svgElement.on('mouseenter', () => {
-          if (element.isActive) {
+          if (self._isEnabled && element.isActive) {
             hoveredElement = element;
             hoveredElement.svgElement.classed('hovered', true);
             showTooltip();
           }
         });
         element.svgElement.on('mouseover', () => {
-          if (element.isActive) {
+          if (self._isEnabled && element.isActive) {
             hoveredElement = element;
             hoveredElement.svgElement.classed('hovered', true);
             showTooltip();
           }
         });
         element.svgElement.on('mouseleave', () => {
-          if (element.isActive && hoveredElement) {
+          if (self._isEnabled && element.isActive && hoveredElement) {
             hoveredElement.svgElement.classed('hovered', false);
             hoveredElement = undefined;
             tip.hide();
           }
         });
         element.svgElement.on('dblclick', () => {
-          if (element.isActive) {
+          if (self._isEnabled && element.isActive) {
             executeCommand();
             selectedElement = undefined;
             element.activeLevel += 1;

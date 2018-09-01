@@ -104,6 +104,37 @@ export class Budget {
   }
 
   /**
+   * Gets the element associated with the name specified.
+   *
+   * @param {string} name         The name associated with the element to retrieve.
+   * @returns {BudgetElement}     The budget element associated with the name specified.
+   *                              If the name specified doesn't match with an element,
+   *                              UNDEFINED is returned.
+   */
+  getElementByName(name: string): BudgetElement {
+    function getElement(e) {
+      if (e.name === name) {
+        return e;
+      }
+      if (e instanceof BudgetElementGroup && e.children && e.children.length !== 0) {
+        let element = undefined;
+        e.children.some(c => {
+          element = getElement(c);
+          return element;
+        });
+        return element;
+      }
+    }
+
+    let element = undefined;
+    this.elements.some(e => {
+      element = getElement(e);
+      return element;
+    });
+    return element;
+  }
+
+  /**
    * Initialize a budget element.
    *
    * @param data                            The data to use to initialize the element.
@@ -136,6 +167,12 @@ export class Budget {
     }
   }
 
+  /**
+   * Indicates if the specified amount is acceptable based on the min amount of the budget.
+   *
+   * @param {number} amount     The amount to validate.
+   * @returns {boolean}         TRUE if the budget is acceptable. FALSE otherwise.
+   */
   private isAcceptableAmount(amount: number) {
     return Math.round(amount / this.minAmount) > 0;
   }

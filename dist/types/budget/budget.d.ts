@@ -20,6 +20,7 @@ export declare class Budget {
     constructor(budgetConfig: BudgetConfig, minAmount?: number);
     readonly elements: BudgetElement[];
     readonly summary: BudgetSummary;
+    getElementByName(name: string): BudgetElement;
     private initializeBudgetElement;
     private isAcceptableAmount;
 }

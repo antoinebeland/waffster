@@ -53,6 +53,7 @@
       };
       return Config;
   }());
+  //# sourceMappingURL=config.js.map
 
   function isBudgetElement(budgetElement) {
       var isValid = false;
@@ -1879,27 +1880,20 @@
           if (rendering === void 0) { rendering = new RenderingVisitor(Config.TRANSITION_DURATION); }
           this._isEnabled = true;
           this._isInitialized = false;
-          this._budget = budget;
-          this._svgElement = svgElement;
+          this.budget = budget;
+          this.svgElement = svgElement;
           this._layout = layout;
-          this._commandInvoker = commandInvoker;
-          this._rendering = rendering;
+          this.commandInvoker = commandInvoker;
+          this.rendering = rendering;
       }
       Object.defineProperty(BudgetVisualization.prototype, "activeLevel", {
           set: function (activeLevel) {
               var _this = this;
-              this._budget.elements.forEach(function (e) {
+              this.budget.elements.forEach(function (e) {
                   e.activeLevel = activeLevel;
-                  e.accept(_this._rendering);
+                  e.accept(_this.rendering);
               });
               this._layout.render();
-          },
-          enumerable: true,
-          configurable: true
-      });
-      Object.defineProperty(BudgetVisualization.prototype, "budget", {
-          get: function () {
-              return this._budget;
           },
           enumerable: true,
           configurable: true
@@ -1917,6 +1911,13 @@
           enumerable: true,
           configurable: true
       });
+      Object.defineProperty(BudgetVisualization.prototype, "layout", {
+          get: function () {
+              return this._layout;
+          },
+          enumerable: true,
+          configurable: true
+      });
       BudgetVisualization.prototype.initialize = function () {
           var _this = this;
           if (this._isInitialized) {
@@ -1925,7 +1926,7 @@
           var self = this;
           var hoveredElement = undefined;
           var selectedElement = undefined;
-          this._svgElement.attr('class', 'budget-visualization');
+          this.svgElement.attr('class', 'budget-visualization');
           this._layout.initialize();
           var tip = C__Users_Antoine_Desktop_budgetviz_node_modules_d3Tip_dist()
               .html(function (d) {
@@ -1933,14 +1934,14 @@
               str += d.description ? "<p>" + d.description + "</p>" : '';
               return str;
           });
-          this._svgElement.call(tip);
+          this.svgElement.call(tip);
           var executeCommand = function () {
               if (selectedElement !== undefined && selectedElement.temporaryAmount !== 0) {
                   if (selectedElement.temporaryAmount > 0) {
-                      _this._commandInvoker.invoke(new AddCommand(selectedElement, _this._rendering, _this._layout));
+                      _this.commandInvoker.invoke(new AddCommand(selectedElement, _this.rendering, _this._layout));
                   }
                   else {
-                      _this._commandInvoker.invoke(new DeleteCommand(selectedElement, _this._rendering, _this._layout));
+                      _this.commandInvoker.invoke(new DeleteCommand(selectedElement, _this.rendering, _this._layout));
                   }
               }
           };
@@ -1948,10 +1949,10 @@
               .on('wheel', function () {
               if (_this._isEnabled && selectedElement) {
                   var delta = d3.event.deltaY;
-                  selectedElement.temporaryAmount += delta / 100 * _this._budget.minAmount;
-                  _this._rendering.transitionDuration = 0;
-                  selectedElement.root.accept(_this._rendering);
-                  _this._rendering.resetTransitionDuration();
+                  selectedElement.temporaryAmount += delta / 100 * _this.budget.minAmount;
+                  _this.rendering.transitionDuration = 0;
+                  selectedElement.root.accept(_this.rendering);
+                  _this.rendering.resetTransitionDuration();
                   _this._layout.render();
               }
           })
@@ -1961,26 +1962,26 @@
                   switch (d3.event.key) {
                       case 'ArrowUp':
                           isValidKey = true;
-                          selectedElement.temporaryAmount -= _this._budget.minAmount;
+                          selectedElement.temporaryAmount -= _this.budget.minAmount;
                           break;
                       case 'ArrowDown':
                           isValidKey = true;
-                          selectedElement.temporaryAmount += _this._budget.minAmount;
+                          selectedElement.temporaryAmount += _this.budget.minAmount;
                           break;
                   }
                   if (!isValidKey) {
                       return;
                   }
-                  _this._rendering.transitionDuration = 0;
-                  selectedElement.root.accept(_this._rendering);
-                  _this._rendering.resetTransitionDuration();
+                  _this.rendering.transitionDuration = 0;
+                  selectedElement.root.accept(_this.rendering);
+                  _this.rendering.resetTransitionDuration();
                   _this._layout.render();
               }
           })
               .on('click', function () {
               if (_this._isEnabled && selectedElement && selectedElement.hasFocus) {
                   selectedElement.hasFocus = false;
-                  selectedElement.accept(_this._rendering);
+                  selectedElement.accept(_this.rendering);
               }
               executeCommand();
               selectedElement = undefined;
@@ -2008,7 +2009,7 @@
                       executeCommand();
                       tip.hide();
                       group.activeLevel = group.level;
-                      group.root.accept(self._rendering);
+                      group.root.accept(self.rendering);
                       self._layout.render();
                   });
                   group.children.forEach(function (c) { return c.accept(_this); });
@@ -2033,12 +2034,12 @@
                           d3.event.stopPropagation();
                           if (selectedElement && selectedElement !== element && selectedElement.hasFocus) {
                               selectedElement.hasFocus = false;
-                              selectedElement.accept(self._rendering);
+                              selectedElement.accept(self.rendering);
                               executeCommand();
                           }
                           selectedElement = element;
                           element.hasFocus = true;
-                          element.accept(self._rendering);
+                          element.accept(self.rendering);
                       }
                   });
                   element.svgElement.on('mouseenter', function () {
@@ -2067,7 +2068,7 @@
                           executeCommand();
                           selectedElement = undefined;
                           element.activeLevel += 1;
-                          element.root.accept(self._rendering);
+                          element.root.accept(self.rendering);
                           self._layout.render();
                           hoveredElement.svgElement.classed('hovered', false);
                           hoveredElement = undefined;
@@ -2077,9 +2078,9 @@
               };
               return class_1;
           }()));
-          this._budget.elements.forEach(function (e) {
+          this.budget.elements.forEach(function (e) {
               e.accept(events);
-              e.accept(_this._rendering);
+              e.accept(_this.rendering);
           });
           this._layout.render();
           this._isInitialized = true;
@@ -2105,9 +2106,9 @@
                   };
                   return class_2;
               }()));
-              this._budget.elements.forEach(function (e) {
+              this.budget.elements.forEach(function (e) {
                   e.accept(polygonsConfigs_1);
-                  e.accept(_this._rendering);
+                  e.accept(_this.rendering);
               });
           }
           this._layout = layout;
@@ -2116,7 +2117,6 @@
       };
       return BudgetVisualization;
   }());
-  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {

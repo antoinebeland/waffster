@@ -17,10 +17,10 @@ import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 import { RenderingVisitor } from './visitors/rendering-visitor';
 
 export class BudgetVisualization {
-  private readonly _budget: Budget;
-  private readonly _commandInvoker: CommandInvoker;
-  private readonly _svgElement: d3.Selection<any, any, any, any>;
-  private readonly _rendering: RenderingVisitor;
+  readonly budget: Budget;
+  readonly commandInvoker: CommandInvoker;
+  readonly svgElement: d3.Selection<any, any, any, any>;
+  readonly rendering: RenderingVisitor;
 
   private _layout: Layout;
   private _isEnabled = true;
@@ -29,23 +29,19 @@ export class BudgetVisualization {
   constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>,
               layout: Layout, commandInvoker: CommandInvoker = new CommandInvoker(),
               rendering: RenderingVisitor = new RenderingVisitor(Config.TRANSITION_DURATION)) {
-    this._budget = budget;
-    this._svgElement = svgElement;
+    this.budget = budget;
+    this.svgElement = svgElement;
     this._layout = layout;
-    this._commandInvoker = commandInvoker;
-    this._rendering = rendering;
+    this.commandInvoker = commandInvoker;
+    this.rendering = rendering;
   }
 
   set activeLevel(activeLevel: number) {
-    this._budget.elements.forEach(e => {
+    this.budget.elements.forEach(e => {
       e.activeLevel = activeLevel;
-      e.accept(this._rendering);
+      e.accept(this.rendering);
     });
     this._layout.render();
-  }
-
-  get budget(): Budget {
-    return this._budget;
   }
 
   get isEnabled(): boolean {
@@ -59,6 +55,10 @@ export class BudgetVisualization {
     }
   }
 
+  get layout(): Layout {
+    return this._layout;
+  }
+
   initialize() {
     if (this._isInitialized) {
       throw new Error('The visualization is already initialized.');
@@ -67,7 +67,7 @@ export class BudgetVisualization {
     let hoveredElement: BudgetElement = undefined;
     let selectedElement: BudgetElement = undefined;
 
-    this._svgElement.attr('class', 'budget-visualization');
+    this.svgElement.attr('class', 'budget-visualization');
     this._layout.initialize();
 
     // Tooltip initialization
@@ -78,14 +78,14 @@ export class BudgetVisualization {
         return str;
       });
 
-    this._svgElement.call(tip);
+    this.svgElement.call(tip);
 
     const executeCommand = () => {
       if (selectedElement !== undefined && selectedElement.temporaryAmount !== 0) {
         if (selectedElement.temporaryAmount > 0) {
-          this._commandInvoker.invoke(new AddCommand(selectedElement, this._rendering, this._layout));
+          this.commandInvoker.invoke(new AddCommand(selectedElement, this.rendering, this._layout));
         } else {
-          this._commandInvoker.invoke(new DeleteCommand(selectedElement, this._rendering, this._layout));
+          this.commandInvoker.invoke(new DeleteCommand(selectedElement, this.rendering, this._layout));
         }
       }
     };
@@ -95,10 +95,10 @@ export class BudgetVisualization {
       .on('wheel', () => {
         if (this._isEnabled && selectedElement) {
           const delta = d3.event.deltaY;
-          selectedElement.temporaryAmount += delta / 100 * this._budget.minAmount;
-          this._rendering.transitionDuration = 0;
-          selectedElement.root.accept(this._rendering);
-          this._rendering.resetTransitionDuration();
+          selectedElement.temporaryAmount += delta / 100 * this.budget.minAmount;
+          this.rendering.transitionDuration = 0;
+          selectedElement.root.accept(this.rendering);
+          this.rendering.resetTransitionDuration();
           this._layout.render();
         }
       })
@@ -108,26 +108,26 @@ export class BudgetVisualization {
           switch (d3.event.key) {
             case 'ArrowUp':
               isValidKey = true;
-              selectedElement.temporaryAmount -= this._budget.minAmount;
+              selectedElement.temporaryAmount -= this.budget.minAmount;
               break;
             case 'ArrowDown':
               isValidKey = true;
-              selectedElement.temporaryAmount += this._budget.minAmount;
+              selectedElement.temporaryAmount += this.budget.minAmount;
               break;
           }
           if (!isValidKey) {
             return;
           }
-          this._rendering.transitionDuration = 0;
-          selectedElement.root.accept(this._rendering);
-          this._rendering.resetTransitionDuration();
+          this.rendering.transitionDuration = 0;
+          selectedElement.root.accept(this.rendering);
+          this.rendering.resetTransitionDuration();
           this._layout.render();
         }
       })
       .on('click', () => {
         if (this._isEnabled && selectedElement && selectedElement.hasFocus) {
           selectedElement.hasFocus = false;
-          selectedElement.accept(this._rendering);
+          selectedElement.accept(this.rendering);
         }
         executeCommand();
         selectedElement = undefined;
@@ -155,7 +155,7 @@ export class BudgetVisualization {
             executeCommand();
             tip.hide();
             group.activeLevel = group.level;
-            group.root.accept(self._rendering);
+            group.root.accept(self.rendering);
             self._layout.render();
           });
         group.children.forEach(c => c.accept(this));
@@ -184,12 +184,12 @@ export class BudgetVisualization {
             d3.event.stopPropagation();
             if (selectedElement && selectedElement !== element && selectedElement.hasFocus) {
               selectedElement.hasFocus = false;
-              selectedElement.accept(self._rendering);
+              selectedElement.accept(self.rendering);
               executeCommand();
             }
             selectedElement = element;
             element.hasFocus = true;
-            element.accept(self._rendering);
+            element.accept(self.rendering);
           }
         });
         element.svgElement.on('mouseenter', () => {
@@ -218,7 +218,7 @@ export class BudgetVisualization {
             executeCommand();
             selectedElement = undefined;
             element.activeLevel += 1;
-            element.root.accept(self._rendering);
+            element.root.accept(self.rendering);
             self._layout.render();
 
             hoveredElement.svgElement.classed('hovered', false);
@@ -230,9 +230,9 @@ export class BudgetVisualization {
     });
 
     // Events subscription
-    this._budget.elements.forEach(e => {
+    this.budget.elements.forEach(e => {
       e.accept(events);
-      e.accept(this._rendering);
+      e.accept(this.rendering);
     });
 
     // Layout initialisation
@@ -259,9 +259,9 @@ export class BudgetVisualization {
           element.polygonsGroup.config = polygonsGroupConfig;
         }
       });
-      this._budget.elements.forEach(e => {
+      this.budget.elements.forEach(e => {
         e.accept(polygonsConfigs);
-        e.accept(this._rendering);
+        e.accept(this.rendering);
       });
     }
     this._layout = layout;

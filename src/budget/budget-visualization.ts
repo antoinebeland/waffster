@@ -94,8 +94,9 @@ export class BudgetVisualization {
     d3.select('body')
       .on('wheel', () => {
         if (this._isEnabled && selectedElement) {
-          const delta = d3.event.deltaY;
-          selectedElement.temporaryAmount += delta / 100 * this.budget.minAmount;
+          let delta = d3.event.deltaY / 100;
+          delta = (delta >= 0) ? Math.ceil(delta) : Math.floor(delta);
+          selectedElement.temporaryAmount += delta * this.budget.minAmount;
           this.rendering.transitionDuration = 0;
           selectedElement.root.accept(this.rendering);
           this.rendering.resetTransitionDuration();

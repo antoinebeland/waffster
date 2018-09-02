@@ -100,7 +100,7 @@ export class BarsLayout extends Layout {
     this._svgElement.attr('viewBox', `0 0 ${this._width} ${this._height}`);
 
     const halfHeight = this._height / 2;
-    this._layout.select('.separator')
+    this._layoutElement.select('.separator')
       .attr('x1', 0)
       .attr('y1', halfHeight)
       .attr('x2', this._width)
@@ -109,10 +109,10 @@ export class BarsLayout extends Layout {
     this._gaugeGroup
       .attr('transform', `translate(${this._width / 2 - Config.GAUGE_CONFIG.width / 2}, ${this._height - 110})`);
 
-    this._layout.select('#incomes-group')
+    this._layoutElement.select('#incomes-group')
       .attr('transform', 'translate(0, 0)');
 
-    this._layout.select('#spendings-group')
+    this._layoutElement.select('#spendings-group')
       .attr('transform', `translate(0, ${halfHeight})`);
   }
 

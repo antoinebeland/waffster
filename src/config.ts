@@ -53,7 +53,7 @@ export class Config {
   /**
    * The side length of a square.
    */
-  static readonly SIDE_LENGTH = 6;
+  static readonly SIDE_LENGTH = 8;
 
   /**
    * The transition duration in ms.

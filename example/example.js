@@ -14,12 +14,14 @@
     const visualizationConfigs = [
       {
         layout: new GridLayout(budget, svg, {
+          amountTextHeight: 15,
           averageCharSize: Config.AVERAGE_CHAR_SIZE,
           horizontalMinSpacing: 30,
-          horizontalPadding: 40,
+          horizontalPadding: 20,
           polygonLength: Config.SIDE_LENGTH * Config.MAX_COUNT_PER_LINE,
+          titleLineHeight: 15,
           transitionDuration: 500,
-          verticalMinSpacing: 30,
+          verticalMinSpacing: 50,
           verticalPadding: 30
         }),
         polygonsGroupConfig: Config.DEFAULT_POLYGONS_GROUP_CONFIG

@@ -44,7 +44,7 @@
       Config.LEVEL_CHANGE_DELAY = 1000;
       Config.MIN_AMOUNT = 50000;
       Config.MAX_COUNT_PER_LINE = 20;
-      Config.SIDE_LENGTH = 6;
+      Config.SIDE_LENGTH = 8;
       Config.TRANSITION_DURATION = 350;
       Config.DEFAULT_POLYGONS_GROUP_CONFIG = {
           maxCountPerLine: Config.MAX_COUNT_PER_LINE,
@@ -1948,8 +1948,9 @@
           d3.select('body')
               .on('wheel', function () {
               if (_this._isEnabled && selectedElement) {
-                  var delta = d3.event.deltaY;
-                  selectedElement.temporaryAmount += delta / 100 * _this.budget.minAmount;
+                  var delta = d3.event.deltaY / 100;
+                  delta = (delta >= 0) ? Math.ceil(delta) : Math.floor(delta);
+                  selectedElement.temporaryAmount += delta * _this.budget.minAmount;
                   _this.rendering.transitionDuration = 0;
                   selectedElement.root.accept(_this.rendering);
                   _this.rendering.resetTransitionDuration();
@@ -2117,6 +2118,7 @@
       };
       return BudgetVisualization;
   }());
+  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2501,26 +2503,22 @@
       function Layout(budget, svgElement) {
           this._budget = budget;
           this._svgElement = svgElement;
-          var element = this._svgElement.node();
-          this._width = element.clientWidth;
-          this._height = element.clientHeight;
+          this._elements = new Map();
+          var bbox = this._svgElement.node().getBoundingClientRect();
+          this._width = bbox.width;
+          this._height = bbox.height;
       }
       Layout.prototype.initialize = function () {
           var _this = this;
           this._svgElement.attr('viewBox', "0 0 " + this._width + " " + this._height);
-          this._layout = this._svgElement.select('#layout');
-          if (!this._layout.size()) {
-              this._layout = this._svgElement.append('g')
+          this._layoutElement = this._svgElement.select('#layout');
+          if (!this._layoutElement.size()) {
+              this._layoutElement = this._svgElement.append('g')
                   .attr('id', 'layout');
           }
-          var separator = this._layout.select('.separator');
-          if (separator.size() <= 0) {
-              this._layout.append('line')
-                  .attr('class', 'separator');
-          }
-          this._gaugeGroup = this._layout.select('#budget-gauge-group');
+          this._gaugeGroup = this._layoutElement.select('#budget-gauge-group');
           if (this._gaugeGroup.size() <= 0) {
-              this._gaugeGroup = this._layout.append('g')
+              this._gaugeGroup = this._layoutElement.append('g')
                   .attr('id', 'budget-gauge-group')
                   .attr('class', 'budget-gauge-group');
               this._gaugeGroup.append('rect')
@@ -2541,8 +2539,8 @@
                   width: Config.GAUGE_CONFIG.width
               }));
           }
-          if (this._layout.select('#budget-group')) {
-              this._budgetGroup = this._layout.append('svg')
+          if (this._layoutElement.select('#budget-group')) {
+              this._budgetGroup = this._layoutElement.append('svg')
                   .attr('id', 'budget-group')
                   .attr('height', this._height - Config.GAUGE_CONFIG.height);
           }
@@ -2582,13 +2580,15 @@
                   .select('.element-amount')
                   .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
           }
-          this._incomeGroups = this._incomeGroups.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
+          this._incomeGroups = this._incomeGroups
+              .sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
               .each(updateAmount);
-          this._spendingGroups = this._spendingGroups.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
+          this._spendingGroups = this._spendingGroups
+              .sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
               .each(updateAmount);
           var delta = this._budget.summary.delta;
           this._gaugeGroup.datum().value = delta;
-          this._layout.select('#budget-gauge-group')
+          this._layoutElement.select('#budget-gauge-group')
               .select('text')
               .text(Formatter.formatAmount(delta));
           this.renderLayout();
@@ -2598,10 +2598,12 @@
   //# sourceMappingURL=layout.js.map
 
   function isLayoutConfig(config) {
-      return !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
+      return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
+          !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
           !isNaN(config.horizontalMinSpacing) && config.horizontalMinSpacing >= 0 &&
           !isNaN(config.horizontalPadding) && config.horizontalPadding >= 0 &&
           !isNaN(config.polygonLength) && config.polygonLength > 0 &&
+          !isNaN(config.titleLineHeight) && config.titleLineHeight > 0 &&
           !isNaN(config.transitionDuration) && config.transitionDuration >= 0 &&
           !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
           !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
@@ -2684,16 +2686,16 @@
           this._height = Math.max(approxHeight, this._height);
           this._svgElement.attr('viewBox', "0 0 " + this._width + " " + this._height);
           var halfHeight = this._height / 2;
-          this._layout.select('.separator')
+          this._layoutElement.select('.separator')
               .attr('x1', 0)
               .attr('y1', halfHeight)
               .attr('x2', this._width)
               .attr('y2', halfHeight);
           this._gaugeGroup
               .attr('transform', "translate(" + (this._width / 2 - Config.GAUGE_CONFIG.width / 2) + ", " + (this._height - 110) + ")");
-          this._layout.select('#incomes-group')
+          this._layoutElement.select('#incomes-group')
               .attr('transform', 'translate(0, 0)');
-          this._layout.select('#spendings-group')
+          this._layoutElement.select('#spendings-group')
               .attr('transform', "translate(0, " + halfHeight + ")");
       };
       BarsLayout.prototype.renderLayout = function () {
@@ -2730,27 +2732,21 @@
           return _this;
       }
       GridLayout.prototype.initializeLayout = function () {
-          var self = this;
-          var halfWidth = this._width / 2;
-          this._layout.select('.separator')
-              .attr('x1', halfWidth)
-              .attr('y1', 0)
-              .attr('x2', halfWidth)
-              .attr('y2', this._height);
+          var _this = this;
           this._gaugeGroup
               .attr('transform', "translate(" + (this._width / 2 - Config.GAUGE_CONFIG.width / 2) + ", " + (this._height - 110) + ")");
-          function initializeLabel(d) {
-              var g = d3.select(this);
-              var label = d.name;
-              var index = label.indexOf(',');
+          var initializeLabel = function (d, i, nodes) {
+              var g = d3.select(nodes[i]);
+              var name = d.name;
+              var index = name.indexOf(',');
               if (index !== -1) {
-                  label = label.substring(0, index);
+                  name = name.substring(0, index);
               }
-              var labelWords = label.split(' ');
+              var nameWords = name.split(' ');
               var line = '';
               var lines = [];
-              labelWords.forEach(function (w) {
-                  if (line.length * self._config.averageCharSize < self._config.polygonLength) {
+              nameWords.forEach(function (w) {
+                  if (line.length * _this._config.averageCharSize < _this._config.polygonLength) {
                       line += (line.length === 0) ? w : " " + w;
                   }
                   else {
@@ -2763,7 +2759,7 @@
                   .attr('transform', '');
               textGroup.select('.element-amount')
                   .attr('text-anchor', 'middle')
-                  .attr('x', self._config.polygonLength / 2)
+                  .attr('x', _this._config.polygonLength / 2)
                   .attr('y', 0);
               var labelLines = textGroup.select('.element-name')
                   .attr('text-anchor', 'middle')
@@ -2775,13 +2771,14 @@
               var labelLinesCreated = labelLines.enter()
                   .append('tspan');
               labelLines.merge(labelLinesCreated)
-                  .attr('x', self._config.polygonLength / 2)
+                  .attr('x', _this._config.polygonLength / 2)
                   .attr('dy', 11)
                   .text(function (d) { return d; });
-          }
-          this._layout.select('#incomes-group')
+              g.datum().textHeight = _this._config.amountTextHeight + _this._config.titleLineHeight * lines.length;
+          };
+          this._layoutElement.select('#incomes-group')
               .attr('transform', 'translate(0, 0)');
-          this._layout.select('#spendings-group')
+          this._layoutElement.select('#spendings-group')
               .attr('transform', "translate(" + this._width / 2 + ", 0)");
           this._incomeGroups.each(initializeLabel);
           this._spendingGroups.each(initializeLabel);
@@ -2796,7 +2793,6 @@
               count * this._config.polygonLength) / (count - 1);
           var maxTextHeights = [];
           function findMaxTextHeights(d, i) {
-              var textGroup = d3.select(this).select('.text-group');
               if (i === 0) {
                   maxTextHeights = [];
               }
@@ -2804,7 +2800,7 @@
                   maxTextHeights.push(0);
               }
               var index = Math.floor(i / count);
-              var height = textGroup.node().getBBox().height;
+              var height = d.textHeight;
               if (maxTextHeights[index] < height) {
                   maxTextHeights[index] = height;
               }
@@ -2858,7 +2854,6 @@
       };
       return GridLayout;
   }(Layout));
-  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
@@ -2942,16 +2937,16 @@
           this._height = Math.max(approxHeight, this._height);
           this._svgElement.attr('viewBox', "0 0 " + this._width + " " + this._height);
           var halfWidth = this._width / 2;
-          this._layout.select('.separator')
+          this._layoutElement.select('.separator')
               .attr('x1', halfWidth)
               .attr('y1', 0)
               .attr('x2', halfWidth)
               .attr('y2', this._height);
           this._gaugeGroup
               .attr('transform', "translate(" + (this._width / 2 - Config.GAUGE_CONFIG.width / 2) + ", " + (this._height - 110) + ")");
-          this._layout.select('#incomes-group')
+          this._layoutElement.select('#incomes-group')
               .attr('transform', "translate(" + halfWidth + ", 0)");
-          this._layout.select('#spendings-group')
+          this._layoutElement.select('#spendings-group')
               .attr('transform', 'translate(0, 0)');
       };
       HorizontalBarsLayout.prototype.renderLayout = function () {
@@ -2980,7 +2975,10 @@
   //# sourceMappingURL=main.js.map
 
   exports.Budget = Budget;
+  exports.BudgetElement = BudgetElement;
+  exports.BudgetElementGroup = BudgetElementGroup;
   exports.BudgetVisualization = BudgetVisualization;
+  exports.SimpleBudgetElement = SimpleBudgetElement;
   exports.CommandInvoker = CommandInvoker;
   exports.BarsLayout = BarsLayout;
   exports.GridLayout = GridLayout;

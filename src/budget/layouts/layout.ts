@@ -10,12 +10,13 @@ import { BudgetElement } from '../budget-element';
 export abstract class Layout {
   protected readonly _budget: Budget;
   protected readonly _svgElement: d3.Selection<any, any, any, any>;
+  protected readonly _elements: Map<string, d3.Selection<any, any, any, any>>;
 
-  protected _layout: any;
-  protected _budgetGroup: any;
-  protected _incomeGroups: any;
-  protected _spendingGroups: any;
-  protected _gaugeGroup: any;
+  protected _layoutElement: d3.Selection<any, any, any, any>;
+  protected _budgetGroup: d3.Selection<any, any, any, any>;
+  protected _incomeGroups: d3.Selection<any, any, any, any>;
+  protected _spendingGroups: d3.Selection<any, any, any, any>;
+  protected _gaugeGroup: d3.Selection<any, any, any, any>;
 
   protected _height: number;
   protected _width: number;
@@ -23,28 +24,28 @@ export abstract class Layout {
   protected constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>) {
     this._budget = budget;
     this._svgElement = svgElement;
+    this._elements = new Map<string, d3.Selection<any, any, any, any>>();
 
-    // TODO: Bug with Firefox here. Client width and height return 0.
-    const element = this._svgElement.node();
-    this._width = element.clientWidth;
-    this._height = element.clientHeight;
+    // Gets the SVG bounding box.
+    const bbox = this._svgElement.node().getBoundingClientRect();
+    this._width = bbox.width;
+    this._height = bbox.height;
   }
 
   initialize() {
     this._svgElement.attr('viewBox', `0 0 ${this._width} ${this._height}`);
-    this._layout = this._svgElement.select('#layout');
-    if (!this._layout.size()) {
-      this._layout = this._svgElement.append('g')
+
+    // Retrieves the layout element.
+    this._layoutElement = this._svgElement.select('#layout');
+    if (!this._layoutElement.size()) {
+      this._layoutElement = this._svgElement.append('g')
         .attr('id', 'layout');
     }
-    let separator = this._layout.select('.separator');
-    if (separator.size() <= 0) {
-      this._layout.append('line')
-        .attr('class', 'separator');
-    }
-    this._gaugeGroup = this._layout.select('#budget-gauge-group');
+
+    // Initializes the gauge
+    this._gaugeGroup = this._layoutElement.select('#budget-gauge-group');
     if (this._gaugeGroup.size() <= 0) {
-      this._gaugeGroup = this._layout.append('g')
+      this._gaugeGroup = this._layoutElement.append('g')
         .attr('id', 'budget-gauge-group')
         .attr('class', 'budget-gauge-group');
 
@@ -70,8 +71,8 @@ export abstract class Layout {
       }));
     }
 
-    if (this._layout.select('#budget-group')) {
-      this._budgetGroup = this._layout.append('svg')
+    if (this._layoutElement.select('#budget-group')) {
+      this._budgetGroup = this._layoutElement.append('svg')
         .attr('id', 'budget-group')
         .attr('height', this._height - Config.GAUGE_CONFIG.height);
     }
@@ -99,7 +100,7 @@ export abstract class Layout {
           .attr('id', id);
       }
       const groups = group.selectAll('g')
-        .data(budgetElements, d => d.id);
+        .data(budgetElements, d => (d as any).id);
 
       const groupsCreated = groups.enter()
         .append('g')
@@ -119,14 +120,17 @@ export abstract class Layout {
         .select('.element-amount')
         .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
     }
-    this._incomeGroups = this._incomeGroups.sort((a, b) => descending(a.amount, b.amount))
+    this._incomeGroups = this._incomeGroups
+      .sort((a, b) => descending(a.amount, b.amount))
       .each(updateAmount);
-    this._spendingGroups = this._spendingGroups.sort((a, b) => descending(a.amount, b.amount))
+
+    this._spendingGroups = this._spendingGroups
+      .sort((a, b) => descending(a.amount, b.amount))
       .each(updateAmount);
 
     const delta = this._budget.summary.delta;
     this._gaugeGroup.datum().value = delta;
-    this._layout.select('#budget-gauge-group')
+    this._layoutElement.select('#budget-gauge-group')
       .select('text')
       .text(Formatter.formatAmount(delta));
 

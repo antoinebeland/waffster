@@ -20,32 +20,25 @@ export class GridLayout extends Layout {
   }
 
   protected initializeLayout() {
-    const self = this;
-    const halfWidth = this._width / 2;
-
-    this._layout.select('.separator')
-      .attr('x1', halfWidth)
-      .attr('y1', 0)
-      .attr('x2', halfWidth)
-      .attr('y2', this._height);
-
     this._gaugeGroup
-      .attr('transform', `translate(${this._width / 2 - Config.GAUGE_CONFIG.width / 2}, ${this._height - 110})`);
+      .attr('transform',
+        `translate(${this._width / 2 - Config.GAUGE_CONFIG.width / 2}, ${this._height - 110})`);
 
-    function initializeLabel(d) {
-      const g = d3.select(this);
+    const initializeLabel = (d, i, nodes) => {
+      const g = d3.select(nodes[i]);
 
-      let label = d.name;
-      const index = label.indexOf(',');
+      // Spits the element's name based on the polygon width.
+      let name = d.name;
+      const index = name.indexOf(',');
       if (index !== -1) {
-        label = label.substring(0, index);
+        name = name.substring(0, index);
       }
 
-      const labelWords = label.split(' ');
+      const nameWords = name.split(' ');
       let line = '';
       const lines = [];
-      labelWords.forEach(w => {
-        if (line.length * self._config.averageCharSize < self._config.polygonLength) {
+      nameWords.forEach(w => {
+        if (line.length * this._config.averageCharSize < this._config.polygonLength) {
           line += (line.length === 0) ? w : ` ${w}`;
         } else {
           lines.push(line);
@@ -59,7 +52,7 @@ export class GridLayout extends Layout {
 
       textGroup.select('.element-amount')
         .attr('text-anchor', 'middle')
-        .attr('x', self._config.polygonLength / 2)
+        .attr('x', this._config.polygonLength / 2)
         .attr('y', 0);
 
       const labelLines = textGroup.select('.element-name')
@@ -75,14 +68,17 @@ export class GridLayout extends Layout {
         .append('tspan');
 
       labelLines.merge(labelLinesCreated)
-        .attr('x', self._config.polygonLength / 2)
+        .attr('x', this._config.polygonLength / 2)
         .attr('dy', 11)
         .text(d => d);
-    }
-    this._layout.select('#incomes-group')
+
+      (g.datum() as any).textHeight = this._config.amountTextHeight + this._config.titleLineHeight * lines.length;
+    };
+
+    this._layoutElement.select('#incomes-group')
       .attr('transform', 'translate(0, 0)');
 
-    this._layout.select('#spendings-group')
+    this._layoutElement.select('#spendings-group')
       .attr('transform', `translate(${this._width / 2}, 0)`);
 
     this._incomeGroups.each(initializeLabel);
@@ -101,7 +97,6 @@ export class GridLayout extends Layout {
 
     let maxTextHeights = [];
     function findMaxTextHeights(d, i) {
-      const textGroup = d3.select(this).select('.text-group');
       if (i === 0) {
         maxTextHeights = [];
       }
@@ -109,7 +104,7 @@ export class GridLayout extends Layout {
         maxTextHeights.push(0);
       }
       const index = Math.floor(i / count);
-      const height = (textGroup.node() as SVGGraphicsElement).getBBox().height;
+      const height = d.textHeight;
       if (maxTextHeights[index] < height) {
         maxTextHeights[index] = height;
       }

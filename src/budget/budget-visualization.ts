@@ -150,6 +150,9 @@ export class BudgetVisualization {
               .show.call(group.svgElement.node(), group);
           })
           .on('mouseleave', () => {
+            if (!self._isEnabled) {
+              return;
+            }
             hoveredElement = undefined;
             self.tip.hide();
           })

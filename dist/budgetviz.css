@@ -100,18 +100,15 @@
 
 .budget-visualization .boundary {
   display: none;
-  fill: none; }
+  fill: none;
+  stroke: #444;
+  stroke-width: 2px; }
 
 .budget-visualization.hovered > .boundary,
 .budget-visualization.hovered > * > .boundary,
 .budget-visualization .hovered > .boundary,
 .budget-visualization .hovered > * > .boundary {
-  display: block;
-  stroke-width: 2px; }
-
-.budget-visualization.hovered > .boundary,
-.budget-visualization .hovered > .boundary {
-  stroke: #444; }
+  display: block; }
 
 .budget-visualization.hovered > * > .boundary,
 .budget-visualization .hovered > * > .boundary {

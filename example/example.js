@@ -28,10 +28,12 @@
       },
       {
         layout: new HorizontalBarsLayout(budget, svg, {
+          amountTextHeight: 15,
           averageCharSize: Config.AVERAGE_CHAR_SIZE,
           horizontalMinSpacing: 30,
           horizontalPadding: 20,
           polygonLength: 5 * 5,
+          titleLineHeight: 15,
           transitionDuration: 500,
           verticalMinSpacing: 20,
           verticalPadding: 30
@@ -44,10 +46,12 @@
       },
       {
         layout: new BarsLayout(budget, svg, {
+          amountTextHeight: 15,
           averageCharSize: Config.AVERAGE_CHAR_SIZE,
           horizontalMinSpacing: 30,
           horizontalPadding: 40,
           polygonLength: 12 * 5,
+          titleLineHeight: 15,
           transitionDuration: 500,
           verticalMinSpacing: 30,
           verticalPadding: 30

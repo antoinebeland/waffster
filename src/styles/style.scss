@@ -80,6 +80,8 @@
   .boundary {
     display: none;
     fill: none;
+    stroke: $dark-gray;
+    stroke-width: $boundary-stroke-width;
   }
 
   &.hovered,
@@ -87,11 +89,6 @@
     > .boundary,
     > * > .boundary {
       display: block;
-      stroke-width: $boundary-stroke-width;
-    }
-
-    > .boundary {
-      stroke: $dark-gray;
     }
 
     > * > .boundary {

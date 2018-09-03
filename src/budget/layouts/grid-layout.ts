@@ -57,7 +57,7 @@ export class GridLayout extends Layout {
 
       const labelLines = textGroup.select('.element-name')
         .attr('text-anchor', 'middle')
-        .attr('y', 5)
+        .attr('y', this._config.amountTextHeight * 0.3)
         .selectAll('tspan')
         .data(lines);
 
@@ -69,7 +69,7 @@ export class GridLayout extends Layout {
 
       labelLines.merge(labelLinesCreated)
         .attr('x', this._config.polygonLength / 2)
-        .attr('dy', 11)
+        .attr('dy', this._config.titleLineHeight)
         .text(d => d);
 
       (g.datum() as any).textHeight = this._config.amountTextHeight + this._config.titleLineHeight * lines.length;

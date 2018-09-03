@@ -1,4 +1,5 @@
 import * as d3 from 'd3-selection';
+import d3Tip from 'd3-tip';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
 import { Budget } from './budget';
 import { CommandInvoker } from './commands/command-invoker';
@@ -9,6 +10,7 @@ export declare class BudgetVisualization {
     readonly commandInvoker: CommandInvoker;
     readonly svgElement: d3.Selection<any, any, any, any>;
     readonly rendering: RenderingVisitor;
+    readonly tip: d3Tip;
     private _layout;
     private _isEnabled;
     private _isInitialized;

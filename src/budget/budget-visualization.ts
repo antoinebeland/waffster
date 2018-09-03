@@ -21,6 +21,7 @@ export class BudgetVisualization {
   readonly commandInvoker: CommandInvoker;
   readonly svgElement: d3.Selection<any, any, any, any>;
   readonly rendering: RenderingVisitor;
+  readonly tip: d3Tip;
 
   private _layout: Layout;
   private _isEnabled = true;
@@ -34,6 +35,12 @@ export class BudgetVisualization {
     this._layout = layout;
     this.commandInvoker = commandInvoker;
     this.rendering = rendering;
+    this.tip = d3Tip()
+      .html(d => {
+        let str = `<strong>${d.name} (${Formatter.formatAmount(d.amount + d.temporaryAmount)})</strong>`;
+        str += d.description ? `<p>${d.description}</p>` : '';
+        return str;
+      });
   }
 
   set activeLevel(activeLevel: number) {
@@ -69,17 +76,7 @@ export class BudgetVisualization {
 
     this.svgElement.attr('class', 'budget-visualization');
     this._layout.initialize();
-
-    // Tooltip initialization
-    const tip = d3Tip()
-      .attr('class', 'd3-tip')
-      .html(d => {
-        let str = `<strong>${d.name} (${Formatter.formatAmount(d.amount + d.temporaryAmount)})</strong>`;
-        str += d.description ? `<p>${d.description}</p>` : '';
-        return str;
-      });
-
-    this.svgElement.call(tip);
+    this.svgElement.call(this.tip);
 
     const executeCommand = () => {
       if (selectedElement !== undefined && selectedElement.temporaryAmount !== 0) {
@@ -143,19 +140,19 @@ export class BudgetVisualization {
         group.svgElement.select('.level-group')
           .on('mouseenter', () => {
             hoveredElement = group;
-            tip.direction('w')
+            self.tip.direction('w')
               .offset([0, -8]) // TODO: Put in constant!
               .attr('class', 'd3-tip level-tip')
               .show.call(group.svgElement.node(), group);
           })
           .on('mouseleave', () => {
             hoveredElement = undefined;
-            tip.hide();
+            self.tip.hide();
           })
           .on('click', () => {
             d3.event.stopPropagation();
             executeCommand();
-            tip.hide();
+            self.tip.hide();
             group.activeLevel = group.level;
             group.root.accept(self.rendering);
             self._layout.render();
@@ -174,7 +171,7 @@ export class BudgetVisualization {
 
         function showTooltip() {
           if (element.level > 0) {
-            tip.direction('e')
+            self.tip.direction('e')
               .offset([0, 8])
               .attr('class', 'd3-tip element-tip')
               .show.call(element.svgElement.node(), element);
@@ -212,7 +209,7 @@ export class BudgetVisualization {
           if (self._isEnabled && element.isActive && hoveredElement) {
             hoveredElement.svgElement.classed('hovered', false);
             hoveredElement = undefined;
-            tip.hide();
+            self.tip.hide();
           }
         });
         element.svgElement.on('dblclick', () => {
@@ -225,7 +222,7 @@ export class BudgetVisualization {
 
             hoveredElement.svgElement.classed('hovered', false);
             hoveredElement = undefined;
-            tip.hide();
+            self.tip.hide();
           }
         });
       }

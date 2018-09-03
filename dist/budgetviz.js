@@ -1866,6 +1866,12 @@
           this._layout = layout;
           this.commandInvoker = commandInvoker;
           this.rendering = rendering;
+          this.tip = C__Users_Antoine_Desktop_budgetviz_node_modules_d3Tip_dist()
+              .html(function (d) {
+              var str = "<strong>" + d.name + " (" + Formatter.formatAmount(d.amount + d.temporaryAmount) + ")</strong>";
+              str += d.description ? "<p>" + d.description + "</p>" : '';
+              return str;
+          });
       }
       Object.defineProperty(BudgetVisualization.prototype, "activeLevel", {
           set: function (activeLevel) {
@@ -1909,14 +1915,7 @@
           var selectedElement = undefined;
           this.svgElement.attr('class', 'budget-visualization');
           this._layout.initialize();
-          var tip = C__Users_Antoine_Desktop_budgetviz_node_modules_d3Tip_dist()
-              .attr('class', 'd3-tip')
-              .html(function (d) {
-              var str = "<strong>" + d.name + " (" + Formatter.formatAmount(d.amount + d.temporaryAmount) + ")</strong>";
-              str += d.description ? "<p>" + d.description + "</p>" : '';
-              return str;
-          });
-          this.svgElement.call(tip);
+          this.svgElement.call(this.tip);
           var executeCommand = function () {
               if (selectedElement !== undefined && selectedElement.temporaryAmount !== 0) {
                   if (selectedElement.temporaryAmount > 0) {
@@ -1978,19 +1977,19 @@
                   group.svgElement.select('.level-group')
                       .on('mouseenter', function () {
                       hoveredElement = group;
-                      tip.direction('w')
+                      self.tip.direction('w')
                           .offset([0, -8])
                           .attr('class', 'd3-tip level-tip')
                           .show.call(group.svgElement.node(), group);
                   })
                       .on('mouseleave', function () {
                       hoveredElement = undefined;
-                      tip.hide();
+                      self.tip.hide();
                   })
                       .on('click', function () {
                       d3.event.stopPropagation();
                       executeCommand();
-                      tip.hide();
+                      self.tip.hide();
                       group.activeLevel = group.level;
                       group.root.accept(self.rendering);
                       self._layout.render();
@@ -2006,7 +2005,7 @@
                   }
                   function showTooltip() {
                       if (element.level > 0) {
-                          tip.direction('e')
+                          self.tip.direction('e')
                               .offset([0, 8])
                               .attr('class', 'd3-tip element-tip')
                               .show.call(element.svgElement.node(), element);
@@ -2043,7 +2042,7 @@
                       if (self._isEnabled && element.isActive && hoveredElement) {
                           hoveredElement.svgElement.classed('hovered', false);
                           hoveredElement = undefined;
-                          tip.hide();
+                          self.tip.hide();
                       }
                   });
                   element.svgElement.on('dblclick', function () {
@@ -2055,7 +2054,7 @@
                           self._layout.render();
                           hoveredElement.svgElement.classed('hovered', false);
                           hoveredElement = undefined;
-                          tip.hide();
+                          self.tip.hide();
                       }
                   });
               };

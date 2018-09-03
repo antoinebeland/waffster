@@ -97,11 +97,6 @@
   }
 
   .level-group {
-    &:hover > line {
-      stroke: $medium-gray;
-      stroke-width: $level-group-stroke-width;
-    }
-
     > rect {
       fill: transparent;
     }
@@ -109,6 +104,11 @@
     > line {
       stroke: $gray;
     }
+  }
+
+  &:not(.disabled) .level-group:hover > line {
+    stroke: $medium-gray;
+    stroke-width: $level-group-stroke-width;
   }
 }
 

@@ -114,15 +114,15 @@
 .budget-visualization .hovered > * > .boundary {
   stroke: #fff; }
 
-.budget-visualization .level-group:hover > line {
-  stroke: #777;
-  stroke-width: 2px; }
-
 .budget-visualization .level-group > rect {
   fill: transparent; }
 
 .budget-visualization .level-group > line {
   stroke: #999; }
+
+.budget-visualization:not(.disabled) .level-group:hover > line {
+  stroke: #777;
+  stroke-width: 2px; }
 
 @keyframes new-income-animation {
   from {

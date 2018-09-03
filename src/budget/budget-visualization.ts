@@ -57,6 +57,7 @@ export class BudgetVisualization {
 
   set isEnabled(isEnabled: boolean) {
     this._isEnabled = isEnabled;
+    this.svgElement.classed('disabled', !isEnabled);
     if (!isEnabled) {
       this.activeLevel = 0;
     }
@@ -139,6 +140,9 @@ export class BudgetVisualization {
 
         group.svgElement.select('.level-group')
           .on('mouseenter', () => {
+            if (!self._isEnabled) {
+              return;
+            }
             hoveredElement = group;
             self.tip.direction('w')
               .offset([0, -8]) // TODO: Put in constant!
@@ -150,6 +154,9 @@ export class BudgetVisualization {
             self.tip.hide();
           })
           .on('click', () => {
+            if (!self._isEnabled) {
+              return;
+            }
             d3.event.stopPropagation();
             executeCommand();
             self.tip.hide();

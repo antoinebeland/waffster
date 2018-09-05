@@ -25,6 +25,7 @@
           (config.startingPosition === undefined ||
               config.startingPosition >= 0 && config.startingPosition < config.maxCountPerLine);
   }
+  //# sourceMappingURL=polygons-group-configs.js.map
 
   var Config = (function () {
       function Config() {
@@ -52,6 +53,7 @@
       };
       return Config;
   }());
+  //# sourceMappingURL=config.js.map
 
   function isBudgetElement(budgetElement) {
       var isValid = false;
@@ -69,6 +71,7 @@
           budgetConfig.spendings.length > 0 &&
           budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
   }
+  //# sourceMappingURL=budget-config.js.map
 
   var Formatter = (function () {
       function Formatter() {
@@ -87,6 +90,7 @@
       };
       return Formatter;
   }());
+  //# sourceMappingURL=formatter.js.map
 
   var BudgetElementType;
   (function (BudgetElementType) {
@@ -168,6 +172,7 @@
       });
       return BudgetElement;
   }());
+  //# sourceMappingURL=budget-element.js.map
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -236,6 +241,7 @@
       };
       return BoundingBox;
   }());
+  //# sourceMappingURL=bounding-box.js.map
 
   var AbstractPolygonsGroup = (function () {
       function AbstractPolygonsGroup(config) {
@@ -446,6 +452,7 @@
       };
       return AbstractPolygonsGroup;
   }());
+  //# sourceMappingURL=abstract-polygons-group.js.map
 
   var PolygonsSuperGroupState;
   (function (PolygonsSuperGroupState) {
@@ -655,6 +662,7 @@
       };
       return PolygonsSuperGroup;
   }(AbstractPolygonsGroup));
+  //# sourceMappingURL=polygons-super-group.js.map
 
   var BudgetElementGroup = (function (_super) {
       __extends(BudgetElementGroup, _super);
@@ -788,6 +796,7 @@
       };
       return BudgetElementGroup;
   }(BudgetElement));
+  //# sourceMappingURL=budget-element-group.js.map
 
   var Square = (function () {
       function Square(position, sideLength) {
@@ -868,6 +877,7 @@
       Square._currentId = 0;
       return Square;
   }());
+  //# sourceMappingURL=square.js.map
 
   var SquaresGroup = (function (_super) {
       __extends(SquaresGroup, _super);
@@ -1037,6 +1047,7 @@
       };
       return SquaresGroup;
   }(AbstractPolygonsGroup));
+  //# sourceMappingURL=squares-group.js.map
 
   var SimpleBudgetElement = (function (_super) {
       __extends(SimpleBudgetElement, _super);
@@ -1122,6 +1133,7 @@
       };
       return SimpleBudgetElement;
   }(BudgetElement));
+  //# sourceMappingURL=simple-budget-element.js.map
 
   var BudgetState;
   (function (BudgetState) {
@@ -1241,6 +1253,7 @@
       Budget._amountStack = [];
       return Budget;
   }());
+  //# sourceMappingURL=budget.js.map
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1624,6 +1637,7 @@
       };
       return AddCommand;
   }());
+  //# sourceMappingURL=add-command.js.map
 
   var Event = (function () {
       function Event() {
@@ -1646,6 +1660,7 @@
       };
       return Event;
   }());
+  //# sourceMappingURL=event.js.map
 
   function isCommand(command) {
       return command !== undefined && command.execute !== undefined;
@@ -1653,6 +1668,7 @@
   function isUndoableCommand(command) {
       return isCommand(command) && command.undo !== undefined;
   }
+  //# sourceMappingURL=command.js.map
 
   var CommandInvoker = (function () {
       function CommandInvoker() {
@@ -1697,6 +1713,7 @@
       };
       return CommandInvoker;
   }());
+  //# sourceMappingURL=command-invoker.js.map
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
@@ -1726,6 +1743,7 @@
       };
       return DeleteCommand;
   }());
+  //# sourceMappingURL=delete-command.js.map
 
   var RenderingVisitor = (function () {
       function RenderingVisitor(defaultTransitionDuration) {
@@ -1854,6 +1872,7 @@
       };
       return RenderingVisitor;
   }());
+  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -2109,6 +2128,7 @@
       };
       return BudgetVisualization;
   }());
+  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2493,7 +2513,6 @@
       function Layout(budget, svgElement) {
           this._budget = budget;
           this._svgElement = svgElement;
-          this._elements = new Map();
           var bbox = this._svgElement.node().getBoundingClientRect();
           this._width = bbox.width;
           this._height = bbox.height;
@@ -2534,7 +2553,6 @@
                   .attr('id', 'budget-group')
                   .attr('height', this._height - Config.GAUGE_CONFIG.height);
           }
-          this._budgetGroup.attr('viewBox', "0 0 " + this._width + " " + this._height);
           function initializeBudgetElement(d) {
               var g = d3.select(this);
               var textGroup = g.append('g')
@@ -2585,6 +2603,7 @@
       };
       return Layout;
   }());
+  //# sourceMappingURL=layout.js.map
 
   function isLayoutConfig(config) {
       return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
@@ -2597,6 +2616,7 @@
           !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
           !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
   }
+  //# sourceMappingURL=layout-config.js.map
 
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
@@ -2707,7 +2727,9 @@
       };
       return BarsLayout;
   }(Layout));
+  //# sourceMappingURL=bars-layout.js.map
 
+  var MIN_COUNT_PER_LINE = 4;
   var GridLayout = (function (_super) {
       __extends(GridLayout, _super);
       function GridLayout(budget, svgElement, config) {
@@ -2716,10 +2738,25 @@
               throw new TypeError('Invalid configuration specified.');
           }
           _this._config = config;
+          _this._budgetWidth = _this._width;
+          var halfWidth = _this._width / 2;
+          var count = Math.floor((halfWidth - 2 * _this._config.horizontalPadding) /
+              (_this._config.polygonLength + _this._config.horizontalMinSpacing));
+          if (count < MIN_COUNT_PER_LINE) {
+              _this._countPerLine = MIN_COUNT_PER_LINE;
+              _this._spacing = _this._config.horizontalMinSpacing;
+              _this._budgetWidth = 2 * (2 * _this._config.horizontalPadding + MIN_COUNT_PER_LINE *
+                  _this._config.polygonLength + (MIN_COUNT_PER_LINE - 1) * _this._spacing);
+          }
+          else {
+              _this._spacing = (halfWidth - 2 * _this._config.horizontalPadding -
+                  count * _this._config.polygonLength) / (count - 1);
+          }
           return _this;
       }
       GridLayout.prototype.initializeLayout = function () {
           var _this = this;
+          this._budgetGroup.attr('viewBox', "0 0 " + this._budgetWidth + " " + this._height);
           this._gaugeGroup
               .attr('transform', "translate(" + (this._width / 2 - Config.GAUGE_CONFIG.width / 2) + ", " + (this._height - 110) + ")");
           var initializeLabel = function (d, i, nodes) {
@@ -2766,60 +2803,54 @@
           this._layoutElement.select('#incomes-group')
               .attr('transform', 'translate(0, 0)');
           this._layoutElement.select('#spendings-group')
-              .attr('transform', "translate(" + this._width / 2 + ", 0)");
+              .attr('transform', "translate(" + this._budgetWidth / 2 + ", 0)");
           this._incomeGroups.each(initializeLabel);
           this._spendingGroups.each(initializeLabel);
       };
       GridLayout.prototype.renderLayout = function () {
           var _this = this;
-          var self = this;
-          var halfWidth = this._width / 2;
-          var count = Math.floor((halfWidth - 2 * this._config.horizontalPadding) /
-              (this._config.polygonLength + this._config.horizontalMinSpacing));
-          var spacing = (halfWidth - 2 * this._config.horizontalPadding -
-              count * this._config.polygonLength) / (count - 1);
           var maxTextHeights = [];
-          function findMaxTextHeights(d, i) {
+          var findMaxTextHeights = function (d, i) {
               if (i === 0) {
                   maxTextHeights = [];
               }
-              if (i % count === 0) {
+              if (i % _this._countPerLine === 0) {
                   maxTextHeights.push(0);
               }
-              var index = Math.floor(i / count);
+              var index = Math.floor(i / _this._countPerLine);
               var height = d.textHeight;
               if (maxTextHeights[index] < height) {
                   maxTextHeights[index] = height;
               }
-          }
+          };
           var x, y, maxHeight, maxHeights = [];
-          function applyTransform(d, i) {
+          var applyTransform = function (d, i, nodes) {
               if (i === 0) {
                   maxHeights = [];
-                  y = self._config.verticalPadding;
+                  y = _this._config.verticalPadding;
                   maxHeight = 0;
               }
-              if (i % count === 0) {
+              if (i % _this._countPerLine === 0) {
                   maxHeights.push(0);
-                  x = self._config.horizontalPadding;
+                  x = _this._config.horizontalPadding;
                   if (i !== 0) {
-                      y += maxHeight + self._config.verticalMinSpacing;
+                      y += maxHeight + _this._config.verticalMinSpacing;
                   }
                   maxHeight = 0;
               }
               else {
-                  x += self._config.polygonLength + spacing;
+                  x += _this._config.polygonLength + _this._spacing;
               }
-              var maxTextHeight = maxTextHeights[Math.floor(i / count)];
-              d3.select(this)
+              var maxTextHeight = maxTextHeights[Math.floor(i / _this._countPerLine)];
+              d3.select(nodes[i])
                   .select('.polygons-group')
                   .attr('transform', "translate(0, " + maxTextHeight + ")");
               if (d.polygonsGroup.boundingBox.height > maxHeight) {
                   maxHeight = d.polygonsGroup.boundingBox.height + maxTextHeight;
-                  maxHeights[Math.floor(i / count)] = maxHeight;
+                  maxHeights[Math.floor(i / _this._countPerLine)] = maxHeight;
               }
               return "translate(" + x + ", " + y + ")";
-          }
+          };
           this._incomeGroups.each(findMaxTextHeights)
               .transition()
               .duration(this._config.transitionDuration)
@@ -2832,11 +2863,9 @@
               .transition()
               .duration(this._config.transitionDuration)
               .attr('viewBox', function () {
-              var computedHeight = d3Array.sum(maxHeights) + 2 * self._config.verticalPadding +
-                  (maxHeights.length - 1) * self._config.verticalMinSpacing + 100;
-              var ratio = computedHeight / _this._height;
-              var computedWidth = _this._width;
-              return "0 0 " + computedWidth + " " + computedHeight;
+              var computedHeight = d3Array.sum(maxHeights) + 2 * _this._config.verticalPadding +
+                  (maxHeights.length - 1) * _this._config.verticalMinSpacing + 100;
+              return "0 0 " + _this._budgetWidth + " " + computedHeight;
           });
       };
       return GridLayout;
@@ -2957,6 +2986,9 @@
       };
       return HorizontalBarsLayout;
   }(Layout));
+  //# sourceMappingURL=horizontal-bars-layout.js.map
+
+  //# sourceMappingURL=main.js.map
 
   exports.Budget = Budget;
   exports.BudgetElement = BudgetElement;

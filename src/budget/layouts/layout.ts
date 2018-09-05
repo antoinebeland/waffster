@@ -7,24 +7,24 @@ import { Formatter } from '../../utils/formatter';
 import { Budget } from '../budget';
 import { BudgetElement } from '../budget-element';
 
+type D3Selection = d3.Selection<any, any, any, any>;
+
 export abstract class Layout {
   protected readonly _budget: Budget;
-  protected readonly _svgElement: d3.Selection<any, any, any, any>;
-  protected readonly _elements: Map<string, d3.Selection<any, any, any, any>>;
+  protected readonly _svgElement: D3Selection;
 
-  protected _layoutElement: d3.Selection<any, any, any, any>;
-  protected _budgetGroup: d3.Selection<any, any, any, any>;
-  protected _incomeGroups: d3.Selection<any, any, any, any>;
-  protected _spendingGroups: d3.Selection<any, any, any, any>;
-  protected _gaugeGroup: d3.Selection<any, any, any, any>;
+  protected _layoutElement: D3Selection;
+  protected _budgetGroup: D3Selection;
+  protected _incomeGroups: D3Selection;
+  protected _spendingGroups: D3Selection;
+  protected _gaugeGroup: D3Selection;
 
   protected _height: number;
   protected _width: number;
 
-  protected constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>) {
+  protected constructor(budget: Budget, svgElement: D3Selection) {
     this._budget = budget;
     this._svgElement = svgElement;
-    this._elements = new Map<string, d3.Selection<any, any, any, any>>();
 
     // Gets the SVG bounding box.
     const bbox = this._svgElement.node().getBoundingClientRect();
@@ -76,7 +76,6 @@ export abstract class Layout {
         .attr('id', 'budget-group')
         .attr('height', this._height - Config.GAUGE_CONFIG.height);
     }
-    this._budgetGroup.attr('viewBox', `0 0 ${this._width} ${this._height}`);
 
     function initializeBudgetElement(d) {
       const g = d3.select(this);

@@ -8,8 +8,13 @@ import { Budget } from '../budget';
 import { Layout } from './layout';
 import { isLayoutConfig, LayoutConfig } from './layout-config';
 
+const MIN_COUNT_PER_LINE = 4;
+
 export class GridLayout extends Layout {
   private readonly _config: LayoutConfig;
+  private readonly _countPerLine: number;
+  private readonly _spacing: number;
+  private readonly _budgetWidth: number;
 
   constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>, config: LayoutConfig) {
     super(budget, svgElement);
@@ -17,9 +22,25 @@ export class GridLayout extends Layout {
       throw new TypeError('Invalid configuration specified.');
     }
     this._config = config;
+    this._budgetWidth = this._width;
+
+    const halfWidth = this._width / 2;
+    let count = Math.floor((halfWidth - 2 * this._config.horizontalPadding) /
+      (this._config.polygonLength + this._config.horizontalMinSpacing));
+
+    if (count < MIN_COUNT_PER_LINE) {
+      this._countPerLine = MIN_COUNT_PER_LINE;
+      this._spacing = this._config.horizontalMinSpacing;
+      this._budgetWidth = 2 * (2 * this._config.horizontalPadding + MIN_COUNT_PER_LINE *
+        this._config.polygonLength + (MIN_COUNT_PER_LINE - 1) * this._spacing);
+    } else {
+      this._spacing = (halfWidth - 2 * this._config.horizontalPadding -
+        count * this._config.polygonLength) / (count - 1);
+    }
   }
 
   protected initializeLayout() {
+    this._budgetGroup.attr('viewBox', `0 0 ${this._budgetWidth} ${this._height}`);
     this._gaugeGroup
       .attr('transform',
         `translate(${this._width / 2 - Config.GAUGE_CONFIG.width / 2}, ${this._height - 110})`);
@@ -79,65 +100,56 @@ export class GridLayout extends Layout {
       .attr('transform', 'translate(0, 0)');
 
     this._layoutElement.select('#spendings-group')
-      .attr('transform', `translate(${this._width / 2}, 0)`);
+      .attr('transform', `translate(${this._budgetWidth / 2}, 0)`);
 
     this._incomeGroups.each(initializeLabel);
     this._spendingGroups.each(initializeLabel);
   }
 
   protected renderLayout() {
-    const self = this;
-    const halfWidth = this._width / 2;
-
-    const count = Math.floor((halfWidth - 2 * this._config.horizontalPadding) /
-      (this._config.polygonLength + this._config.horizontalMinSpacing));
-
-    const spacing = (halfWidth - 2 * this._config.horizontalPadding -
-      count * this._config.polygonLength) / (count - 1);
-
     let maxTextHeights = [];
-    function findMaxTextHeights(d, i) {
+    const findMaxTextHeights = (d, i) => {
       if (i === 0) {
         maxTextHeights = [];
       }
-      if (i % count === 0) {
+      if (i % this._countPerLine === 0) {
         maxTextHeights.push(0);
       }
-      const index = Math.floor(i / count);
+      const index = Math.floor(i / this._countPerLine);
       const height = d.textHeight;
       if (maxTextHeights[index] < height) {
         maxTextHeights[index] = height;
       }
-    }
+    };
 
     let x, y, maxHeight, maxHeights = [];
-    function applyTransform(d, i) {
+    const applyTransform = (d, i, nodes) => {
       if (i === 0) {
         maxHeights = [];
-        y = self._config.verticalPadding;
+        y = this._config.verticalPadding;
         maxHeight = 0;
       }
-      if (i % count === 0) {
+      if (i % this._countPerLine === 0) {
         maxHeights.push(0);
-        x = self._config.horizontalPadding;
+        x = this._config.horizontalPadding;
         if (i !== 0) {
-          y += maxHeight + self._config.verticalMinSpacing;
+          y += maxHeight + this._config.verticalMinSpacing;
         }
         maxHeight = 0;
       } else {
-        x += self._config.polygonLength + spacing;
+        x += this._config.polygonLength + this._spacing;
       }
-      const maxTextHeight = maxTextHeights[Math.floor(i / count)];
-      d3.select(this)
+      const maxTextHeight = maxTextHeights[Math.floor(i / this._countPerLine)];
+      d3.select(nodes[i])
         .select('.polygons-group')
         .attr('transform', `translate(0, ${maxTextHeight})`);
 
       if (d.polygonsGroup.boundingBox.height > maxHeight) {
         maxHeight = d.polygonsGroup.boundingBox.height + maxTextHeight;
-        maxHeights[Math.floor(i / count)] = maxHeight;
+        maxHeights[Math.floor(i / this._countPerLine)] = maxHeight;
       }
       return `translate(${x}, ${y})`;
-    }
+    };
 
     this._incomeGroups.each(findMaxTextHeights)
       .transition()
@@ -153,17 +165,9 @@ export class GridLayout extends Layout {
       .transition()
       .duration(this._config.transitionDuration)
       .attr('viewBox', () => {
-        const computedHeight = sum(maxHeights) + 2 * self._config.verticalPadding +
-          (maxHeights.length - 1) * self._config.verticalMinSpacing + 100;
-
-        const ratio = computedHeight / this._height;
-        const computedWidth = this._width /** ratio*/;
-
-        /*this._height = d3.sum(maxHeights) + 2 * self._config.verticalPadding +
-          (maxHeights.length - 1) * self._config.verticalMinSpacing + 100;*/
-        //this._width = this._height * this._ratio;
-
-        return `0 0 ${computedWidth} ${computedHeight}`;
+        const computedHeight = sum(maxHeights) + 2 * this._config.verticalPadding +
+          (maxHeights.length - 1) * this._config.verticalMinSpacing + 100;
+        return `0 0 ${this._budgetWidth} ${computedHeight}`;
       });
   }
 }

@@ -2870,6 +2870,7 @@
       };
       return GridLayout;
   }(Layout));
+  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
@@ -2988,8 +2989,6 @@
   }(Layout));
   //# sourceMappingURL=horizontal-bars-layout.js.map
 
-  //# sourceMappingURL=main.js.map
-
   exports.Budget = Budget;
   exports.BudgetElement = BudgetElement;
   exports.BudgetElementGroup = BudgetElementGroup;
@@ -2999,8 +2998,9 @@
   exports.BarsLayout = BarsLayout;
   exports.GridLayout = GridLayout;
   exports.HorizontalBarsLayout = HorizontalBarsLayout;
-  exports.Config = Config;
   exports.RenderingVisitor = RenderingVisitor;
+  exports.Config = Config;
+  exports.Formatter = Formatter;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

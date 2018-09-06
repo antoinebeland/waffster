@@ -9,6 +9,7 @@ export { CommandInvoker } from './budget/commands/command-invoker';
 export { BarsLayout } from './budget/layouts/bars-layout';
 export { GridLayout } from './budget/layouts/grid-layout';
 export { HorizontalBarsLayout } from './budget/layouts/horizontal-bars-layout';
+export { RenderingVisitor } from './budget/visitors/rendering-visitor';
 export { Config } from './config';
 export { PolygonsGroupOrientation as Orientation } from './geometry/polygons-group-configs';
-export { RenderingVisitor } from './budget/visitors/rendering-visitor';
+export { Formatter } from './utils/formatter';

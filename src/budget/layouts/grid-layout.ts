@@ -8,7 +8,7 @@ import { Budget } from '../budget';
 import { Layout } from './layout';
 import { isLayoutConfig, LayoutConfig } from './layout-config';
 
-const MIN_COUNT_PER_LINE = 4;
+const MIN_COUNT_PER_LINE = 5;
 
 export class GridLayout extends Layout {
   private readonly _config: LayoutConfig;

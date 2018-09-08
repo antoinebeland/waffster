@@ -88,12 +88,11 @@
       return Formatter;
   }());
 
-  var BudgetElementType;
   (function (BudgetElementType) {
       BudgetElementType["DEFICIT"] = "deficit";
       BudgetElementType["INCOME"] = "income";
       BudgetElementType["SPENDING"] = "spending";
-  })(BudgetElementType || (BudgetElementType = {}));
+  })(exports.BudgetElementType || (exports.BudgetElementType = {}));
   var BudgetElement = (function () {
       function BudgetElement(name, description, type, minAmount) {
           if (description === void 0) { description = ''; }
@@ -660,7 +659,7 @@
       __extends(BudgetElementGroup, _super);
       function BudgetElementGroup(name, description, type, minAmount, polygonsGroupConfig) {
           if (name === void 0) { name = ''; }
-          if (type === void 0) { type = BudgetElementType.SPENDING; }
+          if (type === void 0) { type = exports.BudgetElementType.SPENDING; }
           if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
           var _this = _super.call(this, name, description, type, minAmount) || this;
@@ -1044,7 +1043,7 @@
           if (amount === void 0) { amount = 0; }
           if (name === void 0) { name = ''; }
           if (description === void 0) { description = ''; }
-          if (type === void 0) { type = BudgetElementType.SPENDING; }
+          if (type === void 0) { type = exports.BudgetElementType.SPENDING; }
           if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
           var _this = _super.call(this, name, description, type, minAmount) || this;
@@ -1154,8 +1153,8 @@
               }
               elements.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); });
           };
-          budgetConfig.incomes.forEach(function (e) { return initialize(e, BudgetElementType.INCOME, _this.incomes); });
-          budgetConfig.spendings.forEach(function (e) { return initialize(e, BudgetElementType.SPENDING, _this.spendings); });
+          budgetConfig.incomes.forEach(function (e) { return initialize(e, exports.BudgetElementType.INCOME, _this.incomes); });
+          budgetConfig.spendings.forEach(function (e) { return initialize(e, exports.BudgetElementType.SPENDING, _this.spendings); });
       }
       Object.defineProperty(Budget.prototype, "elements", {
           get: function () {

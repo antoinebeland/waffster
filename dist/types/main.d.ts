@@ -5,6 +5,8 @@ export { BudgetElement } from './budget/budget-element';
 export { BudgetElementGroup } from './budget/budget-element-group';
 export { BudgetVisualization } from './budget/budget-visualization';
 export { SimpleBudgetElement } from './budget/simple-budget-element';
+export { AddCommand } from './budget/commands/add-command';
+export { DeleteCommand } from './budget/commands/delete-command';
 export { CommandInvoker } from './budget/commands/command-invoker';
 export { BarsLayout } from './budget/layouts/bars-layout';
 export { GridLayout } from './budget/layouts/grid-layout';

@@ -3,7 +3,7 @@ import { Event } from '../../utils/event';
 import { isUndoableCommand, Command, UndoableCommand } from './command';
 
 export class CommandInvoker {
-  onCommandInvoked: Event<void> = new Event<void>();
+  onCommandInvoked: Event<Command> = new Event<Command>();
 
   private _commands: UndoableCommand[] = [];
   private _currentIndex = -1;
@@ -36,6 +36,6 @@ export class CommandInvoker {
       this._commands.push(command);
     }
     command.execute();
-    this.onCommandInvoked.invoke();
+    this.onCommandInvoked.invoke(command);
   }
 }

@@ -4,6 +4,7 @@ import { SquaresGroup } from '../geometry/squares-group';
 import { BudgetElement, BudgetElementType } from './budget-element';
 import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 export declare class SimpleBudgetElement extends BudgetElement {
+    readonly initialAmount: number;
     private readonly _group;
     private _hasFocus;
     private _svgElement;
@@ -14,4 +15,5 @@ export declare class SimpleBudgetElement extends BudgetElement {
     svgElement: Selection<any, any, any, any>;
     readonly polygonsGroup: SquaresGroup;
     accept(visitor: BudgetElementVisitor): void;
+    reset(): void;
 }

@@ -8,6 +8,8 @@ import { BudgetElement, BudgetElementType } from './budget-element';
 import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 
 export class SimpleBudgetElement extends BudgetElement {
+  readonly initialAmount: number;
+
   private readonly _group: SquaresGroup;
   private _hasFocus: boolean;
   private _svgElement: Selection<any, any, any, any>;
@@ -16,6 +18,7 @@ export class SimpleBudgetElement extends BudgetElement {
               minAmount: number = Config.MIN_AMOUNT,
               polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
     super(name, description, type, minAmount);
+    this.initialAmount = amount;
     this._group = new SquaresGroup(Math.round(amount / this._minAmount), polygonsGroupConfig);
     this._hasFocus = false;
   }
@@ -76,5 +79,9 @@ export class SimpleBudgetElement extends BudgetElement {
 
   accept(visitor: BudgetElementVisitor) {
     visitor.visitSimpleBudgetElement(this);
+  }
+
+  reset() {
+    this.amount = this.initialAmount;
   }
 }

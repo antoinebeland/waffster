@@ -1,6 +1,5 @@
 import { Selection } from 'd3-selection';
 
-import { Config } from '../config';
 import { AbstractPolygonsGroup } from '../geometry/abstract-polygons-group';
 import { Formatter } from '../utils/formatter';
 
@@ -63,6 +62,8 @@ export abstract class BudgetElement {
   abstract get hasFocus(): boolean;
 
   abstract set hasFocus(hasFocus: boolean);
+
+  abstract get initialAmount(): number;
 
   /**
    * Gets the level of the element.
@@ -159,4 +160,5 @@ export abstract class BudgetElement {
   }
 
   abstract accept(visitor: BudgetElementVisitor);
+  abstract reset();
 }

@@ -61,6 +61,10 @@ export class BudgetElementGroup extends BudgetElement {
     this.children.forEach(c => c.hasFocus = hasFocus);
   }
 
+  get initialAmount(): number {
+    return this._children.reduce((total, child) => total + child.initialAmount, 0);
+  }
+
   get level(): number {
     return this._level;
   }
@@ -115,6 +119,10 @@ export class BudgetElementGroup extends BudgetElement {
 
   accept(visitor: BudgetElementVisitor) {
     visitor.visitBudgetElementGroup(this);
+  }
+
+  reset() {
+    this._children.forEach(c => c.reset());
   }
 
   addChild(element: BudgetElement) {

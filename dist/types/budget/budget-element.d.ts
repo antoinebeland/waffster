@@ -18,6 +18,7 @@ export declare abstract class BudgetElement {
     protected constructor(name: string, description: string, type: BudgetElementType, minAmount: number);
     abstract activeLevel: number;
     abstract hasFocus: boolean;
+    abstract readonly initialAmount: number;
     abstract level: number;
     abstract svgElement: Selection<any, any, any, any>;
     abstract readonly polygonsGroup: AbstractPolygonsGroup;
@@ -27,4 +28,5 @@ export declare abstract class BudgetElement {
     selectedAmount: number;
     temporaryAmount: number;
     abstract accept(visitor: BudgetElementVisitor): any;
+    abstract reset(): any;
 }

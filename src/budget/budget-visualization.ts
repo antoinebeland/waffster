@@ -250,7 +250,12 @@ export class BudgetVisualization {
   }
 
   reset() {
-    // TODO: Implement reset function.
+    this.budget.elements.forEach(e => {
+      e.activeLevel = 0;
+      e.reset();
+      e.accept(this.rendering);
+    });
+    this._layout.render();
   }
 
   update(layout: Layout, polygonsGroupConfig?: PolygonsGroupConfig) {

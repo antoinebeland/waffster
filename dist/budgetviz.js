@@ -1593,30 +1593,30 @@
   var AddCommand = (function () {
       function AddCommand(element, rendering, layout) {
           this._isFirstTime = true;
-          this._amount = element.temporaryAmount;
-          this._element = element;
+          this.amount = element.temporaryAmount;
+          this.element = element;
           this._rendering = rendering;
           this._layout = layout;
       }
       AddCommand.prototype.execute = function () {
-          this._element.temporaryAmount = 0;
-          this._element.amount += this._amount;
+          this.element.temporaryAmount = 0;
+          this.element.amount += this.amount;
           this.update();
       };
       AddCommand.prototype.undo = function () {
-          this._element.amount -= this._amount;
+          this.element.amount -= this.amount;
           this.update();
       };
       AddCommand.prototype.update = function () {
-          this._element.selectedAmount = 0;
+          this.element.selectedAmount = 0;
           this._rendering.transitionDuration = 0;
-          this._element.accept(this._rendering);
+          this.element.accept(this._rendering);
           this._rendering.resetTransitionDuration();
           if (this._isFirstTime) {
-              this._element.selectedAmount = this._amount;
+              this.element.selectedAmount = this.amount;
           }
-          var root = this._element.root;
-          if (this._isFirstTime || root !== this._element) {
+          var root = this.element.root;
+          if (this._isFirstTime || root !== this.element) {
               root.accept(this._rendering);
           }
           this._layout.render();
@@ -1700,26 +1700,26 @@
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
-          this._amount = Math.abs(element.temporaryAmount);
-          this._element = element;
+          this.amount = Math.abs(element.temporaryAmount);
+          this.element = element;
           this._rendering = rendering;
           this._layout = layout;
       }
       DeleteCommand.prototype.execute = function () {
-          this._element.temporaryAmount = 0;
-          this._element.amount -= this._amount;
+          this.element.temporaryAmount = 0;
+          this.element.amount -= this.amount;
           this.update();
       };
       DeleteCommand.prototype.undo = function () {
-          this._element.amount += this._amount;
+          this.element.amount += this.amount;
           this.update();
       };
       DeleteCommand.prototype.update = function () {
           this._rendering.transitionDuration = 0;
-          this._element.accept(this._rendering);
+          this.element.accept(this._rendering);
           this._rendering.resetTransitionDuration();
-          var root = this._element.root;
-          if (this._element !== root) {
+          var root = this.element.root;
+          if (this.element !== root) {
               root.accept(this._rendering);
           }
           this._layout.render();

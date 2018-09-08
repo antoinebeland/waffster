@@ -3,8 +3,8 @@ import { Layout } from '../layouts/layout';
 import { RenderingVisitor } from '../visitors/rendering-visitor';
 import { UndoableCommand } from './command';
 export declare class AddCommand implements UndoableCommand {
-    private readonly _element;
-    private readonly _amount;
+    readonly element: BudgetElement;
+    readonly amount: number;
     private readonly _rendering;
     private readonly _layout;
     private _isFirstTime;

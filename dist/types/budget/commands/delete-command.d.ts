@@ -3,8 +3,8 @@ import { Layout } from '../layouts/layout';
 import { RenderingVisitor } from '../visitors/rendering-visitor';
 import { UndoableCommand } from './command';
 export declare class DeleteCommand implements UndoableCommand {
-    private readonly _amount;
-    private readonly _element;
+    readonly amount: number;
+    readonly element: BudgetElement;
     private readonly _rendering;
     private readonly _layout;
     constructor(element: BudgetElement, rendering: RenderingVisitor, layout: Layout);

@@ -32,6 +32,8 @@
         "order": [
           "public-static-field",
           "public-instance-field",
+          "protected-static-field",
+          "protected-instance-field",
           "private-static-field",
           "private-instance-field",
           "public-constructor",

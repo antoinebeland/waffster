@@ -4,10 +4,9 @@ import d3SimpleGauge from 'd3-simple-gauge';
 
 import { Config } from '../../config';
 import { Formatter } from '../../utils/formatter';
+import { D3Selection } from '../../utils/types';
 import { Budget } from '../budget';
 import { BudgetElement } from '../budget-element';
-
-type D3Selection = d3.Selection<any, any, any, any>;
 
 export abstract class Layout {
   protected readonly _budget: Budget;

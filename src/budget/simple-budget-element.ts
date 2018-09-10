@@ -1,10 +1,10 @@
-import { Selection } from 'd3-selection';
-
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
 import { SquaresGroup } from '../geometry/squares-group';
+import { D3Selection } from '../utils/types';
 
-import { BudgetElement, BudgetElementType } from './budget-element';
+import { BudgetElement } from './budget-element';
+import { BudgetElementConfig } from './budget-element-config';
 import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 
 export class SimpleBudgetElement extends BudgetElement {
@@ -12,12 +12,11 @@ export class SimpleBudgetElement extends BudgetElement {
 
   private readonly _group: SquaresGroup;
   private _hasFocus: boolean;
-  private _svgElement: Selection<any, any, any, any>;
+  private _svgElement: D3Selection;
 
-  constructor(amount = 0, name = '', description = '', type: BudgetElementType = BudgetElementType.SPENDING,
-              minAmount: number = Config.MIN_AMOUNT,
+  constructor(config: BudgetElementConfig, amount = 0,
               polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
-    super(name, description, type, minAmount);
+    super(config);
     this.initialAmount = amount;
     this._group = new SquaresGroup(Math.round(amount / this._minAmount), polygonsGroupConfig);
     this._hasFocus = false;
@@ -58,11 +57,15 @@ export class SimpleBudgetElement extends BudgetElement {
     this._level = level;
   }
 
-  get svgElement(): Selection<any, any, any, any> {
+  get polygonsGroup(): SquaresGroup {
+    return this._group;
+  }
+
+  get svgElement(): D3Selection {
     return this._svgElement;
   }
 
-  set svgElement(svgElement: Selection<any, any, any, any>) {
+  set svgElement(svgElement: D3Selection) {
     if (!svgElement) {
       throw ReferenceError('The specified element is undefined.');
     }
@@ -71,10 +74,6 @@ export class SimpleBudgetElement extends BudgetElement {
       .attr('class', 'squares');
     this._svgElement.append('polygon')
       .attr('class', `boundary boundary${this.level}`);
-  }
-
-  get polygonsGroup(): SquaresGroup {
-    return this._group;
   }
 
   accept(visitor: BudgetElementVisitor) {

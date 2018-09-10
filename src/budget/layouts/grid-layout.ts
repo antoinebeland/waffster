@@ -3,6 +3,7 @@ import * as d3 from 'd3-selection';
 import 'd3-transition';
 
 import { Config } from '../../config';
+import { D3Selection } from '../../utils/types';
 import { Budget } from '../budget';
 
 import { Layout } from './layout';
@@ -16,7 +17,7 @@ export class GridLayout extends Layout {
   private readonly _spacing: number;
   private readonly _budgetWidth: number;
 
-  constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>, config: LayoutConfig) {
+  constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig) {
     super(budget, svgElement);
     if (!isLayoutConfig(config)) {
       throw new TypeError('Invalid configuration specified.');

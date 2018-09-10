@@ -21,6 +21,7 @@ export declare class Budget {
     readonly elements: BudgetElement[];
     readonly summary: BudgetSummary;
     getElementByName(name: string): BudgetElement;
+    private getBudgetElementConfig;
     private initializeBudgetElement;
     private isAcceptableAmount;
 }

@@ -1,6 +1,5 @@
-import * as d3 from 'd3-selection';
+import { D3Selection } from '../../utils/types';
 import { Budget } from '../budget';
-declare type D3Selection = d3.Selection<any, any, any, any>;
 export declare abstract class Layout {
     protected readonly _budget: Budget;
     protected readonly _svgElement: D3Selection;
@@ -17,4 +16,3 @@ export declare abstract class Layout {
     protected abstract initializeLayout(): any;
     protected abstract renderLayout(): any;
 }
-export {};

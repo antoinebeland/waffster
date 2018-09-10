@@ -4,6 +4,7 @@ import d3Tip from 'd3-tip';
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
 import { Formatter } from '../utils/formatter';
+import { D3Selection } from '../utils/types';
 
 import { Budget } from './budget';
 import { BudgetElement } from './budget-element';
@@ -19,7 +20,7 @@ import { RenderingVisitor } from './visitors/rendering-visitor';
 export class BudgetVisualization {
   readonly budget: Budget;
   readonly commandInvoker: CommandInvoker;
-  readonly svgElement: d3.Selection<any, any, any, any>;
+  readonly svgElement: D3Selection;
   readonly rendering: RenderingVisitor;
   readonly tip: d3Tip;
 
@@ -27,7 +28,7 @@ export class BudgetVisualization {
   private _isEnabled = true;
   private _isInitialized = false;
 
-  constructor(budget: Budget, svgElement: d3.Selection<any, any, any, any>,
+  constructor(budget: Budget, svgElement: D3Selection,
               layout: Layout, commandInvoker: CommandInvoker = new CommandInvoker(),
               rendering: RenderingVisitor = new RenderingVisitor(Config.TRANSITION_DURATION)) {
     this.budget = budget;

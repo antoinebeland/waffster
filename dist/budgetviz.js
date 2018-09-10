@@ -25,7 +25,6 @@
           (config.startingPosition === undefined ||
               config.startingPosition >= 0 && config.startingPosition < config.maxCountPerLine);
   }
-  //# sourceMappingURL=polygons-group-configs.js.map
 
   var Config = (function () {
       function Config() {
@@ -34,11 +33,11 @@
       Config.BUDGET_ELEMENTS_ORIENTATION = exports.Orientation.HORIZONTAL;
       Config.BUDGET_SUB_ELEMENTS_SPACING = 3;
       Config.GAUGE_CONFIG = {
-          barWidth: 15,
-          height: 60,
+          barWidth: 12.5,
+          height: 55,
           interval: [-26000000, 26000000],
-          needleRadius: 6,
-          width: 120,
+          needleRadius: 5.5,
+          width: 110,
       };
       Config.IS_USING_DISTINCT_COLORS = false;
       Config.LEVEL_CHANGE_DELAY = 1000;
@@ -53,7 +52,6 @@
       };
       return Config;
   }());
-  //# sourceMappingURL=config.js.map
 
   function isBudgetElement(budgetElement) {
       var isValid = false;
@@ -71,107 +69,22 @@
           budgetConfig.spendings.length > 0 &&
           budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
   }
-  //# sourceMappingURL=budget-config.js.map
-
-  var Formatter = (function () {
-      function Formatter() {
-      }
-      Formatter.formatAmount = function (amount) {
-          var result = amount / Math.pow(10, 6);
-          if (Math.abs(result) >= 1) {
-              return result.toFixed(2).replace('.', ',') + " G$";
-          }
-          result = amount / Math.pow(10, 3);
-          return result.toFixed(0).replace('.', ',') + " M$";
-      };
-      Formatter.formatId = function (name, spaceCharacter) {
-          if (spaceCharacter === void 0) { spaceCharacter = '-'; }
-          return name.trim().toLowerCase().replace(/[^a-zA-Z ]/g, '').replace(/\s/g, spaceCharacter);
-      };
-      return Formatter;
-  }());
-  //# sourceMappingURL=formatter.js.map
 
   (function (BudgetElementType) {
       BudgetElementType["DEFICIT"] = "deficit";
       BudgetElementType["INCOME"] = "income";
       BudgetElementType["SPENDING"] = "spending";
   })(exports.BudgetElementType || (exports.BudgetElementType = {}));
-  var BudgetElement = (function () {
-      function BudgetElement(name, description, type, minAmount) {
-          if (description === void 0) { description = ''; }
-          this._activeLevel = 0;
-          this._level = 0;
-          if (minAmount <= 0) {
-              throw new RangeError('The min amount must be greater than 0.');
-          }
-          this.id = Formatter.formatId(name);
-          this.name = name;
-          this.description = description;
-          this.type = type;
-          this._minAmount = minAmount;
-      }
-      Object.defineProperty(BudgetElement.prototype, "amount", {
-          get: function () {
-              return this.polygonsGroup.count * this._minAmount;
-          },
-          set: function (amount) {
-              if (amount < 0) {
-                  throw new TypeError('Invalid amount specified.');
-              }
-              this.polygonsGroup.count = Math.ceil(amount / this._minAmount);
-          },
-          enumerable: true,
-          configurable: true
-      });
-      Object.defineProperty(BudgetElement.prototype, "isActive", {
-          get: function () {
-              return this._level === this.activeLevel;
-          },
-          enumerable: true,
-          configurable: true
-      });
-      Object.defineProperty(BudgetElement.prototype, "root", {
-          get: function () {
-              var element = this;
-              while (element.parent !== undefined) {
-                  element = element.parent;
-              }
-              return element;
-          },
-          enumerable: true,
-          configurable: true
-      });
-      Object.defineProperty(BudgetElement.prototype, "selectedAmount", {
-          get: function () {
-              return this.polygonsGroup.selectionCount * this._minAmount;
-          },
-          set: function (selectedAmount) {
-              if (selectedAmount < 0) {
-                  selectedAmount = 0;
-              }
-              if (this.selectedAmount === selectedAmount) {
-                  return;
-              }
-              selectedAmount = Math.min(selectedAmount, this.amount);
-              this.polygonsGroup.selectionCount = Math.ceil(selectedAmount / this._minAmount);
-          },
-          enumerable: true,
-          configurable: true
-      });
-      Object.defineProperty(BudgetElement.prototype, "temporaryAmount", {
-          get: function () {
-              return this.polygonsGroup.temporaryCount * this._minAmount;
-          },
-          set: function (temporaryAmount) {
-              this.polygonsGroup.temporaryCount = Math.ceil(temporaryAmount / this._minAmount);
-          },
-          enumerable: true,
-          configurable: true
-      });
-      return BudgetElement;
-  }());
-  //# sourceMappingURL=budget-element.js.map
+  function isFeedbackMessage(feedbackMessage) {
+      return feedbackMessage && feedbackMessage.interval !== undefined && feedbackMessage.interval.length === 2 &&
+          !isNaN(feedbackMessage.interval[0]) && !isNaN(feedbackMessage.interval[1]) &&
+          feedbackMessage.interval[0] <= feedbackMessage.interval[1] && feedbackMessage.message !== undefined;
+  }
+  function isBudgetElementConfig(config) {
+      return config && config.name !== undefined && config.descripton !== undefined && config.type !== undefined &&
+          !isNaN(config.minAmount) && config.amount > 0 && config.feedbackMessages !== undefined &&
+          config.feedbackMessages.every(function (f) { return isFeedbackMessage(f); });
+  }
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -240,7 +153,6 @@
       };
       return BoundingBox;
   }());
-  //# sourceMappingURL=bounding-box.js.map
 
   var AbstractPolygonsGroup = (function () {
       function AbstractPolygonsGroup(config) {
@@ -451,7 +363,6 @@
       };
       return AbstractPolygonsGroup;
   }());
-  //# sourceMappingURL=abstract-polygons-group.js.map
 
   var PolygonsSuperGroupState;
   (function (PolygonsSuperGroupState) {
@@ -661,16 +572,118 @@
       };
       return PolygonsSuperGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=polygons-super-group.js.map
+
+  var Formatter = (function () {
+      function Formatter() {
+      }
+      Formatter.formatAmount = function (amount) {
+          var result = amount / Math.pow(10, 6);
+          if (Math.abs(result) >= 1) {
+              return result.toFixed(2).replace('.', ',') + " G$";
+          }
+          result = amount / Math.pow(10, 3);
+          return result.toFixed(0).replace('.', ',') + " M$";
+      };
+      Formatter.formatId = function (name, spaceCharacter) {
+          if (spaceCharacter === void 0) { spaceCharacter = '-'; }
+          return name.trim().toLowerCase().replace(/[^a-zA-Z ]/g, '').replace(/\s/g, spaceCharacter);
+      };
+      return Formatter;
+  }());
+
+  var BudgetElement = (function () {
+      function BudgetElement(config) {
+          this._activeLevel = 0;
+          this._level = 0;
+          if (!isBudgetElementConfig(config)) {
+              throw new TypeError('Invalid configuration specified.');
+          }
+          this.id = Formatter.formatId(config.name);
+          this.name = config.name;
+          this.description = config.description;
+          this.type = config.type;
+          this._minAmount = config.minAmount;
+          this._feedbackMessages = config.feedbackMessages;
+      }
+      Object.defineProperty(BudgetElement.prototype, "amount", {
+          get: function () {
+              return this.polygonsGroup.count * this._minAmount;
+          },
+          set: function (amount) {
+              if (amount < 0) {
+                  throw new TypeError('Invalid amount specified.');
+              }
+              this.polygonsGroup.count = Math.ceil(amount / this._minAmount);
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(BudgetElement.prototype, "feedbackMessage", {
+          get: function () {
+              var initialAmount = this.initialAmount;
+              if (initialAmount === 0) {
+                  return '';
+              }
+              var percent = Math.round(this.amount / initialAmount * 100);
+              var feedback = this._feedbackMessages.find(function (f) { return f.interval[0] <= percent && f.interval[1] >= percent; });
+              return feedback ? feedback.message : '';
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(BudgetElement.prototype, "isActive", {
+          get: function () {
+              return this._level === this.activeLevel;
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(BudgetElement.prototype, "root", {
+          get: function () {
+              var element = this;
+              while (element.parent !== undefined) {
+                  element = element.parent;
+              }
+              return element;
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(BudgetElement.prototype, "selectedAmount", {
+          get: function () {
+              return this.polygonsGroup.selectionCount * this._minAmount;
+          },
+          set: function (selectedAmount) {
+              if (selectedAmount < 0) {
+                  selectedAmount = 0;
+              }
+              if (this.selectedAmount === selectedAmount) {
+                  return;
+              }
+              selectedAmount = Math.min(selectedAmount, this.amount);
+              this.polygonsGroup.selectionCount = Math.ceil(selectedAmount / this._minAmount);
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(BudgetElement.prototype, "temporaryAmount", {
+          get: function () {
+              return this.polygonsGroup.temporaryCount * this._minAmount;
+          },
+          set: function (temporaryAmount) {
+              this.polygonsGroup.temporaryCount = Math.ceil(temporaryAmount / this._minAmount);
+          },
+          enumerable: true,
+          configurable: true
+      });
+      return BudgetElement;
+  }());
 
   var BudgetElementGroup = (function (_super) {
       __extends(BudgetElementGroup, _super);
-      function BudgetElementGroup(name, description, type, minAmount, polygonsGroupConfig) {
-          if (name === void 0) { name = ''; }
-          if (type === void 0) { type = exports.BudgetElementType.SPENDING; }
-          if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
+      function BudgetElementGroup(config, polygonsGroupConfig) {
           if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
-          var _this = _super.call(this, name, description, type, minAmount) || this;
+          var _this = _super.call(this, config) || this;
           _this._children = [];
           _this._group = new PolygonsSuperGroup(polygonsGroupConfig, Config.BUDGET_SUB_ELEMENTS_SPACING);
           _this._hasFocus = false;
@@ -740,6 +753,13 @@
           enumerable: true,
           configurable: true
       });
+      Object.defineProperty(BudgetElementGroup.prototype, "polygonsGroup", {
+          get: function () {
+              return this._group;
+          },
+          enumerable: true,
+          configurable: true
+      });
       Object.defineProperty(BudgetElementGroup.prototype, "svgElement", {
           get: function () {
               return this._svgElement;
@@ -766,13 +786,6 @@
               });
               this._svgElement.append('polygon')
                   .attr('class', "boundary boundary" + this.level);
-          },
-          enumerable: true,
-          configurable: true
-      });
-      Object.defineProperty(BudgetElementGroup.prototype, "polygonsGroup", {
-          get: function () {
-              return this._group;
           },
           enumerable: true,
           configurable: true
@@ -805,7 +818,6 @@
       };
       return BudgetElementGroup;
   }(BudgetElement));
-  //# sourceMappingURL=budget-element-group.js.map
 
   var Square = (function () {
       function Square(position, sideLength) {
@@ -886,7 +898,6 @@
       Square._currentId = 0;
       return Square;
   }());
-  //# sourceMappingURL=square.js.map
 
   var SquaresGroup = (function (_super) {
       __extends(SquaresGroup, _super);
@@ -1056,18 +1067,13 @@
       };
       return SquaresGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=squares-group.js.map
 
   var SimpleBudgetElement = (function (_super) {
       __extends(SimpleBudgetElement, _super);
-      function SimpleBudgetElement(amount, name, description, type, minAmount, polygonsGroupConfig) {
+      function SimpleBudgetElement(config, amount, polygonsGroupConfig) {
           if (amount === void 0) { amount = 0; }
-          if (name === void 0) { name = ''; }
-          if (description === void 0) { description = ''; }
-          if (type === void 0) { type = exports.BudgetElementType.SPENDING; }
-          if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
-          var _this = _super.call(this, name, description, type, minAmount) || this;
+          var _this = _super.call(this, config) || this;
           _this.initialAmount = amount;
           _this._group = new SquaresGroup(Math.round(amount / _this._minAmount), polygonsGroupConfig);
           _this._hasFocus = false;
@@ -1114,6 +1120,13 @@
           enumerable: true,
           configurable: true
       });
+      Object.defineProperty(SimpleBudgetElement.prototype, "polygonsGroup", {
+          get: function () {
+              return this._group;
+          },
+          enumerable: true,
+          configurable: true
+      });
       Object.defineProperty(SimpleBudgetElement.prototype, "svgElement", {
           get: function () {
               return this._svgElement;
@@ -1131,13 +1144,6 @@
           enumerable: true,
           configurable: true
       });
-      Object.defineProperty(SimpleBudgetElement.prototype, "polygonsGroup", {
-          get: function () {
-              return this._group;
-          },
-          enumerable: true,
-          configurable: true
-      });
       SimpleBudgetElement.prototype.accept = function (visitor) {
           visitor.visitSimpleBudgetElement(this);
       };
@@ -1146,7 +1152,6 @@
       };
       return SimpleBudgetElement;
   }(BudgetElement));
-  //# sourceMappingURL=simple-budget-element.js.map
 
   var BudgetState;
   (function (BudgetState) {
@@ -1170,12 +1175,12 @@
           this.year = budgetConfig.year;
           var initialize = function (e, type, elements) {
               if (e.children && e.children.length > 0) {
-                  var group_1 = new BudgetElementGroup(e.name, e.description || '', type, _this.minAmount);
+                  var group_1 = new BudgetElementGroup(_this.getBudgetElementConfig(e, type));
                   e.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_1); });
                   elements.push(group_1);
               }
               else if (_this.isAcceptableAmount(e.amount)) {
-                  elements.push(new SimpleBudgetElement(e.amount, e.name, e.description || '', type, _this.minAmount));
+                  elements.push(new SimpleBudgetElement(_this.getBudgetElementConfig(e, type), e.amount));
               }
               elements.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); });
           };
@@ -1233,11 +1238,20 @@
           });
           return element;
       };
+      Budget.prototype.getBudgetElementConfig = function (element, type) {
+          return {
+              description: element.description || '',
+              feedbackMessages: element.feedbackMessages || [],
+              minAmount: this.minAmount,
+              name: element.name,
+              type: type,
+          };
+      };
       Budget.prototype.initializeBudgetElement = function (data, type, parent) {
           var _this = this;
           if (data.children && data.children.length > 0) {
               Budget._amountStack.push(0);
-              var group_2 = new BudgetElementGroup(data.name, data.description || '', type, this.minAmount);
+              var group_2 = new BudgetElementGroup(this.getBudgetElementConfig(data, type));
               data.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_2); });
               var totalAmount = Budget._amountStack[Budget._amountStack.length - 1];
               if (parent) {
@@ -1245,7 +1259,7 @@
                       parent.addChild(group_2);
                   }
                   else if (this.isAcceptableAmount(totalAmount)) {
-                      parent.addChild(new SimpleBudgetElement(totalAmount, data.name, data.description || '', type, this.minAmount));
+                      parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), totalAmount));
                   }
               }
               Budget._amountStack.pop();
@@ -1257,7 +1271,7 @@
               if (Budget._amountStack.length > 0) {
                   Budget._amountStack[Budget._amountStack.length - 1] += data.amount;
               }
-              parent.addChild(new SimpleBudgetElement(data.amount, data.name, data.description || '', type, this.minAmount));
+              parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), data.amount));
           }
       };
       Budget.prototype.isAcceptableAmount = function (amount) {
@@ -1266,7 +1280,6 @@
       Budget._amountStack = [];
       return Budget;
   }());
-  //# sourceMappingURL=budget.js.map
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1650,7 +1663,6 @@
       };
       return AddCommand;
   }());
-  //# sourceMappingURL=add-command.js.map
 
   var Event = (function () {
       function Event() {
@@ -1673,7 +1685,6 @@
       };
       return Event;
   }());
-  //# sourceMappingURL=event.js.map
 
   function isCommand(command) {
       return command !== undefined && command.execute !== undefined;
@@ -1681,7 +1692,6 @@
   function isUndoableCommand(command) {
       return isCommand(command) && command.undo !== undefined;
   }
-  //# sourceMappingURL=command.js.map
 
   var CommandInvoker = (function () {
       function CommandInvoker() {
@@ -1726,7 +1736,6 @@
       };
       return CommandInvoker;
   }());
-  //# sourceMappingURL=command-invoker.js.map
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
@@ -1756,7 +1765,6 @@
       };
       return DeleteCommand;
   }());
-  //# sourceMappingURL=delete-command.js.map
 
   var RenderingVisitor = (function () {
       function RenderingVisitor(defaultTransitionDuration) {
@@ -1885,7 +1893,6 @@
       };
       return RenderingVisitor;
   }());
-  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -2622,7 +2629,6 @@
       };
       return Layout;
   }());
-  //# sourceMappingURL=layout.js.map
 
   function isLayoutConfig(config) {
       return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
@@ -2635,7 +2641,6 @@
           !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
           !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
   }
-  //# sourceMappingURL=layout-config.js.map
 
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
@@ -2746,7 +2751,6 @@
       };
       return BarsLayout;
   }(Layout));
-  //# sourceMappingURL=bars-layout.js.map
 
   var MIN_COUNT_PER_LINE = 5;
   var GridLayout = (function (_super) {
@@ -2889,7 +2893,6 @@
       };
       return GridLayout;
   }(Layout));
-  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
@@ -3006,9 +3009,6 @@
       };
       return HorizontalBarsLayout;
   }(Layout));
-  //# sourceMappingURL=horizontal-bars-layout.js.map
-
-  //# sourceMappingURL=main.js.map
 
   exports.Budget = Budget;
   exports.BudgetElement = BudgetElement;

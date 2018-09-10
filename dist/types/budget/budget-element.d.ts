@@ -1,28 +1,26 @@
-import { Selection } from 'd3-selection';
 import { AbstractPolygonsGroup } from '../geometry/abstract-polygons-group';
+import { D3Selection } from '../utils/types';
+import { BudgetElementConfig, BudgetElementType } from './budget-element-config';
 import { BudgetElementVisitor } from './visitors/budget-element-visitor';
-export declare enum BudgetElementType {
-    DEFICIT = "deficit",
-    INCOME = "income",
-    SPENDING = "spending"
-}
 export declare abstract class BudgetElement {
-    protected _minAmount: number;
-    protected _activeLevel: number;
-    protected _level: number;
     readonly id: string;
     readonly name: string;
     readonly description: string;
     readonly type: BudgetElementType;
     parent: BudgetElement;
-    protected constructor(name: string, description: string, type: BudgetElementType, minAmount: number);
+    protected _minAmount: number;
+    protected _activeLevel: number;
+    protected _level: number;
+    private _feedbackMessages;
+    protected constructor(config: BudgetElementConfig);
     abstract activeLevel: number;
     abstract hasFocus: boolean;
     abstract readonly initialAmount: number;
     abstract level: number;
-    abstract svgElement: Selection<any, any, any, any>;
     abstract readonly polygonsGroup: AbstractPolygonsGroup;
+    abstract svgElement: D3Selection;
     amount: number;
+    readonly feedbackMessage: string;
     readonly isActive: boolean;
     readonly root: BudgetElement;
     selectedAmount: number;

@@ -1,11 +1,12 @@
 import { descending } from 'd3-array';
-import { Selection } from 'd3-selection';
 
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
 import { PolygonsSuperGroup } from '../geometry/polygons-super-group';
+import { D3Selection } from '../utils/types';
 
-import { BudgetElement, BudgetElementType } from './budget-element';
+import { BudgetElement } from './budget-element';
+import { BudgetElementConfig } from './budget-element-config';
 import { BudgetElementVisitor } from './visitors/budget-element-visitor';
 
 export class BudgetElementGroup extends BudgetElement {
@@ -13,12 +14,11 @@ export class BudgetElementGroup extends BudgetElement {
   private readonly _group: PolygonsSuperGroup;
 
   private _hasFocus: boolean;
-  private _svgElement: Selection<any, any, any, any>;
+  private _svgElement: D3Selection;
 
-  constructor(name = '', description: '', type: BudgetElementType = BudgetElementType.SPENDING,
-              minAmount: number = Config.MIN_AMOUNT,
+  constructor(config: BudgetElementConfig,
               polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
-    super(name, description, type, minAmount);
+    super(config);
     this._children = [];
     this._group = new PolygonsSuperGroup(polygonsGroupConfig, Config.BUDGET_SUB_ELEMENTS_SPACING);
     this._hasFocus = false;
@@ -77,11 +77,15 @@ export class BudgetElementGroup extends BudgetElement {
     this._children.forEach(c => c.level = level + 1);
   }
 
-  get svgElement(): Selection<any, any, any, any> {
+  get polygonsGroup(): PolygonsSuperGroup {
+    return this._group;
+  }
+
+  get svgElement(): D3Selection {
     return this._svgElement;
   }
 
-  set svgElement(svgElement: Selection<any, any, any, any>) {
+  set svgElement(svgElement: D3Selection) {
     if (!svgElement) {
       throw ReferenceError('The specified element is undefined.');
     }
@@ -106,10 +110,6 @@ export class BudgetElementGroup extends BudgetElement {
     });
     this._svgElement.append('polygon')
       .attr('class', `boundary boundary${this.level}`);
-  }
-
-  get polygonsGroup(): PolygonsSuperGroup {
-    return this._group;
   }
 
   get children() {

@@ -3,7 +3,8 @@ import { descending } from 'd3-array';
 import { Config } from '../config';
 
 import { isBudgetConfig, BudgetConfig } from './budget-config';
-import { BudgetElement, BudgetElementType } from './budget-element';
+import { BudgetElement } from './budget-element';
+import { BudgetElementConfig, BudgetElementType } from './budget-element-config';
 import { BudgetElementGroup } from './budget-element-group';
 import { SimpleBudgetElement } from './simple-budget-element';
 
@@ -56,11 +57,11 @@ export class Budget {
 
     const initialize = (e, type, elements) => {
       if (e.children && e.children.length > 0) {
-        const group = new BudgetElementGroup(e.name, e.description || '', type, this.minAmount);
+        const group = new BudgetElementGroup(this.getBudgetElementConfig(e, type));
         e.children.forEach(c => this.initializeBudgetElement(c, type, group));
         elements.push(group);
       } else if (this.isAcceptableAmount(e.amount)) {
-        elements.push(new SimpleBudgetElement(e.amount, e.name, e.description || '', type, this.minAmount));
+        elements.push(new SimpleBudgetElement(this.getBudgetElementConfig(e, type), e.amount));
       }
       elements.sort((a, b) => descending(a.amount, b.amount));
     };
@@ -135,6 +136,23 @@ export class Budget {
   }
 
   /**
+   * Gets the budget element configuration of the specified element.
+   *
+   * @param element                     The element to use to retrieved the configuration associated.
+   * @param {BudgetElementType} type    The type of the element.
+   * @returns {BudgetElementConfig}     The configuration associated with the element specified.
+   */
+  private getBudgetElementConfig(element: any, type: BudgetElementType): BudgetElementConfig {
+    return {
+      description: element.description || '',
+      feedbackMessages: element.feedbackMessages || [],
+      minAmount: this.minAmount,
+      name: element.name,
+      type: type,
+    };
+  }
+
+  /**
    * Initialize a budget element.
    *
    * @param data                            The data to use to initialize the element.
@@ -144,7 +162,7 @@ export class Budget {
   private initializeBudgetElement(data: any, type: BudgetElementType, parent: BudgetElementGroup) {
     if (data.children && data.children.length > 0) {
       Budget._amountStack.push(0);
-      const group = new BudgetElementGroup(data.name, data.description || '', type, this.minAmount);
+      const group = new BudgetElementGroup(this.getBudgetElementConfig(data, type));
       data.children.forEach(c => this.initializeBudgetElement(c, type, group));
 
       const totalAmount = Budget._amountStack[Budget._amountStack.length - 1];
@@ -152,7 +170,7 @@ export class Budget {
        if (this.isAcceptableAmount(group.amount) && group.children.length > 1) {
          parent.addChild(group);
        } else if (this.isAcceptableAmount(totalAmount)) {
-         parent.addChild(new SimpleBudgetElement(totalAmount, data.name, data.description || '', type, this.minAmount));
+         parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), totalAmount));
        }
       }
       Budget._amountStack.pop();
@@ -163,7 +181,7 @@ export class Budget {
       if (Budget._amountStack.length > 0) {
         Budget._amountStack[Budget._amountStack.length - 1] += data.amount;
       }
-      parent.addChild(new SimpleBudgetElement(data.amount, data.name, data.description || '', type, this.minAmount));
+      parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), data.amount));
     }
   }
 

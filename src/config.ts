@@ -23,11 +23,11 @@ export class Config {
    * The configuration of the gauge.
    */
   static readonly GAUGE_CONFIG = {
-    barWidth: 15,
-    height: 60,
+    barWidth: 12.5,
+    height: 55,
     interval: [-26000000, 26000000],
-    needleRadius: 6,
-    width: 120,
+    needleRadius: 5.5,
+    width: 110,
   };
 
   /**

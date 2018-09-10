@@ -35,6 +35,7 @@ export class GridLayout extends Layout {
       this._budgetWidth = 2 * (2 * this._config.horizontalPadding + MIN_COUNT_PER_LINE *
         this._config.polygonLength + (MIN_COUNT_PER_LINE - 1) * this._spacing);
     } else {
+      this._countPerLine = count;
       this._spacing = (halfWidth - 2 * this._config.horizontalPadding -
         count * this._config.polygonLength) / (count - 1);
     }

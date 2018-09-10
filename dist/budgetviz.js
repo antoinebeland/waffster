@@ -25,7 +25,6 @@
           (config.startingPosition === undefined ||
               config.startingPosition >= 0 && config.startingPosition < config.maxCountPerLine);
   }
-  //# sourceMappingURL=polygons-group-configs.js.map
 
   var Config = (function () {
       function Config() {
@@ -53,7 +52,6 @@
       };
       return Config;
   }());
-  //# sourceMappingURL=config.js.map
 
   function isBudgetElement(budgetElement) {
       var isValid = false;
@@ -71,7 +69,6 @@
           budgetConfig.spendings.length > 0 &&
           budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
   }
-  //# sourceMappingURL=budget-config.js.map
 
   (function (BudgetElementType) {
       BudgetElementType["DEFICIT"] = "deficit";
@@ -156,7 +153,6 @@
       };
       return BoundingBox;
   }());
-  //# sourceMappingURL=bounding-box.js.map
 
   var AbstractPolygonsGroup = (function () {
       function AbstractPolygonsGroup(config) {
@@ -367,7 +363,6 @@
       };
       return AbstractPolygonsGroup;
   }());
-  //# sourceMappingURL=abstract-polygons-group.js.map
 
   var PolygonsSuperGroupState;
   (function (PolygonsSuperGroupState) {
@@ -577,7 +572,6 @@
       };
       return PolygonsSuperGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=polygons-super-group.js.map
 
   var Formatter = (function () {
       function Formatter() {
@@ -596,7 +590,6 @@
       };
       return Formatter;
   }());
-  //# sourceMappingURL=formatter.js.map
 
   var BudgetElement = (function () {
       function BudgetElement(config) {
@@ -685,7 +678,6 @@
       });
       return BudgetElement;
   }());
-  //# sourceMappingURL=budget-element.js.map
 
   var BudgetElementGroup = (function (_super) {
       __extends(BudgetElementGroup, _super);
@@ -826,7 +818,6 @@
       };
       return BudgetElementGroup;
   }(BudgetElement));
-  //# sourceMappingURL=budget-element-group.js.map
 
   var Square = (function () {
       function Square(position, sideLength) {
@@ -907,7 +898,6 @@
       Square._currentId = 0;
       return Square;
   }());
-  //# sourceMappingURL=square.js.map
 
   var SquaresGroup = (function (_super) {
       __extends(SquaresGroup, _super);
@@ -1077,7 +1067,6 @@
       };
       return SquaresGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=squares-group.js.map
 
   var SimpleBudgetElement = (function (_super) {
       __extends(SimpleBudgetElement, _super);
@@ -1163,7 +1152,6 @@
       };
       return SimpleBudgetElement;
   }(BudgetElement));
-  //# sourceMappingURL=simple-budget-element.js.map
 
   var BudgetState;
   (function (BudgetState) {
@@ -1253,7 +1241,7 @@
       Budget.prototype.getBudgetElementConfig = function (element, type) {
           return {
               description: element.description || '',
-              feedbackMessages: element.feedbackMessages || [],
+              feedbackMessages: element.feedback || [],
               minAmount: this.minAmount,
               name: element.name,
               type: type,
@@ -1292,7 +1280,6 @@
       Budget._amountStack = [];
       return Budget;
   }());
-  //# sourceMappingURL=budget.js.map
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1676,7 +1663,6 @@
       };
       return AddCommand;
   }());
-  //# sourceMappingURL=add-command.js.map
 
   var Event = (function () {
       function Event() {
@@ -1699,7 +1685,6 @@
       };
       return Event;
   }());
-  //# sourceMappingURL=event.js.map
 
   function isCommand(command) {
       return command !== undefined && command.execute !== undefined;
@@ -1707,7 +1692,6 @@
   function isUndoableCommand(command) {
       return isCommand(command) && command.undo !== undefined;
   }
-  //# sourceMappingURL=command.js.map
 
   var CommandInvoker = (function () {
       function CommandInvoker() {
@@ -1752,7 +1736,6 @@
       };
       return CommandInvoker;
   }());
-  //# sourceMappingURL=command-invoker.js.map
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
@@ -1782,7 +1765,6 @@
       };
       return DeleteCommand;
   }());
-  //# sourceMappingURL=delete-command.js.map
 
   var RenderingVisitor = (function () {
       function RenderingVisitor(defaultTransitionDuration) {
@@ -1911,7 +1893,6 @@
       };
       return RenderingVisitor;
   }());
-  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -2174,7 +2155,6 @@
       };
       return BudgetVisualization;
   }());
-  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2649,7 +2629,6 @@
       };
       return Layout;
   }());
-  //# sourceMappingURL=layout.js.map
 
   function isLayoutConfig(config) {
       return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
@@ -2662,7 +2641,6 @@
           !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
           !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
   }
-  //# sourceMappingURL=layout-config.js.map
 
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
@@ -2773,7 +2751,6 @@
       };
       return BarsLayout;
   }(Layout));
-  //# sourceMappingURL=bars-layout.js.map
 
   var MIN_COUNT_PER_LINE = 5;
   var GridLayout = (function (_super) {
@@ -2916,7 +2893,6 @@
       };
       return GridLayout;
   }(Layout));
-  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
@@ -3033,9 +3009,6 @@
       };
       return HorizontalBarsLayout;
   }(Layout));
-  //# sourceMappingURL=horizontal-bars-layout.js.map
-
-  //# sourceMappingURL=main.js.map
 
   exports.Budget = Budget;
   exports.BudgetElement = BudgetElement;

@@ -145,7 +145,7 @@ export class Budget {
   private getBudgetElementConfig(element: any, type: BudgetElementType): BudgetElementConfig {
     return {
       description: element.description || '',
-      feedbackMessages: element.feedbackMessages || [],
+      feedbackMessages: element.feedback || [],
       minAmount: this.minAmount,
       name: element.name,
       type: type,

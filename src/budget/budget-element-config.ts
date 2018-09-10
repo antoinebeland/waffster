@@ -71,7 +71,7 @@ export interface BudgetElementConfig {
  * @returns {boolean}   TRUE if the configuration is valid. FALSE otherwise.
  */
 export function isBudgetElementConfig(config: any): config is BudgetElementConfig {
-  return config && config.name !== undefined && config.descripton !== undefined && config.type !== undefined &&
-    !isNaN(config.minAmount) && config.amount > 0 && config.feedbackMessages !== undefined &&
-    config.feedbackMessages.every(f => isFeedbackMessage(f));
+  return config && config.name !== undefined && config.description !== undefined && config.type !== undefined &&
+    !isNaN(config.minAmount) && config.minAmount > 0 && (config.feedbackMessages === undefined ||
+    config.feedbackMessages !== undefined && config.feedbackMessages.every(f => isFeedbackMessage(f)));
 }

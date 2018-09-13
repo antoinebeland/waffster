@@ -2765,7 +2765,7 @@
           var halfWidth = _this._width / 2;
           var count = Math.floor((halfWidth - 2 * _this._config.horizontalPadding) /
               (_this._config.polygonLength + _this._config.horizontalMinSpacing));
-          if (count < MIN_COUNT_PER_LINE) {
+          if (count < MIN_COUNT_PER_LINE && (budget.spendings.length > count || budget.incomes.length > count)) {
               _this._countPerLine = MIN_COUNT_PER_LINE;
               _this._spacing = _this._config.horizontalMinSpacing;
               _this._budgetWidth = 2 * (2 * _this._config.horizontalPadding + MIN_COUNT_PER_LINE *

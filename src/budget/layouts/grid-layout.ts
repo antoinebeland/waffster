@@ -29,7 +29,7 @@ export class GridLayout extends Layout {
     let count = Math.floor((halfWidth - 2 * this._config.horizontalPadding) /
       (this._config.polygonLength + this._config.horizontalMinSpacing));
 
-    if (count < MIN_COUNT_PER_LINE) {
+    if (count < MIN_COUNT_PER_LINE && (budget.spendings.length > count || budget.incomes.length > count)) {
       this._countPerLine = MIN_COUNT_PER_LINE;
       this._spacing = this._config.horizontalMinSpacing;
       this._budgetWidth = 2 * (2 * this._config.horizontalPadding + MIN_COUNT_PER_LINE *

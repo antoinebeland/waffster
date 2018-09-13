@@ -1,4 +1,3 @@
-import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
 import { SquaresGroup } from '../geometry/squares-group';
 import { D3Selection } from '../utils/types';
@@ -14,8 +13,7 @@ export class SimpleBudgetElement extends BudgetElement {
   private _hasFocus: boolean;
   private _svgElement: D3Selection;
 
-  constructor(config: BudgetElementConfig, amount = 0,
-              polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
+  constructor(config: BudgetElementConfig, amount = 0, polygonsGroupConfig: PolygonsGroupConfig) {
     super(config);
     this.initialAmount = amount;
     this._group = new SquaresGroup(Math.round(amount / this._minAmount), polygonsGroupConfig);

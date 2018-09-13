@@ -1,6 +1,7 @@
 import { descending } from 'd3-array';
 
 import { Config } from '../config';
+import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
 
 import { isBudgetConfig, BudgetConfig } from './budget-config';
 import { BudgetElement } from './budget-element';
@@ -37,15 +38,18 @@ export class Budget {
   readonly minAmount: number;
 
   private static _amountStack = [];
+  private readonly _polygonsGroupConfig: PolygonsGroupConfig;
 
   /**
    * Initializes a new instance of the Budget class.
    *
-   * @param {BudgetConfig} budgetConfig   The budget configuration to use to initialize a budget.
-   * @param {number} [minAmount]          The min amount to use. By default, the budget uses the min amount specified
-   *                                      in the Config class.
+   * @param {BudgetConfig} budgetConfig                   The budget configuration to use to initialize a budget.
+   * @param {number} [minAmount]                          The min amount to use. By default, the budget uses the min
+   *                                                      amount specified in the Config class.
+   * @param {PolygonsGroupConfig} [polygonsGroupConfig]   The configuration to use for the polygons group.
    */
-  constructor(budgetConfig: BudgetConfig, minAmount: number = Config.MIN_AMOUNT) {
+  constructor(budgetConfig: BudgetConfig, minAmount: number = Config.MIN_AMOUNT,
+              polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
     if (!isBudgetConfig(budgetConfig)) {
       throw new TypeError('Invalid configuration specified.');
     }
@@ -54,14 +58,16 @@ export class Budget {
     }
     this.minAmount = minAmount;
     this.year = budgetConfig.year;
+    this._polygonsGroupConfig = polygonsGroupConfig;
 
     const initialize = (e, type, elements) => {
       if (e.children && e.children.length > 0) {
-        const group = new BudgetElementGroup(this.getBudgetElementConfig(e, type));
+        const group = new BudgetElementGroup(this.getBudgetElementConfig(e, type), this._polygonsGroupConfig);
         e.children.forEach(c => this.initializeBudgetElement(c, type, group));
         elements.push(group);
       } else if (this.isAcceptableAmount(e.amount)) {
-        elements.push(new SimpleBudgetElement(this.getBudgetElementConfig(e, type), e.amount));
+        elements.push(new SimpleBudgetElement(this.getBudgetElementConfig(e, type), e.amount,
+          this._polygonsGroupConfig));
       }
       elements.sort((a, b) => descending(a.amount, b.amount));
     };
@@ -162,7 +168,7 @@ export class Budget {
   private initializeBudgetElement(data: any, type: BudgetElementType, parent: BudgetElementGroup) {
     if (data.children && data.children.length > 0) {
       Budget._amountStack.push(0);
-      const group = new BudgetElementGroup(this.getBudgetElementConfig(data, type));
+      const group = new BudgetElementGroup(this.getBudgetElementConfig(data, type), this._polygonsGroupConfig);
       data.children.forEach(c => this.initializeBudgetElement(c, type, group));
 
       const totalAmount = Budget._amountStack[Budget._amountStack.length - 1];
@@ -170,7 +176,8 @@ export class Budget {
        if (this.isAcceptableAmount(group.amount) && group.children.length > 1) {
          parent.addChild(group);
        } else if (this.isAcceptableAmount(totalAmount)) {
-         parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), totalAmount));
+         parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), totalAmount,
+           this._polygonsGroupConfig));
        }
       }
       Budget._amountStack.pop();
@@ -181,7 +188,8 @@ export class Budget {
       if (Budget._amountStack.length > 0) {
         Budget._amountStack[Budget._amountStack.length - 1] += data.amount;
       }
-      parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), data.amount));
+      parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), data.amount,
+        this._polygonsGroupConfig));
     }
   }
 

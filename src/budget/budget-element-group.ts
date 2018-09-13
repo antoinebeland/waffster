@@ -16,8 +16,7 @@ export class BudgetElementGroup extends BudgetElement {
   private _hasFocus: boolean;
   private _svgElement: D3Selection;
 
-  constructor(config: BudgetElementConfig,
-              polygonsGroupConfig: PolygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG) {
+  constructor(config: BudgetElementConfig, polygonsGroupConfig: PolygonsGroupConfig) {
     super(config);
     this._children = [];
     this._group = new PolygonsSuperGroup(polygonsGroupConfig, Config.BUDGET_SUB_ELEMENTS_SPACING);

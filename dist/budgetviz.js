@@ -25,7 +25,6 @@
           (config.startingPosition === undefined ||
               config.startingPosition >= 0 && config.startingPosition < config.maxCountPerLine);
   }
-  //# sourceMappingURL=polygons-group-configs.js.map
 
   var Config = (function () {
       function Config() {
@@ -70,7 +69,6 @@
           budgetConfig.spendings.length > 0 &&
           budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
   }
-  //# sourceMappingURL=budget-config.js.map
 
   (function (BudgetElementType) {
       BudgetElementType["DEFICIT"] = "deficit";
@@ -87,7 +85,6 @@
           !isNaN(config.minAmount) && config.minAmount > 0 && (config.feedbackMessages === undefined ||
           config.feedbackMessages !== undefined && config.feedbackMessages.every(function (f) { return isFeedbackMessage(f); }));
   }
-  //# sourceMappingURL=budget-element-config.js.map
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -156,7 +153,6 @@
       };
       return BoundingBox;
   }());
-  //# sourceMappingURL=bounding-box.js.map
 
   var AbstractPolygonsGroup = (function () {
       function AbstractPolygonsGroup(config) {
@@ -367,7 +363,6 @@
       };
       return AbstractPolygonsGroup;
   }());
-  //# sourceMappingURL=abstract-polygons-group.js.map
 
   var PolygonsSuperGroupState;
   (function (PolygonsSuperGroupState) {
@@ -577,7 +572,6 @@
       };
       return PolygonsSuperGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=polygons-super-group.js.map
 
   var Formatter = (function () {
       function Formatter() {
@@ -596,7 +590,6 @@
       };
       return Formatter;
   }());
-  //# sourceMappingURL=formatter.js.map
 
   var BudgetElement = (function () {
       function BudgetElement(config) {
@@ -685,12 +678,10 @@
       });
       return BudgetElement;
   }());
-  //# sourceMappingURL=budget-element.js.map
 
   var BudgetElementGroup = (function (_super) {
       __extends(BudgetElementGroup, _super);
       function BudgetElementGroup(config, polygonsGroupConfig) {
-          if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
           var _this = _super.call(this, config) || this;
           _this._children = [];
           _this._group = new PolygonsSuperGroup(polygonsGroupConfig, Config.BUDGET_SUB_ELEMENTS_SPACING);
@@ -826,7 +817,6 @@
       };
       return BudgetElementGroup;
   }(BudgetElement));
-  //# sourceMappingURL=budget-element-group.js.map
 
   var Square = (function () {
       function Square(position, sideLength) {
@@ -907,7 +897,6 @@
       Square._currentId = 0;
       return Square;
   }());
-  //# sourceMappingURL=square.js.map
 
   var SquaresGroup = (function (_super) {
       __extends(SquaresGroup, _super);
@@ -1077,13 +1066,11 @@
       };
       return SquaresGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=squares-group.js.map
 
   var SimpleBudgetElement = (function (_super) {
       __extends(SimpleBudgetElement, _super);
       function SimpleBudgetElement(config, amount, polygonsGroupConfig) {
           if (amount === void 0) { amount = 0; }
-          if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
           var _this = _super.call(this, config) || this;
           _this.initialAmount = amount;
           _this._group = new SquaresGroup(Math.round(amount / _this._minAmount), polygonsGroupConfig);
@@ -1163,7 +1150,6 @@
       };
       return SimpleBudgetElement;
   }(BudgetElement));
-  //# sourceMappingURL=simple-budget-element.js.map
 
   var BudgetState;
   (function (BudgetState) {
@@ -1172,8 +1158,9 @@
       BudgetState["SURPLUS"] = "surplus";
   })(BudgetState || (BudgetState = {}));
   var Budget = (function () {
-      function Budget(budgetConfig, minAmount) {
+      function Budget(budgetConfig, minAmount, polygonsGroupConfig) {
           if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
+          if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
           var _this = this;
           this.incomes = [];
           this.spendings = [];
@@ -1185,14 +1172,15 @@
           }
           this.minAmount = minAmount;
           this.year = budgetConfig.year;
+          this._polygonsGroupConfig = polygonsGroupConfig;
           var initialize = function (e, type, elements) {
               if (e.children && e.children.length > 0) {
-                  var group_1 = new BudgetElementGroup(_this.getBudgetElementConfig(e, type));
+                  var group_1 = new BudgetElementGroup(_this.getBudgetElementConfig(e, type), _this._polygonsGroupConfig);
                   e.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_1); });
                   elements.push(group_1);
               }
               else if (_this.isAcceptableAmount(e.amount)) {
-                  elements.push(new SimpleBudgetElement(_this.getBudgetElementConfig(e, type), e.amount));
+                  elements.push(new SimpleBudgetElement(_this.getBudgetElementConfig(e, type), e.amount, _this._polygonsGroupConfig));
               }
               elements.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); });
           };
@@ -1263,7 +1251,7 @@
           var _this = this;
           if (data.children && data.children.length > 0) {
               Budget._amountStack.push(0);
-              var group_2 = new BudgetElementGroup(this.getBudgetElementConfig(data, type));
+              var group_2 = new BudgetElementGroup(this.getBudgetElementConfig(data, type), this._polygonsGroupConfig);
               data.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_2); });
               var totalAmount = Budget._amountStack[Budget._amountStack.length - 1];
               if (parent) {
@@ -1271,7 +1259,7 @@
                       parent.addChild(group_2);
                   }
                   else if (this.isAcceptableAmount(totalAmount)) {
-                      parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), totalAmount));
+                      parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), totalAmount, this._polygonsGroupConfig));
                   }
               }
               Budget._amountStack.pop();
@@ -1283,7 +1271,7 @@
               if (Budget._amountStack.length > 0) {
                   Budget._amountStack[Budget._amountStack.length - 1] += data.amount;
               }
-              parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), data.amount));
+              parent.addChild(new SimpleBudgetElement(this.getBudgetElementConfig(data, type), data.amount, this._polygonsGroupConfig));
           }
       };
       Budget.prototype.isAcceptableAmount = function (amount) {
@@ -1292,7 +1280,6 @@
       Budget._amountStack = [];
       return Budget;
   }());
-  //# sourceMappingURL=budget.js.map
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1676,7 +1663,6 @@
       };
       return AddCommand;
   }());
-  //# sourceMappingURL=add-command.js.map
 
   var Event = (function () {
       function Event() {
@@ -1699,7 +1685,6 @@
       };
       return Event;
   }());
-  //# sourceMappingURL=event.js.map
 
   function isCommand(command) {
       return command !== undefined && command.execute !== undefined;
@@ -1707,7 +1692,6 @@
   function isUndoableCommand(command) {
       return isCommand(command) && command.undo !== undefined;
   }
-  //# sourceMappingURL=command.js.map
 
   var CommandInvoker = (function () {
       function CommandInvoker() {
@@ -1752,7 +1736,6 @@
       };
       return CommandInvoker;
   }());
-  //# sourceMappingURL=command-invoker.js.map
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
@@ -1782,7 +1765,6 @@
       };
       return DeleteCommand;
   }());
-  //# sourceMappingURL=delete-command.js.map
 
   var RenderingVisitor = (function () {
       function RenderingVisitor(defaultTransitionDuration) {
@@ -1911,7 +1893,6 @@
       };
       return RenderingVisitor;
   }());
-  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -2174,7 +2155,6 @@
       };
       return BudgetVisualization;
   }());
-  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2649,7 +2629,6 @@
       };
       return Layout;
   }());
-  //# sourceMappingURL=layout.js.map
 
   function isLayoutConfig(config) {
       return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
@@ -2662,7 +2641,6 @@
           !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
           !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
   }
-  //# sourceMappingURL=layout-config.js.map
 
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
@@ -2773,7 +2751,6 @@
       };
       return BarsLayout;
   }(Layout));
-  //# sourceMappingURL=bars-layout.js.map
 
   var MIN_COUNT_PER_LINE = 5;
   var GridLayout = (function (_super) {
@@ -2917,7 +2894,6 @@
       };
       return GridLayout;
   }(Layout));
-  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
@@ -3034,9 +3010,6 @@
       };
       return HorizontalBarsLayout;
   }(Layout));
-  //# sourceMappingURL=horizontal-bars-layout.js.map
-
-  //# sourceMappingURL=main.js.map
 
   exports.Budget = Budget;
   exports.BudgetElement = BudgetElement;

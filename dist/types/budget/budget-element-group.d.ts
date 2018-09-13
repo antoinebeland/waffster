@@ -9,7 +9,7 @@ export declare class BudgetElementGroup extends BudgetElement {
     private readonly _group;
     private _hasFocus;
     private _svgElement;
-    constructor(config: BudgetElementConfig, polygonsGroupConfig?: PolygonsGroupConfig);
+    constructor(config: BudgetElementConfig, polygonsGroupConfig: PolygonsGroupConfig);
     activeLevel: number;
     hasFocus: boolean;
     readonly initialAmount: number;

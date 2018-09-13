@@ -2762,6 +2762,7 @@
           }
           _this._config = config;
           _this._budgetWidth = _this._width;
+          _this._spacing = 0;
           var halfWidth = _this._width / 2;
           var count = Math.floor((halfWidth - 2 * _this._config.horizontalPadding) /
               (_this._config.polygonLength + _this._config.horizontalMinSpacing));
@@ -2773,8 +2774,10 @@
           }
           else {
               _this._countPerLine = count;
-              _this._spacing = (halfWidth - 2 * _this._config.horizontalPadding -
-                  count * _this._config.polygonLength) / (count - 1);
+              if (count > 1) {
+                  _this._spacing = (halfWidth - 2 * _this._config.horizontalPadding -
+                      count * _this._config.polygonLength) / (count - 1);
+              }
           }
           return _this;
       }

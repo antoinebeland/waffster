@@ -8,7 +8,7 @@
   const HorizontalBarsLayout = bv.HorizontalBarsLayout;
   const Orientation = bv.Orientation;
 
-  d3.json('./data/2018.json').then((config) => {
+  d3.json('./data/2018-mobile.json').then((config) => {
     const svg = d3.select('svg');
     const budget = new Budget(config);
     const visualizationConfigs = [

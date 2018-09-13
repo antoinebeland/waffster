@@ -24,6 +24,7 @@ export class GridLayout extends Layout {
     }
     this._config = config;
     this._budgetWidth = this._width;
+    this._spacing = 0;
 
     const halfWidth = this._width / 2;
     let count = Math.floor((halfWidth - 2 * this._config.horizontalPadding) /
@@ -36,8 +37,10 @@ export class GridLayout extends Layout {
         this._config.polygonLength + (MIN_COUNT_PER_LINE - 1) * this._spacing);
     } else {
       this._countPerLine = count;
-      this._spacing = (halfWidth - 2 * this._config.horizontalPadding -
-        count * this._config.polygonLength) / (count - 1);
+      if (count > 1) {
+        this._spacing = (halfWidth - 2 * this._config.horizontalPadding -
+          count * this._config.polygonLength) / (count - 1);
+      }
     }
   }
 

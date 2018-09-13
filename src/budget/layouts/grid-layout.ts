@@ -1,4 +1,4 @@
-import { sum } from 'd3-array';
+import { max, sum } from 'd3-array';
 import * as d3 from 'd3-selection';
 import 'd3-transition';
 
@@ -22,28 +22,17 @@ export class GridLayout extends Layout {
     if (!isLayoutConfig(config)) {
       throw new TypeError('Invalid configuration specified.');
     }
-    this._config = config;
-    this._spacing = 0;
-
-    const halfWidth = this._width / 2;
-    let count = Math.floor((halfWidth - 2 * this._config.horizontalPadding) /
-      (this._config.polygonLength + this._config.horizontalMinSpacing));
-
-    if (count < minCountPerLine && (budget.spendings.length > count || budget.incomes.length > count)) {
-      this._countPerLine = minCountPerLine;
-      this._spacing = this._config.horizontalMinSpacing;
-    } else {
-      this._countPerLine = count;
-      if (count > 1) {
-        this._spacing = (halfWidth - 2 * this._config.horizontalPadding -
-          count * this._config.polygonLength) / (count - 1);
-      }
+    if (minCountPerLine <= 0) {
+      throw new RangeError('The min count per line must be a positive number.');
     }
+    this._config = config;
+
+    const maxCountElements = Math.max(budget.spendings.length, budget.incomes.length);
+    this._countPerLine = Math.min(minCountPerLine, maxCountElements);
+    this._spacing = (this._countPerLine > 1) ? this._config.horizontalMinSpacing : 0;
+
     this._budgetWidth = 2 * (2 * this._config.horizontalPadding + this._countPerLine *
       this._config.polygonLength + (this._countPerLine - 1) * this._spacing);
-
-    console.log(this._budgetWidth);
-    console.log(this._width);
   }
 
   protected initializeLayout() {
@@ -114,30 +103,32 @@ export class GridLayout extends Layout {
   }
 
   protected renderLayout() {
-    let maxTextHeights = [];
+    let maxTextGroupHeights = [];
     const findMaxTextHeights = (d, i) => {
+      const groupIndex = maxTextGroupHeights.length;
       if (i === 0) {
-        maxTextHeights = [];
+        maxTextGroupHeights.push([]);
       }
       if (i % this._countPerLine === 0) {
-        maxTextHeights.push(0);
+        maxTextGroupHeights[groupIndex].push(0);
       }
       const index = Math.floor(i / this._countPerLine);
       const height = d.textHeight;
-      if (maxTextHeights[index] < height) {
-        maxTextHeights[index] = height;
+      if (maxTextGroupHeights[groupIndex][index] < height) {
+        maxTextGroupHeights[groupIndex][index] = height;
       }
     };
 
-    let x, y, maxHeight, maxHeights = [];
+    let x, y, maxHeight, maxGroupHeights = [];
     const applyTransform = (d, i, nodes) => {
+      const groupIndex = maxGroupHeights.length;
       if (i === 0) {
-        maxHeights = [];
+        maxGroupHeights.push([]);
         y = this._config.verticalPadding;
         maxHeight = 0;
       }
       if (i % this._countPerLine === 0) {
-        maxHeights.push(0);
+        maxGroupHeights[groupIndex].push(0);
         x = this._config.horizontalPadding;
         if (i !== 0) {
           y += maxHeight + this._config.verticalMinSpacing;
@@ -146,14 +137,14 @@ export class GridLayout extends Layout {
       } else {
         x += this._config.polygonLength + this._spacing;
       }
-      const maxTextHeight = maxTextHeights[Math.floor(i / this._countPerLine)];
+      const maxTextHeight = maxTextGroupHeights[groupIndex][Math.floor(i / this._countPerLine)];
       d3.select(nodes[i])
         .select('.polygons-group')
         .attr('transform', `translate(0, ${maxTextHeight})`);
 
       if (d.polygonsGroup.boundingBox.height > maxHeight) {
         maxHeight = d.polygonsGroup.boundingBox.height + maxTextHeight;
-        maxHeights[Math.floor(i / this._countPerLine)] = maxHeight;
+        maxGroupHeights[groupIndex][Math.floor(i / this._countPerLine)] = maxHeight;
       }
       return `translate(${x}, ${y})`;
     };
@@ -172,8 +163,12 @@ export class GridLayout extends Layout {
       .transition()
       .duration(this._config.transitionDuration)
       .attr('viewBox', () => {
-        const computedHeight = sum(maxHeights) + 2 * this._config.verticalPadding +
-          (maxHeights.length - 1) * this._config.verticalMinSpacing + 100;
+        console.log(maxGroupHeights);
+        const maxHeightsSum = maxGroupHeights.map(d => sum(d));
+        const index = maxHeightsSum.indexOf(Math.max(...maxHeightsSum));
+
+        const computedHeight = maxHeightsSum[index] + 2 * this._config.verticalPadding +
+          (maxGroupHeights[index].length - 1) * this._config.verticalMinSpacing + 100;
         return `0 0 ${this._budgetWidth} ${computedHeight}`;
       });
   }

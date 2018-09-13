@@ -2755,22 +2755,20 @@
   var MIN_COUNT_PER_LINE = 5;
   var GridLayout = (function (_super) {
       __extends(GridLayout, _super);
-      function GridLayout(budget, svgElement, config) {
+      function GridLayout(budget, svgElement, config, minCountPerLine) {
+          if (minCountPerLine === void 0) { minCountPerLine = MIN_COUNT_PER_LINE; }
           var _this = _super.call(this, budget, svgElement) || this;
           if (!isLayoutConfig(config)) {
               throw new TypeError('Invalid configuration specified.');
           }
           _this._config = config;
-          _this._budgetWidth = _this._width;
           _this._spacing = 0;
           var halfWidth = _this._width / 2;
           var count = Math.floor((halfWidth - 2 * _this._config.horizontalPadding) /
               (_this._config.polygonLength + _this._config.horizontalMinSpacing));
-          if (count < MIN_COUNT_PER_LINE && (budget.spendings.length > count || budget.incomes.length > count)) {
-              _this._countPerLine = MIN_COUNT_PER_LINE;
+          if (count < minCountPerLine && (budget.spendings.length > count || budget.incomes.length > count)) {
+              _this._countPerLine = minCountPerLine;
               _this._spacing = _this._config.horizontalMinSpacing;
-              _this._budgetWidth = 2 * (2 * _this._config.horizontalPadding + MIN_COUNT_PER_LINE *
-                  _this._config.polygonLength + (MIN_COUNT_PER_LINE - 1) * _this._spacing);
           }
           else {
               _this._countPerLine = count;
@@ -2779,6 +2777,10 @@
                       count * _this._config.polygonLength) / (count - 1);
               }
           }
+          _this._budgetWidth = 2 * (2 * _this._config.horizontalPadding + _this._countPerLine *
+              _this._config.polygonLength + (_this._countPerLine - 1) * _this._spacing);
+          console.log(_this._budgetWidth);
+          console.log(_this._width);
           return _this;
       }
       GridLayout.prototype.initializeLayout = function () {

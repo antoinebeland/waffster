@@ -17,24 +17,21 @@ export class GridLayout extends Layout {
   private readonly _spacing: number;
   private readonly _budgetWidth: number;
 
-  constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig) {
+  constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig, minCountPerLine = MIN_COUNT_PER_LINE) {
     super(budget, svgElement);
     if (!isLayoutConfig(config)) {
       throw new TypeError('Invalid configuration specified.');
     }
     this._config = config;
-    this._budgetWidth = this._width;
     this._spacing = 0;
 
     const halfWidth = this._width / 2;
     let count = Math.floor((halfWidth - 2 * this._config.horizontalPadding) /
       (this._config.polygonLength + this._config.horizontalMinSpacing));
 
-    if (count < MIN_COUNT_PER_LINE && (budget.spendings.length > count || budget.incomes.length > count)) {
-      this._countPerLine = MIN_COUNT_PER_LINE;
+    if (count < minCountPerLine && (budget.spendings.length > count || budget.incomes.length > count)) {
+      this._countPerLine = minCountPerLine;
       this._spacing = this._config.horizontalMinSpacing;
-      this._budgetWidth = 2 * (2 * this._config.horizontalPadding + MIN_COUNT_PER_LINE *
-        this._config.polygonLength + (MIN_COUNT_PER_LINE - 1) * this._spacing);
     } else {
       this._countPerLine = count;
       if (count > 1) {
@@ -42,6 +39,11 @@ export class GridLayout extends Layout {
           count * this._config.polygonLength) / (count - 1);
       }
     }
+    this._budgetWidth = 2 * (2 * this._config.horizontalPadding + this._countPerLine *
+      this._config.polygonLength + (this._countPerLine - 1) * this._spacing);
+
+    console.log(this._budgetWidth);
+    console.log(this._width);
   }
 
   protected initializeLayout() {

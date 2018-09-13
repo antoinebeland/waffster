@@ -2861,25 +2861,24 @@
       };
       GridLayout.prototype.renderLayout = function () {
           var _this = this;
-          var maxTextGroupHeights = [];
+          var maxTextHeights = [];
           var findMaxTextHeights = function (d, i) {
-              var groupIndex = maxTextGroupHeights.length;
               if (i === 0) {
-                  maxTextGroupHeights.push([]);
+                  maxTextHeights = [];
               }
               if (i % _this._countPerLine === 0) {
-                  maxTextGroupHeights[groupIndex].push(0);
+                  maxTextHeights.push(0);
               }
               var index = Math.floor(i / _this._countPerLine);
               var height = d.textHeight;
-              if (maxTextGroupHeights[groupIndex][index] < height) {
-                  maxTextGroupHeights[groupIndex][index] = height;
+              if (maxTextHeights[index] < height) {
+                  maxTextHeights[index] = height;
               }
           };
-          var x, y, maxHeight, maxGroupHeights = [];
+          var x, y, groupIndex, maxHeight, maxGroupHeights = [];
           var applyTransform = function (d, i, nodes) {
-              var groupIndex = maxGroupHeights.length;
               if (i === 0) {
+                  groupIndex = maxGroupHeights.length;
                   maxGroupHeights.push([]);
                   y = _this._config.verticalPadding;
                   maxHeight = 0;
@@ -2895,7 +2894,7 @@
               else {
                   x += _this._config.polygonLength + _this._spacing;
               }
-              var maxTextHeight = maxTextGroupHeights[groupIndex][Math.floor(i / _this._countPerLine)];
+              var maxTextHeight = maxTextHeights[Math.floor(i / _this._countPerLine)];
               d3.select(nodes[i])
                   .select('.polygons-group')
                   .attr('transform', "translate(0, " + maxTextHeight + ")");

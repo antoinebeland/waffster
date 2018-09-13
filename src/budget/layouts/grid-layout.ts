@@ -1,4 +1,4 @@
-import { max, sum } from 'd3-array';
+import { sum } from 'd3-array';
 import * as d3 from 'd3-selection';
 import 'd3-transition';
 
@@ -18,7 +18,7 @@ export class GridLayout extends Layout {
   private readonly _budgetWidth: number;
 
   constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig, minCountPerLine = MIN_COUNT_PER_LINE) {
-    super(budget, svgElement);
+    super(budget, svgElement, config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true);
     if (!isLayoutConfig(config)) {
       throw new TypeError('Invalid configuration specified.');
     }
@@ -37,9 +37,11 @@ export class GridLayout extends Layout {
 
   protected initializeLayout() {
     this._budgetGroup.attr('viewBox', `0 0 ${this._budgetWidth} ${this._height}`);
-    this._gaugeGroup
-      .attr('transform',
-        `translate(${this._width / 2 - Config.GAUGE_CONFIG.width / 2}, ${this._height - 110})`);
+    if (this._gaugeGroup) {
+      this._gaugeGroup
+        .attr('transform',
+          `translate(${this._width / 2 - Config.GAUGE_CONFIG.width / 2}, ${this._height - 110})`);
+    }
 
     const initializeLabel = (d, i, nodes) => {
       const g = d3.select(nodes[i]);

@@ -21,7 +21,9 @@ export abstract class Layout {
   protected _height: number;
   protected _width: number;
 
-  protected constructor(budget: Budget, svgElement: D3Selection) {
+  private readonly _isGaugeDisplayed: boolean;
+
+  protected constructor(budget: Budget, svgElement: D3Selection, isGaugeDisplayed = true) {
     this._budget = budget;
     this._svgElement = svgElement;
 
@@ -29,6 +31,7 @@ export abstract class Layout {
     const bbox = this._svgElement.node().getBoundingClientRect();
     this._width = bbox.width;
     this._height = bbox.height;
+    this._isGaugeDisplayed = isGaugeDisplayed;
   }
 
   initialize() {
@@ -42,38 +45,42 @@ export abstract class Layout {
     }
 
     // Initializes the gauge
-    this._gaugeGroup = this._layoutElement.select('#budget-gauge-group');
-    if (this._gaugeGroup.size() <= 0) {
-      this._gaugeGroup = this._layoutElement.append('g')
-        .attr('id', 'budget-gauge-group')
-        .attr('class', 'budget-gauge-group');
+    if (this._isGaugeDisplayed) {
+      this._gaugeGroup = this._layoutElement.select('#budget-gauge-group');
+      if (this._gaugeGroup.size() <= 0) {
+        this._gaugeGroup = this._layoutElement.append('g')
+          .attr('id', 'budget-gauge-group')
+          .attr('class', 'budget-gauge-group');
 
-      this._gaugeGroup.append('rect')
-        .attr('width', Config.GAUGE_CONFIG.width)
-        .attr('height', Config.GAUGE_CONFIG.height + 45)
-        .attr('fill', '#fff');
+        this._gaugeGroup.append('rect')
+          .attr('width', Config.GAUGE_CONFIG.width)
+          .attr('height', Config.GAUGE_CONFIG.height + 45)
+          .attr('fill', '#fff');
 
-      this._gaugeGroup.append('text')
-        .attr('text-anchor', 'middle')
-        .attr('x', Config.GAUGE_CONFIG.width / 2)
-        .attr('y', 95);
+        this._gaugeGroup.append('text')
+          .attr('text-anchor', 'middle')
+          .attr('x', Config.GAUGE_CONFIG.width / 2)
+          .attr('y', 95);
 
-      // Associate the gauge with the group.
-      this._gaugeGroup.datum(new d3SimpleGauge.SimpleGauge({
-        barWidth: Config.GAUGE_CONFIG.barWidth,
-        el: this._gaugeGroup.append('g'),
-        height: Config.GAUGE_CONFIG.height,
-        interval: Config.GAUGE_CONFIG.interval,
-        needleRadius: Config.GAUGE_CONFIG.needleRadius,
-        sectionsCount: 2,
-        width: Config.GAUGE_CONFIG.width
-      }));
+        // Associate the gauge with the group.
+        this._gaugeGroup.datum(new d3SimpleGauge.SimpleGauge({
+          barWidth: Config.GAUGE_CONFIG.barWidth,
+          el: this._gaugeGroup.append('g'),
+          height: Config.GAUGE_CONFIG.height,
+          interval: Config.GAUGE_CONFIG.interval,
+          needleRadius: Config.GAUGE_CONFIG.needleRadius,
+          sectionsCount: 2,
+          width: Config.GAUGE_CONFIG.width
+        }));
+      }
     }
-
     if (this._layoutElement.select('#budget-group')) {
       this._budgetGroup = this._layoutElement.append('svg')
-        .attr('id', 'budget-group')
-        .attr('height', this._height - Config.GAUGE_CONFIG.height);
+        .attr('id', 'budget-group');
+
+      if (this._isGaugeDisplayed) {
+        this._budgetGroup.attr('height', this._height - Config.GAUGE_CONFIG.height);
+      }
     }
 
     function initializeBudgetElement(d) {
@@ -126,12 +133,14 @@ export abstract class Layout {
       .sort((a, b) => descending(a.amount, b.amount))
       .each(updateAmount);
 
-    const delta = this._budget.summary.delta;
-    this._gaugeGroup.datum().value = delta;
-    this._layoutElement.select('#budget-gauge-group')
-      .select('text')
-      .text(Formatter.formatAmount(delta));
+    if (this._isGaugeDisplayed) {
+      const delta = this._budget.summary.delta;
+      this._gaugeGroup.datum().value = delta;
+      this._layoutElement.select('#budget-gauge-group')
+        .select('text')
+        .text(Formatter.formatAmount(delta));
 
+    }
     this.renderLayout();
   }
 

@@ -2557,12 +2557,14 @@
   var d3SimpleGauge$1 = unwrapExports(d3SimpleGauge);
 
   var Layout = (function () {
-      function Layout(budget, svgElement) {
+      function Layout(budget, svgElement, isGaugeDisplayed) {
+          if (isGaugeDisplayed === void 0) { isGaugeDisplayed = true; }
           this._budget = budget;
           this._svgElement = svgElement;
           var bbox = this._svgElement.node().getBoundingClientRect();
           this._width = bbox.width;
           this._height = bbox.height;
+          this._isGaugeDisplayed = isGaugeDisplayed;
       }
       Layout.prototype.initialize = function () {
           var _this = this;
@@ -2572,33 +2574,37 @@
               this._layoutElement = this._svgElement.append('g')
                   .attr('id', 'layout');
           }
-          this._gaugeGroup = this._layoutElement.select('#budget-gauge-group');
-          if (this._gaugeGroup.size() <= 0) {
-              this._gaugeGroup = this._layoutElement.append('g')
-                  .attr('id', 'budget-gauge-group')
-                  .attr('class', 'budget-gauge-group');
-              this._gaugeGroup.append('rect')
-                  .attr('width', Config.GAUGE_CONFIG.width)
-                  .attr('height', Config.GAUGE_CONFIG.height + 45)
-                  .attr('fill', '#fff');
-              this._gaugeGroup.append('text')
-                  .attr('text-anchor', 'middle')
-                  .attr('x', Config.GAUGE_CONFIG.width / 2)
-                  .attr('y', 95);
-              this._gaugeGroup.datum(new d3SimpleGauge$1.SimpleGauge({
-                  barWidth: Config.GAUGE_CONFIG.barWidth,
-                  el: this._gaugeGroup.append('g'),
-                  height: Config.GAUGE_CONFIG.height,
-                  interval: Config.GAUGE_CONFIG.interval,
-                  needleRadius: Config.GAUGE_CONFIG.needleRadius,
-                  sectionsCount: 2,
-                  width: Config.GAUGE_CONFIG.width
-              }));
+          if (this._isGaugeDisplayed) {
+              this._gaugeGroup = this._layoutElement.select('#budget-gauge-group');
+              if (this._gaugeGroup.size() <= 0) {
+                  this._gaugeGroup = this._layoutElement.append('g')
+                      .attr('id', 'budget-gauge-group')
+                      .attr('class', 'budget-gauge-group');
+                  this._gaugeGroup.append('rect')
+                      .attr('width', Config.GAUGE_CONFIG.width)
+                      .attr('height', Config.GAUGE_CONFIG.height + 45)
+                      .attr('fill', '#fff');
+                  this._gaugeGroup.append('text')
+                      .attr('text-anchor', 'middle')
+                      .attr('x', Config.GAUGE_CONFIG.width / 2)
+                      .attr('y', 95);
+                  this._gaugeGroup.datum(new d3SimpleGauge$1.SimpleGauge({
+                      barWidth: Config.GAUGE_CONFIG.barWidth,
+                      el: this._gaugeGroup.append('g'),
+                      height: Config.GAUGE_CONFIG.height,
+                      interval: Config.GAUGE_CONFIG.interval,
+                      needleRadius: Config.GAUGE_CONFIG.needleRadius,
+                      sectionsCount: 2,
+                      width: Config.GAUGE_CONFIG.width
+                  }));
+              }
           }
           if (this._layoutElement.select('#budget-group')) {
               this._budgetGroup = this._layoutElement.append('svg')
-                  .attr('id', 'budget-group')
-                  .attr('height', this._height - Config.GAUGE_CONFIG.height);
+                  .attr('id', 'budget-group');
+              if (this._isGaugeDisplayed) {
+                  this._budgetGroup.attr('height', this._height - Config.GAUGE_CONFIG.height);
+              }
           }
           function initializeBudgetElement(d) {
               var g = d3.select(this);
@@ -2641,11 +2647,13 @@
           this._spendingGroups = this._spendingGroups
               .sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
               .each(updateAmount);
-          var delta = this._budget.summary.delta;
-          this._gaugeGroup.datum().value = delta;
-          this._layoutElement.select('#budget-gauge-group')
-              .select('text')
-              .text(Formatter.formatAmount(delta));
+          if (this._isGaugeDisplayed) {
+              var delta = this._budget.summary.delta;
+              this._gaugeGroup.datum().value = delta;
+              this._layoutElement.select('#budget-gauge-group')
+                  .select('text')
+                  .text(Formatter.formatAmount(delta));
+          }
           this.renderLayout();
       };
       return Layout;
@@ -2781,7 +2789,7 @@
       __extends(GridLayout, _super);
       function GridLayout(budget, svgElement, config, minCountPerLine) {
           if (minCountPerLine === void 0) { minCountPerLine = MIN_COUNT_PER_LINE; }
-          var _this = _super.call(this, budget, svgElement) || this;
+          var _this = _super.call(this, budget, svgElement, config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true) || this;
           if (!isLayoutConfig(config)) {
               throw new TypeError('Invalid configuration specified.');
           }
@@ -2799,8 +2807,10 @@
       GridLayout.prototype.initializeLayout = function () {
           var _this = this;
           this._budgetGroup.attr('viewBox', "0 0 " + this._budgetWidth + " " + this._height);
-          this._gaugeGroup
-              .attr('transform', "translate(" + (this._width / 2 - Config.GAUGE_CONFIG.width / 2) + ", " + (this._height - 110) + ")");
+          if (this._gaugeGroup) {
+              this._gaugeGroup
+                  .attr('transform', "translate(" + (this._width / 2 - Config.GAUGE_CONFIG.width / 2) + ", " + (this._height - 110) + ")");
+          }
           var initializeLabel = function (d, i, nodes) {
               var g = d3.select(nodes[i]);
               var name = d.name;

@@ -22,7 +22,8 @@
           titleLineHeight: 15,
           transitionDuration: 500,
           verticalMinSpacing: 50,
-          verticalPadding: 30
+          verticalPadding: 30,
+          isGaugeDisplayed: false
         }),
         polygonsGroupConfig: Config.DEFAULT_POLYGONS_GROUP_CONFIG
       },

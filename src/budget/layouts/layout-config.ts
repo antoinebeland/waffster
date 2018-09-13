@@ -8,6 +8,7 @@ export class LayoutConfig {
   transitionDuration: number;
   verticalMinSpacing: number;
   verticalPadding: number;
+  isGaugeDisplayed?: boolean;
 }
 
 export function isLayoutConfig(config: any): config is LayoutConfig {

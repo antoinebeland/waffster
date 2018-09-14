@@ -204,9 +204,15 @@ export class BudgetVisualization {
               selectedElement.accept(self.rendering);
               executeCommand();
             }
-            selectedElement = element;
-            element.hasFocus = true;
+            element.hasFocus = !element.hasFocus;
             element.accept(self.rendering);
+
+            if (!element.hasFocus) {
+              executeCommand();
+              selectedElement = undefined;
+            } else {
+              selectedElement = element;
+            }
           }
         });
         element.svgElement.on('mouseenter', () => {

@@ -2092,9 +2092,15 @@
                               selectedElement.accept(self.rendering);
                               executeCommand();
                           }
-                          selectedElement = element;
-                          element.hasFocus = true;
+                          element.hasFocus = !element.hasFocus;
                           element.accept(self.rendering);
+                          if (!element.hasFocus) {
+                              executeCommand();
+                              selectedElement = undefined;
+                          }
+                          else {
+                              selectedElement = element;
+                          }
                       }
                   });
                   element.svgElement.on('mouseenter', function () {
@@ -2179,6 +2185,7 @@
       };
       return BudgetVisualization;
   }());
+  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2634,9 +2641,13 @@
           }
           if (this._layoutElement.select('#budget-group')) {
               this._budgetGroup = this._layoutElement.append('svg')
-                  .attr('id', 'budget-group');
+                  .attr('id', 'budget-group')
+                  .datum({});
               if (this._config.isGaugeDisplayed) {
                   this._budgetGroup.attr('height', this._height - Config.GAUGE_CONFIG.height);
+              }
+              else {
+                  this._budgetGroup.attr('height', this._height);
               }
           }
           function initializeBudgetElement(d) {
@@ -2925,21 +2936,20 @@
               .transition()
               .duration(this._config.transitionDuration)
               .attr('transform', applyTransform);
-          this._budgetGroup
-              .transition()
-              .duration(this._config.transitionDuration)
-              .attr('viewBox', function () {
-              console.log(maxGroupHeights);
-              var maxHeightsSum = maxGroupHeights.map(function (d) { return d3Array.sum(d); });
-              var index = maxHeightsSum.indexOf(Math.max.apply(Math, maxHeightsSum));
-              var computedHeight = maxHeightsSum[index] + 2 * _this._config.verticalPadding +
-                  (maxGroupHeights[index].length - 1) * _this._config.verticalMinSpacing + 100;
-              return "0 0 " + _this._budgetWidth + " " + computedHeight;
-          });
+          var maxHeightsSum = maxGroupHeights.map(function (d) { return d3Array.sum(d); });
+          var index = maxHeightsSum.indexOf(Math.max.apply(Math, maxHeightsSum));
+          var computedHeight = maxHeightsSum[index] + 2 * this._config.verticalPadding +
+              (maxGroupHeights[index].length - 1) * this._config.verticalMinSpacing + 100;
+          if (computedHeight !== this._budgetGroup.datum().computedHeight) {
+              this._budgetGroup.datum().computedHeight = computedHeight;
+              this._budgetGroup
+                  .transition()
+                  .duration(this._config.transitionDuration)
+                  .attr('viewBox', function () { return "0 0 " + _this._budgetWidth + " " + computedHeight; });
+          }
       };
       return GridLayout;
   }(Layout));
-  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);

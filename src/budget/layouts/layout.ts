@@ -95,10 +95,13 @@ export abstract class Layout {
     }
     if (this._layoutElement.select('#budget-group')) {
       this._budgetGroup = this._layoutElement.append('svg')
-        .attr('id', 'budget-group');
+        .attr('id', 'budget-group')
+        .datum({});
 
       if (this._config.isGaugeDisplayed) {
         this._budgetGroup.attr('height', this._height - Config.GAUGE_CONFIG.height);
+      } else {
+        this._budgetGroup.attr('height', this._height);
       }
     }
 

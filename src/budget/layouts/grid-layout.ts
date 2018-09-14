@@ -153,17 +153,17 @@ export class GridLayout extends Layout {
       .duration(this._config.transitionDuration)
       .attr('transform', applyTransform);
 
-    this._budgetGroup
-      .transition()
-      .duration(this._config.transitionDuration)
-      .attr('viewBox', () => {
-        console.log(maxGroupHeights);
-        const maxHeightsSum = maxGroupHeights.map(d => sum(d));
-        const index = maxHeightsSum.indexOf(Math.max(...maxHeightsSum));
+    const maxHeightsSum = maxGroupHeights.map(d => sum(d));
+    const index = maxHeightsSum.indexOf(Math.max(...maxHeightsSum));
+    const computedHeight = maxHeightsSum[index] + 2 * this._config.verticalPadding +
+      (maxGroupHeights[index].length - 1) * this._config.verticalMinSpacing + 100;
 
-        const computedHeight = maxHeightsSum[index] + 2 * this._config.verticalPadding +
-          (maxGroupHeights[index].length - 1) * this._config.verticalMinSpacing + 100;
-        return `0 0 ${this._budgetWidth} ${computedHeight}`;
-      });
+    if (computedHeight !== (this._budgetGroup.datum() as any).computedHeight) {
+      (this._budgetGroup.datum() as any).computedHeight = computedHeight;
+      this._budgetGroup
+        .transition()
+        .duration(this._config.transitionDuration)
+        .attr('viewBox', () => `0 0 ${this._budgetWidth} ${computedHeight}`);
+    }
   }
 }

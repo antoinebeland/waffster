@@ -97,10 +97,14 @@ export class BudgetVisualization {
           let delta = d3.event.deltaY / 100;
           delta = (delta >= 0) ? Math.ceil(delta) : Math.floor(delta);
           selectedElement.temporaryAmount += delta * this.budget.minAmount;
+
           this.rendering.transitionDuration = 0;
           selectedElement.root.accept(this.rendering);
           this.rendering.resetTransitionDuration();
+
+          this._layout.transitionDuration = 0;
           this._layout.render();
+          this._layout.resetTransitionDuration();
         }
       })
       .on('keydown', () => {
@@ -122,7 +126,10 @@ export class BudgetVisualization {
           this.rendering.transitionDuration = 0;
           selectedElement.root.accept(this.rendering);
           this.rendering.resetTransitionDuration();
+
+          this._layout.transitionDuration = 0;
           this._layout.render();
+          this._layout.resetTransitionDuration();
         }
       })
       .on('click', () => {

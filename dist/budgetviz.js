@@ -1995,7 +1995,9 @@
                   _this.rendering.transitionDuration = 0;
                   selectedElement.root.accept(_this.rendering);
                   _this.rendering.resetTransitionDuration();
+                  _this._layout.transitionDuration = 0;
                   _this._layout.render();
+                  _this._layout.resetTransitionDuration();
               }
           })
               .on('keydown', function () {
@@ -2017,7 +2019,9 @@
                   _this.rendering.transitionDuration = 0;
                   selectedElement.root.accept(_this.rendering);
                   _this.rendering.resetTransitionDuration();
+                  _this._layout.transitionDuration = 0;
                   _this._layout.render();
+                  _this._layout.resetTransitionDuration();
               }
           })
               .on('click', function () {
@@ -2175,7 +2179,6 @@
       };
       return BudgetVisualization;
   }());
-  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2556,16 +2559,46 @@
 
   var d3SimpleGauge$1 = unwrapExports(d3SimpleGauge);
 
+  function isLayoutConfig(config) {
+      return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
+          !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
+          !isNaN(config.horizontalMinSpacing) && config.horizontalMinSpacing >= 0 &&
+          !isNaN(config.horizontalPadding) && config.horizontalPadding >= 0 &&
+          !isNaN(config.polygonLength) && config.polygonLength > 0 &&
+          !isNaN(config.titleLineHeight) && config.titleLineHeight > 0 &&
+          !isNaN(config.transitionDuration) && config.transitionDuration >= 0 &&
+          !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
+          !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
+  }
+  //# sourceMappingURL=layout-config.js.map
+
   var Layout = (function () {
-      function Layout(budget, svgElement, isGaugeDisplayed) {
-          if (isGaugeDisplayed === void 0) { isGaugeDisplayed = true; }
+      function Layout(budget, svgElement, config) {
+          if (!isLayoutConfig(config)) {
+              throw new TypeError('Invalid configuration specified.');
+          }
           this._budget = budget;
           this._svgElement = svgElement;
+          this._config = config;
+          this._config.isGaugeDisplayed = config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true;
+          this._defaultTransitionDuration = config.transitionDuration;
           var bbox = this._svgElement.node().getBoundingClientRect();
           this._width = bbox.width;
           this._height = bbox.height;
-          this._isGaugeDisplayed = isGaugeDisplayed;
       }
+      Object.defineProperty(Layout.prototype, "transitionDuration", {
+          get: function () {
+              return this._config.transitionDuration;
+          },
+          set: function (duration) {
+              if (duration < 0) {
+                  throw new RangeError('The transition duration must be greater or equal to 0.');
+              }
+              this._config.transitionDuration = duration;
+          },
+          enumerable: true,
+          configurable: true
+      });
       Layout.prototype.initialize = function () {
           var _this = this;
           this._svgElement.attr('viewBox', "0 0 " + this._width + " " + this._height);
@@ -2574,7 +2607,7 @@
               this._layoutElement = this._svgElement.append('g')
                   .attr('id', 'layout');
           }
-          if (this._isGaugeDisplayed) {
+          if (this._config.isGaugeDisplayed) {
               this._gaugeGroup = this._layoutElement.select('#budget-gauge-group');
               if (this._gaugeGroup.size() <= 0) {
                   this._gaugeGroup = this._layoutElement.append('g')
@@ -2602,7 +2635,7 @@
           if (this._layoutElement.select('#budget-group')) {
               this._budgetGroup = this._layoutElement.append('svg')
                   .attr('id', 'budget-group');
-              if (this._isGaugeDisplayed) {
+              if (this._config.isGaugeDisplayed) {
                   this._budgetGroup.attr('height', this._height - Config.GAUGE_CONFIG.height);
               }
           }
@@ -2647,7 +2680,7 @@
           this._spendingGroups = this._spendingGroups
               .sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
               .each(updateAmount);
-          if (this._isGaugeDisplayed) {
+          if (this._config.isGaugeDisplayed) {
               var delta = this._budget.summary.delta;
               this._gaugeGroup.datum().value = delta;
               this._layoutElement.select('#budget-gauge-group')
@@ -2656,32 +2689,17 @@
           }
           this.renderLayout();
       };
+      Layout.prototype.resetTransitionDuration = function () {
+          this._config.transitionDuration = this._defaultTransitionDuration;
+      };
       return Layout;
   }());
   //# sourceMappingURL=layout.js.map
 
-  function isLayoutConfig(config) {
-      return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
-          !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
-          !isNaN(config.horizontalMinSpacing) && config.horizontalMinSpacing >= 0 &&
-          !isNaN(config.horizontalPadding) && config.horizontalPadding >= 0 &&
-          !isNaN(config.polygonLength) && config.polygonLength > 0 &&
-          !isNaN(config.titleLineHeight) && config.titleLineHeight > 0 &&
-          !isNaN(config.transitionDuration) && config.transitionDuration >= 0 &&
-          !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
-          !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
-  }
-  //# sourceMappingURL=layout-config.js.map
-
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
       function BarsLayout(budget, svgElement, config) {
-          var _this = _super.call(this, budget, svgElement) || this;
-          if (!isLayoutConfig(config)) {
-              throw new TypeError('Invalid configuration specified.');
-          }
-          _this._config = config;
-          return _this;
+          return _super.call(this, budget, svgElement, config) || this;
       }
       BarsLayout.prototype.initializeLayout = function () {
           var self = this;
@@ -2789,14 +2807,10 @@
       __extends(GridLayout, _super);
       function GridLayout(budget, svgElement, config, minCountPerLine) {
           if (minCountPerLine === void 0) { minCountPerLine = MIN_COUNT_PER_LINE; }
-          var _this = _super.call(this, budget, svgElement, config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true) || this;
-          if (!isLayoutConfig(config)) {
-              throw new TypeError('Invalid configuration specified.');
-          }
+          var _this = _super.call(this, budget, svgElement, config) || this;
           if (minCountPerLine <= 0) {
               throw new RangeError('The min count per line must be a positive number.');
           }
-          _this._config = config;
           var maxCountElements = Math.max(budget.spendings.length, budget.incomes.length);
           _this._countPerLine = Math.min(minCountPerLine, maxCountElements);
           _this._spacing = (_this._countPerLine > 1) ? _this._config.horizontalMinSpacing : 0;
@@ -2808,8 +2822,7 @@
           var _this = this;
           this._budgetGroup.attr('viewBox', "0 0 " + this._budgetWidth + " " + this._height);
           if (this._gaugeGroup) {
-              this._gaugeGroup
-                  .attr('transform', "translate(" + (this._width / 2 - Config.GAUGE_CONFIG.width / 2) + ", " + (this._height - 110) + ")");
+              this._gaugeGroup.attr('transform', "translate(" + (this._width / 2 - Config.GAUGE_CONFIG.width / 2) + ", " + (this._height - 110) + ")");
           }
           var initializeLabel = function (d, i, nodes) {
               var g = d3.select(nodes[i]);
@@ -2926,16 +2939,12 @@
       };
       return GridLayout;
   }(Layout));
+  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
       function HorizontalBarsLayout(budget, svgElement, config) {
-          var _this = _super.call(this, budget, svgElement) || this;
-          if (!isLayoutConfig(config)) {
-              throw new TypeError('Invalid configuration specified.');
-          }
-          _this._config = config;
-          return _this;
+          return _super.call(this, budget, svgElement, config) || this;
       }
       HorizontalBarsLayout.prototype.initializeLayout = function () {
           var self = this;

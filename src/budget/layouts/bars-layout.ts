@@ -6,17 +6,12 @@ import { D3Selection } from '../../utils/types';
 import { Budget } from '../budget';
 
 import { Layout } from './layout';
-import { isLayoutConfig, LayoutConfig } from './layout-config';
+import { LayoutConfig } from './layout-config';
 
 export class BarsLayout extends Layout {
-  private readonly _config: LayoutConfig;
 
   constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig) {
-    super(budget, svgElement);
-    if (!isLayoutConfig(config)) {
-      throw new TypeError('Invalid configuration specified.');
-    }
-    this._config = config;
+    super(budget, svgElement, config);
   }
 
   protected initializeLayout() {

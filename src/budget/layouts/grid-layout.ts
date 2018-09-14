@@ -7,26 +7,20 @@ import { D3Selection } from '../../utils/types';
 import { Budget } from '../budget';
 
 import { Layout } from './layout';
-import { isLayoutConfig, LayoutConfig } from './layout-config';
+import { LayoutConfig } from './layout-config';
 
 const MIN_COUNT_PER_LINE = 5;
 
 export class GridLayout extends Layout {
-  private readonly _config: LayoutConfig;
   private readonly _countPerLine: number;
   private readonly _spacing: number;
   private readonly _budgetWidth: number;
 
   constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig, minCountPerLine = MIN_COUNT_PER_LINE) {
-    super(budget, svgElement, config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true);
-    if (!isLayoutConfig(config)) {
-      throw new TypeError('Invalid configuration specified.');
-    }
+    super(budget, svgElement, config);
     if (minCountPerLine <= 0) {
       throw new RangeError('The min count per line must be a positive number.');
     }
-    this._config = config;
-
     const maxCountElements = Math.max(budget.spendings.length, budget.incomes.length);
     this._countPerLine = Math.min(minCountPerLine, maxCountElements);
     this._spacing = (this._countPerLine > 1) ? this._config.horizontalMinSpacing : 0;
@@ -38,8 +32,7 @@ export class GridLayout extends Layout {
   protected initializeLayout() {
     this._budgetGroup.attr('viewBox', `0 0 ${this._budgetWidth} ${this._height}`);
     if (this._gaugeGroup) {
-      this._gaugeGroup
-        .attr('transform',
+      this._gaugeGroup.attr('transform',
           `translate(${this._width / 2 - Config.GAUGE_CONFIG.width / 2}, ${this._height - 110})`);
     }
 

@@ -8,9 +8,12 @@ import { D3Selection } from '../../utils/types';
 import { Budget } from '../budget';
 import { BudgetElement } from '../budget-element';
 
+import { isLayoutConfig, LayoutConfig } from './layout-config';
+
 export abstract class Layout {
   protected readonly _budget: Budget;
   protected readonly _svgElement: D3Selection;
+  protected readonly _config: LayoutConfig;
 
   protected _layoutElement: D3Selection;
   protected _budgetGroup: D3Selection;
@@ -21,17 +24,33 @@ export abstract class Layout {
   protected _height: number;
   protected _width: number;
 
-  private readonly _isGaugeDisplayed: boolean;
+  private readonly _defaultTransitionDuration: number;
 
-  protected constructor(budget: Budget, svgElement: D3Selection, isGaugeDisplayed = true) {
+  protected constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig) {
+    if (!isLayoutConfig(config)) {
+      throw new TypeError('Invalid configuration specified.');
+    }
     this._budget = budget;
     this._svgElement = svgElement;
+    this._config = config;
+    this._config.isGaugeDisplayed = config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true;
+    this._defaultTransitionDuration = config.transitionDuration;
 
     // Gets the SVG bounding box.
     const bbox = this._svgElement.node().getBoundingClientRect();
     this._width = bbox.width;
     this._height = bbox.height;
-    this._isGaugeDisplayed = isGaugeDisplayed;
+  }
+
+  get transitionDuration(): number {
+    return this._config.transitionDuration;
+  }
+
+  set transitionDuration(duration: number) {
+    if (duration < 0) {
+      throw new RangeError('The transition duration must be greater or equal to 0.');
+    }
+    this._config.transitionDuration = duration;
   }
 
   initialize() {
@@ -45,7 +64,7 @@ export abstract class Layout {
     }
 
     // Initializes the gauge
-    if (this._isGaugeDisplayed) {
+    if (this._config.isGaugeDisplayed) {
       this._gaugeGroup = this._layoutElement.select('#budget-gauge-group');
       if (this._gaugeGroup.size() <= 0) {
         this._gaugeGroup = this._layoutElement.append('g')
@@ -78,7 +97,7 @@ export abstract class Layout {
       this._budgetGroup = this._layoutElement.append('svg')
         .attr('id', 'budget-group');
 
-      if (this._isGaugeDisplayed) {
+      if (this._config.isGaugeDisplayed) {
         this._budgetGroup.attr('height', this._height - Config.GAUGE_CONFIG.height);
       }
     }
@@ -133,7 +152,7 @@ export abstract class Layout {
       .sort((a, b) => descending(a.amount, b.amount))
       .each(updateAmount);
 
-    if (this._isGaugeDisplayed) {
+    if (this._config.isGaugeDisplayed) {
       const delta = this._budget.summary.delta;
       this._gaugeGroup.datum().value = delta;
       this._layoutElement.select('#budget-gauge-group')
@@ -142,6 +161,10 @@ export abstract class Layout {
 
     }
     this.renderLayout();
+  }
+
+  resetTransitionDuration() {
+    this._config.transitionDuration = this._defaultTransitionDuration;
   }
 
   protected abstract initializeLayout();

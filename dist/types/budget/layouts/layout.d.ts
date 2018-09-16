@@ -20,4 +20,5 @@ export declare abstract class Layout {
     resetTransitionDuration(): void;
     protected abstract initializeLayout(): any;
     protected abstract renderLayout(): any;
+    private static sortElements;
 }

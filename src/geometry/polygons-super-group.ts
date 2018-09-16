@@ -215,15 +215,21 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
         let count = this._startingPosition;
         let cumulative = 0;
         children.forEach((c, i) => {
-          const adjustment = (count % this._maxCountPerLine === 0 || i === 0) ? 0 : this._sideLength;
-          c.translate(cumulative - adjustment);
-          c.reshape(count % this._maxCountPerLine);
-          count += c.count;
+          let adjustment = 0;
+          if (c.count > 0) {
+            adjustment = (count % this._maxCountPerLine === 0 || i === 0) ? 0 : this._sideLength;
+            c.translate(cumulative - adjustment);
+            c.reshape(count % this._maxCountPerLine);
+            count += c.count;
 
-          if (this._orientation === PolygonsGroupOrientation.HORIZONTAL) {
-            cumulative += c.boundingBox.height - adjustment;
+            if (this._orientation === PolygonsGroupOrientation.HORIZONTAL) {
+              cumulative += c.boundingBox.height - adjustment;
+            } else {
+              cumulative += c.boundingBox.width - adjustment;
+            }
           } else {
-            cumulative += c.boundingBox.width - adjustment;
+            c.translate(0);
+            c.reshape(0);
           }
         });
         break;
@@ -253,16 +259,18 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
       width: this._sideLength
     };
     if (count > 0) {
-      this._children.forEach(c => {
-        let height = c.translation.y + c.boundingBox.y + c.boundingBox.height;
-        let width = c.translation.x + c.boundingBox.x + c.boundingBox.width;
-        if (maximums.height < height) {
-          maximums.height = height;
-        }
-        if (maximums.width < width) {
-          maximums.width = width;
-        }
-      });
+      this._children
+        .filter(c => this._state === PolygonsSuperGroupState.EXPANDED || c.count > 0 || c.temporaryCount > 0)
+        .forEach(c => {
+          let height = c.translation.y + c.boundingBox.y + c.boundingBox.height;
+          let width = c.translation.x + c.boundingBox.x + c.boundingBox.width;
+          if (maximums.height < height) {
+            maximums.height = height;
+          }
+          if (maximums.width < width) {
+            maximums.width = width;
+          }
+        });
     }
     this._boundingBox.height = maximums.height;
     this._boundingBox.width = maximums.width;

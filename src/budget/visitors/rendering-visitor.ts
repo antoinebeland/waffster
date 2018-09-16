@@ -102,13 +102,16 @@ export class RenderingVisitor implements BudgetElementVisitor {
   visitSimpleBudgetElement(element: SimpleBudgetElement) {
     const polygons = element.svgElement.select('.squares').selectAll('.square')
       .data(element.polygonsGroup.polygons, d => (d as any).id);
+    let selectedAmount = element.selectedAmount;
 
     RenderingVisitor.updateBoundary(element);
     polygons.enter()
       .append('polygon')
-      .on('animationend', function() {
-        if (!element.hasFocus) {
-          (this as SVGGraphicsElement).classList.remove('selected');
+      .on('animationend', function(d) {
+        d.isSelected = false;
+        (this as SVGGraphicsElement).classList.remove('selected');
+        if (selectedAmount > 0) {
+          selectedAmount = 0;
           element.selectedAmount = 0;
         }
       })

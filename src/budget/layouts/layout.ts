@@ -1,4 +1,4 @@
-import { descending } from 'd3-array';
+import { ascending, descending } from 'd3-array';
 import * as d3 from 'd3-selection';
 import d3SimpleGauge from 'd3-simple-gauge';
 
@@ -148,11 +148,11 @@ export abstract class Layout {
         .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
     }
     this._incomeGroups = this._incomeGroups
-      .sort((a, b) => descending(a.amount, b.amount))
+      .sort(Layout.sortElements)
       .each(updateAmount);
 
     this._spendingGroups = this._spendingGroups
-      .sort((a, b) => descending(a.amount, b.amount))
+      .sort(Layout.sortElements)
       .each(updateAmount);
 
     if (this._config.isGaugeDisplayed) {
@@ -172,4 +172,12 @@ export abstract class Layout {
 
   protected abstract initializeLayout();
   protected abstract renderLayout();
+
+  private static sortElements(a: BudgetElement, b: BudgetElement) {
+    let compare = descending(a.amount, b.amount);
+    if (compare === 0) {
+      compare = ascending(a.name, b.name);
+    }
+    return compare;
+  }
 }

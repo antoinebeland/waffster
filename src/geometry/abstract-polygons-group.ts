@@ -288,7 +288,7 @@ export abstract class AbstractPolygonsGroup {
     }
   }
 
-  protected getBoundingBox(position: { x, y }, isIncludedTemporaryCount = true) {
+  protected getBoundingBox(position: { x, y }, isIncludedTemporaryCount = true): BoundingBox {
     let count = this.count;
     if (isIncludedTemporaryCount && this.temporaryCount > 0) {
       count += this.temporaryCount;

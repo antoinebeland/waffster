@@ -561,15 +561,22 @@
                   var count_1 = this._startingPosition;
                   var cumulative_1 = 0;
                   children.forEach(function (c, i) {
-                      var adjustment = (count_1 % _this._maxCountPerLine === 0 || i === 0) ? 0 : _this._sideLength;
-                      c.translate(cumulative_1 - adjustment);
-                      c.reshape(count_1 % _this._maxCountPerLine);
-                      count_1 += c.count;
-                      if (_this._orientation === exports.Orientation.HORIZONTAL) {
-                          cumulative_1 += c.boundingBox.height - adjustment;
+                      var adjustment = 0;
+                      if (c.count > 0) {
+                          adjustment = (count_1 % _this._maxCountPerLine === 0 || i === 0) ? 0 : _this._sideLength;
+                          c.translate(cumulative_1 - adjustment);
+                          c.reshape(count_1 % _this._maxCountPerLine);
+                          count_1 += c.count;
+                          if (_this._orientation === exports.Orientation.HORIZONTAL) {
+                              cumulative_1 += c.boundingBox.height - adjustment;
+                          }
+                          else {
+                              cumulative_1 += c.boundingBox.width - adjustment;
+                          }
                       }
                       else {
-                          cumulative_1 += c.boundingBox.width - adjustment;
+                          c.translate(0);
+                          c.reshape(0);
                       }
                   });
                   break;
@@ -592,13 +599,16 @@
           this.updateBoundingBox();
       };
       PolygonsSuperGroup.prototype.updateBoundingBox = function () {
+          var _this = this;
           var count = this.count + Math.max(0, this.temporaryCount);
           var maximums = {
               height: this._sideLength,
               width: this._sideLength
           };
           if (count > 0) {
-              this._children.forEach(function (c) {
+              this._children
+                  .filter(function (c) { return _this._state === PolygonsSuperGroupState.EXPANDED || c.count > 0 || c.temporaryCount > 0; })
+                  .forEach(function (c) {
                   var height = c.translation.y + c.boundingBox.y + c.boundingBox.height;
                   var width = c.translation.x + c.boundingBox.x + c.boundingBox.width;
                   if (maximums.height < height) {
@@ -1963,12 +1973,15 @@
       RenderingVisitor.prototype.visitSimpleBudgetElement = function (element) {
           var polygons = element.svgElement.select('.squares').selectAll('.square')
               .data(element.polygonsGroup.polygons, function (d) { return d.id; });
+          var selectedAmount = element.selectedAmount;
           RenderingVisitor.updateBoundary(element);
           polygons.enter()
               .append('polygon')
-              .on('animationend', function () {
-              if (!element.hasFocus) {
-                  this.classList.remove('selected');
+              .on('animationend', function (d) {
+              d.isSelected = false;
+              this.classList.remove('selected');
+              if (selectedAmount > 0) {
+                  selectedAmount = 0;
                   element.selectedAmount = 0;
               }
           })
@@ -2005,7 +2018,6 @@
       };
       return RenderingVisitor;
   }());
-  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -2296,6 +2308,7 @@
       };
       return BudgetVisualization;
   }());
+  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
@@ -2796,10 +2809,10 @@
                   .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
           }
           this._incomeGroups = this._incomeGroups
-              .sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
+              .sort(Layout.sortElements)
               .each(updateAmount);
           this._spendingGroups = this._spendingGroups
-              .sort(function (a, b) { return d3Array.descending(a.amount, b.amount); })
+              .sort(Layout.sortElements)
               .each(updateAmount);
           if (this._config.isGaugeDisplayed) {
               var delta = this._budget.summary.delta;
@@ -2812,6 +2825,13 @@
       };
       Layout.prototype.resetTransitionDuration = function () {
           this._config.transitionDuration = this._defaultTransitionDuration;
+      };
+      Layout.sortElements = function (a, b) {
+          var compare = d3Array.descending(a.amount, b.amount);
+          if (compare === 0) {
+              compare = d3Array.ascending(a.name, b.name);
+          }
+          return compare;
       };
       return Layout;
   }());

@@ -18,6 +18,7 @@ export class SimpleBudgetElement extends BudgetElement {
     this.initialAmount = amount;
     this._group = new SquaresGroup(Math.round(amount / this._minAmount), polygonsGroupConfig);
     this._hasFocus = false;
+    this.isMutable = config.isMutable;
   }
 
   get activeLevel(): number {
@@ -79,6 +80,9 @@ export class SimpleBudgetElement extends BudgetElement {
   }
 
   reset() {
+    if (!this.isMutable) {
+      return;
+    }
     this.amount = this.initialAmount;
   }
 }

@@ -32,7 +32,7 @@ export class RenderingVisitor implements BudgetElementVisitor {
   }
 
   visitBudgetElementGroup(group: BudgetElementGroup) {
-    if (this._levelStack.length === 0) {
+    if (this._levelStack.length === 0) { // TODO: Be more efficient!
       group.polygonsGroup.update();
     }
     this._levelStack.push(0);

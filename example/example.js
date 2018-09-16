@@ -23,7 +23,7 @@
           transitionDuration: 500,
           verticalMinSpacing: 50,
           verticalPadding: 30,
-          isGaugeDisplayed: false
+          isGaugeDisplayed: true
         }),
         polygonsGroupConfig: Config.DEFAULT_POLYGONS_GROUP_CONFIG
       },

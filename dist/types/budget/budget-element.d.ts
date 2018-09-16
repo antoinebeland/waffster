@@ -22,6 +22,7 @@ export declare abstract class BudgetElement {
     amount: number;
     readonly feedbackMessage: string;
     readonly isActive: boolean;
+    isMutable: boolean;
     readonly root: BudgetElement;
     selectedAmount: number;
     temporaryAmount: number;

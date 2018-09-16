@@ -1,11 +1,22 @@
 import { BudgetElement } from './budget-element';
+import { BudgetElementType } from './budget-element-config';
 
 /**
- * Defines a budget element configuration
+ * Defines a budget adjustment configuration
  */
-interface BudgetElementConfig {
+export interface BudgetAdjustment {
+  amount: number;
+  name: string;
+  type: BudgetElementType;
+}
+
+/**
+ * Defines a budget item configuration
+ */
+interface BudgetItemConfig {
   amount?: number;
   children?: BudgetElement[];
+  isMutable?: boolean;
   name: string;
 }
 
@@ -13,9 +24,15 @@ interface BudgetElementConfig {
  * Defines a budget configuration.
  */
 export interface BudgetConfig {
-  incomes: BudgetElementConfig[];
-  spendings: BudgetElementConfig[];
+  adjustments?: BudgetAdjustment[];
+  incomes: BudgetItemConfig[];
+  spendings: BudgetItemConfig[];
   year: number;
+}
+
+function isBudgetAdjustment(adjustment: any): adjustment is BudgetAdjustment {
+  return !isNaN(adjustment.amount) && adjustment.name && adjustment.type && adjustment.type &&
+    (<any>Object).values(BudgetElementType).includes(adjustment.type);
 }
 
 /**
@@ -41,8 +58,9 @@ function isBudgetElement(budgetElement: any): budgetElement is BudgetElement {
  * @returns {boolean}       TRUE if the configuration specified is valid. FALSE otherwise.
  */
 export function isBudgetConfig(budgetConfig: any): budgetConfig is BudgetConfig {
-  return !isNaN(budgetConfig.year) && budgetConfig.incomes.length > 0 &&
-    budgetConfig.incomes.every(s => isBudgetElement(s)) &&
-    budgetConfig.spendings.length > 0 &&
-    budgetConfig.spendings.every(s => isBudgetElement(s));
+  return !isNaN(budgetConfig.year) &&
+    budgetConfig.adjustments === undefined ||
+    (budgetConfig.adjustments.length > 0 && budgetConfig.adjustments.every(a => isBudgetAdjustment(a))) &&
+    budgetConfig.incomes.length > 0 && budgetConfig.incomes.every(s => isBudgetElement(s)) &&
+    budgetConfig.spendings.length > 0 && budgetConfig.spendings.every(s => isBudgetElement(s));
 }

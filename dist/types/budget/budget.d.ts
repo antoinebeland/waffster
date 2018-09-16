@@ -1,5 +1,5 @@
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
-import { BudgetConfig } from './budget-config';
+import { BudgetAdjustment, BudgetConfig } from './budget-config';
 import { BudgetElement } from './budget-element';
 export declare enum BudgetState {
     BALANCED = "balanced",
@@ -14,6 +14,7 @@ export interface BudgetSummary {
 }
 export declare class Budget {
     readonly year: number;
+    readonly adjustments: BudgetAdjustment[];
     readonly incomes: BudgetElement[];
     readonly spendings: BudgetElement[];
     readonly minAmount: number;

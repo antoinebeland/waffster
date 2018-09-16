@@ -55,24 +55,6 @@
   }());
   //# sourceMappingURL=config.js.map
 
-  function isBudgetElement(budgetElement) {
-      var isValid = false;
-      if (budgetElement.children && budgetElement.children.length > 0) {
-          isValid = budgetElement.children.every(function (c) { return isBudgetElement(c); });
-      }
-      else if (budgetElement.amount && !isNaN(budgetElement.amount)) {
-          isValid = true;
-      }
-      return isValid && budgetElement.name;
-  }
-  function isBudgetConfig(budgetConfig) {
-      return !isNaN(budgetConfig.year) && budgetConfig.incomes.length > 0 &&
-          budgetConfig.incomes.every(function (s) { return isBudgetElement(s); }) &&
-          budgetConfig.spendings.length > 0 &&
-          budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
-  }
-  //# sourceMappingURL=budget-config.js.map
-
   (function (BudgetElementType) {
       BudgetElementType["DEFICIT"] = "deficit";
       BudgetElementType["INCOME"] = "income";
@@ -89,6 +71,29 @@
           config.feedbackMessages !== undefined && config.feedbackMessages.every(function (f) { return isFeedbackMessage(f); }));
   }
   //# sourceMappingURL=budget-element-config.js.map
+
+  function isBudgetAdjustment(adjustment) {
+      return !isNaN(adjustment.amount) && adjustment.name && adjustment.type && adjustment.type &&
+          Object.values(exports.BudgetElementType).includes(adjustment.type);
+  }
+  function isBudgetElement(budgetElement) {
+      var isValid = false;
+      if (budgetElement.children && budgetElement.children.length > 0) {
+          isValid = budgetElement.children.every(function (c) { return isBudgetElement(c); });
+      }
+      else if (budgetElement.amount && !isNaN(budgetElement.amount)) {
+          isValid = true;
+      }
+      return isValid && budgetElement.name;
+  }
+  function isBudgetConfig(budgetConfig) {
+      return !isNaN(budgetConfig.year) &&
+          budgetConfig.adjustments === undefined ||
+          (budgetConfig.adjustments.length > 0 && budgetConfig.adjustments.every(function (a) { return isBudgetAdjustment(a); })) &&
+              budgetConfig.incomes.length > 0 && budgetConfig.incomes.every(function (s) { return isBudgetElement(s); }) &&
+              budgetConfig.spendings.length > 0 && budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
+  }
+  //# sourceMappingURL=budget-config.js.map
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -167,6 +172,7 @@
           this._boundary = [];
           this._boundingBox = new BoundingBox();
           this._translation = { x: 0, y: 0 };
+          this.id = ++AbstractPolygonsGroup._currentId;
       }
       Object.defineProperty(AbstractPolygonsGroup.prototype, "boundary", {
           get: function () {
@@ -366,6 +372,7 @@
           }
           return new BoundingBox(position, columnLength, lineLength);
       };
+      AbstractPolygonsGroup._currentId = 0;
       return AbstractPolygonsGroup;
   }());
   //# sourceMappingURL=abstract-polygons-group.js.map
@@ -380,6 +387,7 @@
       function PolygonsSuperGroup(config, spacing) {
           var _this = _super.call(this, config) || this;
           _this._children = [];
+          _this._isMutable = true;
           _this._spacing = spacing;
           _this._state = PolygonsSuperGroupState.COLLAPSED;
           return _this;
@@ -392,15 +400,20 @@
               if (this.count === count) {
                   return;
               }
+              if (!this._isMutable) {
+                  throw new Error('the group cannot be modified.');
+              }
+              var invariableCount = this.invariableCount;
+              count -= invariableCount;
               if (count < 0) {
-                  throw new RangeError('Invalid count specified.');
+                  throw new RangeError('Invalid count specified. Be sure to specify a number above the invariable count.');
               }
               if (this.temporaryCount !== 0) {
                   throw new Error('You should not have temporary element before to set a new count.');
               }
               var diffCount = 0;
-              var children = this.children;
-              var currentCount = this.count;
+              var children = this.children.filter(function (c) { return c.isMutable; });
+              var currentCount = this.count - invariableCount;
               children.forEach(function (c) {
                   var ratio;
                   if (currentCount === 0) {
@@ -428,6 +441,24 @@
                       return adjustment_1 >= 0;
                   });
               }
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(PolygonsSuperGroup.prototype, "isMutable", {
+          get: function () {
+              return this._isMutable;
+          },
+          set: function (isMutable) {
+              this._isMutable = isMutable;
+              this.children.forEach(function (c) { return c.isMutable = isMutable; });
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(PolygonsSuperGroup.prototype, "invariableCount", {
+          get: function () {
+              return this._children.reduce(function (total, child) { return total + child.invariableCount; }, 0);
           },
           enumerable: true,
           configurable: true
@@ -484,7 +515,13 @@
       });
       Object.defineProperty(PolygonsSuperGroup.prototype, "children", {
           get: function () {
-              return this._children.sort(function (a, b) { return d3Array.descending(a.count, b.count); });
+              return this._children.sort(function (a, b) {
+                  var compare = d3Array.descending(a.count, b.count);
+                  if (compare === 0) {
+                      compare = d3Array.ascending(a.id, b.id);
+                  }
+                  return compare;
+              });
           },
           enumerable: true,
           configurable: true
@@ -618,6 +655,9 @@
               return this.polygonsGroup.count * this._minAmount;
           },
           set: function (amount) {
+              if (!this.isMutable) {
+                  throw new Error('Impossible to change the amount associated with the element.');
+              }
               if (amount < 0) {
                   throw new TypeError('Invalid amount specified.');
               }
@@ -642,6 +682,16 @@
       Object.defineProperty(BudgetElement.prototype, "isActive", {
           get: function () {
               return this._level === this.activeLevel;
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(BudgetElement.prototype, "isMutable", {
+          get: function () {
+              return this.polygonsGroup.isMutable;
+          },
+          set: function (isMutable) {
+              this.polygonsGroup.isMutable = isMutable;
           },
           enumerable: true,
           configurable: true
@@ -695,6 +745,7 @@
           _this._children = [];
           _this._group = new PolygonsSuperGroup(polygonsGroupConfig, Config.BUDGET_SUB_ELEMENTS_SPACING);
           _this._hasFocus = false;
+          _this.isMutable = config.isMutable;
           return _this;
       }
       Object.defineProperty(BudgetElementGroup.prototype, "activeLevel", {
@@ -809,12 +860,18 @@
           visitor.visitBudgetElementGroup(this);
       };
       BudgetElementGroup.prototype.reset = function () {
+          if (!this.isMutable) {
+              return;
+          }
           this._children.forEach(function (c) { return c.reset(); });
       };
       BudgetElementGroup.prototype.addChild = function (element) {
           element.activeLevel = this._activeLevel;
           element.level = this._level + 1;
           element.parent = this;
+          if (!this.isMutable) {
+              element.isMutable = false;
+          }
           this._children.push(element);
           this._group.addGroup(element.polygonsGroup);
       };
@@ -917,6 +974,7 @@
               throw new RangeError('Invalid count specified.');
           }
           _this = _super.call(this, config) || this;
+          _this.isMutable = true;
           _this._count = count;
           _this._position = { x: 0, y: 0 };
           _this._squares = d3Array.range(_this._startingPosition, _this._count + _this._startingPosition)
@@ -951,6 +1009,9 @@
               if (this._count === count) {
                   return;
               }
+              if (!this.isMutable) {
+                  throw new Error('The group cannot be modified.');
+              }
               if (count < 0) {
                   throw new RangeError("Invalid count specified (" + count + ").");
               }
@@ -960,6 +1021,13 @@
               this.updateCount(this._count, count);
               this._count = count;
               this.updateBoundingBox();
+          },
+          enumerable: true,
+          configurable: true
+      });
+      Object.defineProperty(SquaresGroup.prototype, "invariableCount", {
+          get: function () {
+              return !this.isMutable ? this._count : 0;
           },
           enumerable: true,
           configurable: true
@@ -1087,6 +1155,7 @@
           _this.initialAmount = amount;
           _this._group = new SquaresGroup(Math.round(amount / _this._minAmount), polygonsGroupConfig);
           _this._hasFocus = false;
+          _this.isMutable = config.isMutable;
           return _this;
       }
       Object.defineProperty(SimpleBudgetElement.prototype, "activeLevel", {
@@ -1158,6 +1227,9 @@
           visitor.visitSimpleBudgetElement(this);
       };
       SimpleBudgetElement.prototype.reset = function () {
+          if (!this.isMutable) {
+              return;
+          }
           this.amount = this.initialAmount;
       };
       return SimpleBudgetElement;
@@ -1175,6 +1247,7 @@
           if (minAmount === void 0) { minAmount = Config.MIN_AMOUNT; }
           if (polygonsGroupConfig === void 0) { polygonsGroupConfig = Config.DEFAULT_POLYGONS_GROUP_CONFIG; }
           var _this = this;
+          this.adjustments = [];
           this.incomes = [];
           this.spendings = [];
           if (!isBudgetConfig(budgetConfig)) {
@@ -1186,6 +1259,10 @@
           this.minAmount = minAmount;
           this.year = budgetConfig.year;
           this._polygonsGroupConfig = polygonsGroupConfig;
+          this.adjustments = budgetConfig.adjustments.map(function (a) {
+              a.amount = Math.round(a.amount / minAmount) * minAmount;
+              return a;
+          });
           var initialize = function (e, type, elements) {
               if (e.children && e.children.length > 0) {
                   var group_1 = new BudgetElementGroup(_this.getBudgetElementConfig(e, type), _this._polygonsGroupConfig);
@@ -1212,6 +1289,15 @@
           get: function () {
               var incomesAmount = this.incomes.reduce(function (total, income) { return total + income.amount + income.temporaryAmount; }, 0);
               var spendingsAmount = this.spendings.reduce(function (total, spending) { return total + spending.amount + spending.temporaryAmount; }, 0);
+              this.adjustments.forEach(function (a) {
+                  switch (a.type) {
+                      case exports.BudgetElementType.INCOME:
+                          incomesAmount += a.amount;
+                          break;
+                      case exports.BudgetElementType.SPENDING:
+                          spendingsAmount += a.amount;
+                  }
+              });
               var delta = incomesAmount - spendingsAmount;
               var state = BudgetState.BALANCED;
               if (delta < 0) {
@@ -1255,6 +1341,7 @@
           return {
               description: element.description || '',
               feedbackMessages: element.feedback || [],
+              isMutable: element.isMutable !== undefined ? element.isMutable : true,
               minAmount: this.minAmount,
               name: element.name,
               type: type,
@@ -1912,7 +1999,6 @@
       };
       return RenderingVisitor;
   }());
-  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -2950,6 +3036,7 @@
       };
       return GridLayout;
   }(Layout));
+  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);

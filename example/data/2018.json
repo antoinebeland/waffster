@@ -3,13 +3,62 @@
   "incomes": [
     {
       "name": "Droits et permis",
-      "amount": 3797000
+      "amount": 2780000
+    },
+    {
+      "name": "Revenus dédiés au fonds des générations",
+      "isMutable": false,
+      "children": [
+        {
+          "name": "Taxe spécifique sur les boissons alcooliques",
+          "amount": 500000
+        },
+        {
+          "name": "Droits et permis",
+          "children": [
+            {
+              "name": "Redevances hydrauliques",
+              "amount": 787000
+            },
+            {
+              "name": "Revenus miniers",
+              "amount": 230000
+            }
+          ]
+        },
+        {
+          "name": "Revenus divers",
+          "children": [
+            {
+              "name": "Biens non réclamés",
+              "amount": 15000
+            },
+            {
+              "name": "Revenus de placement",
+              "amount": 499000
+            }
+          ]
+        },
+        {
+          "name": "Entreprises du gouvernement",
+          "children": [
+            {
+              "name": "Indexation du prix de l’électricité patrimoniale",
+              "amount": 245000
+            },
+            {
+              "name": "Contribution additionnelle d’Hydro-Québec",
+              "amount": 215000
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "Impôts",
       "children": [
         {
-          "name": "Impôt des particuliers",
+          "name": "Impôts des particuliers",
           "amount": 30549000
         },
         {
@@ -21,21 +70,25 @@
           "amount": 8028000
         },
         {
-          "name": "Impôt foncier scolaire",
+          "name": "Impôts foncier scolaire",
           "amount": 1817000
         }
       ]
     },
     {
+      "name": "Utilisation de la réserve de stabilisation",
+      "amount": 1587000
+    },
+    {
       "name": "Revenus divers",
-      "amount": 10451000
+      "amount": 9937000
     },
     {
       "name": "Revenus provenant des entreprises du gouvernement",
       "children": [
         {
           "name": "Hydro-Québec",
-          "amount": 2075000
+          "amount": 1615000
         },
         {
           "name": "Loto-Québec",
@@ -59,12 +112,20 @@
           "amount": 2321000
         },
         {
-          "name": "Produit du tabac",
+          "name": "Produits du tabac",
           "amount": 993000
         },
         {
           "name": "Boissons alcooliques",
-          "amount": 640000
+          "amount": 140000
+        },
+        {
+          "name": "Revenus des autres fonds/organismes à l'exclusion du fonds des générations",
+          "amount": 843
+        },
+        {
+          "name": "Revenus dédiés au fonds des générations",
+          "amount": 500
         }
       ]
     },
@@ -178,6 +239,10 @@
         {
           "name": "Protection des consommateurs",
           "amount": 8009.4
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 1214000
         }
       ]
     },
@@ -229,8 +294,16 @@
               "amount": 4366.9
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": -24200
         }
       ]
+    },
+    {
+      "name": "Assemblée nationale",
+      "amount": 32800
     },
     {
       "name": "Conseil exécutif",
@@ -334,6 +407,10 @@
         {
           "name": "Relations avec les Québecois d'expression anglaise",
           "amount": 3010
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 100
         }
       ]
     },
@@ -447,6 +524,10 @@
               "amount": 400000
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 989400
         }
       ]
     },
@@ -527,6 +608,10 @@
               "amount": 629.4
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 461800
         }
       ]
     },
@@ -620,6 +705,10 @@
               "amount": 676.3
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 1301600
         }
       ]
     },
@@ -816,6 +905,10 @@
               "amount": 13813.4
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 3892900
         }
       ]
     },
@@ -837,6 +930,10 @@
         {
           "name": "Territoire",
           "amount": 12654.1
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 518900
         }
       ]
     },
@@ -883,6 +980,10 @@
         {
           "name": "Bureau d'audiences publiques sur l'environnement",
           "amount": 5160.5
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 931500
         }
       ]
     },
@@ -977,6 +1078,10 @@
               "amount": 27702.9
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 3146800
         }
       ]
     },
@@ -1030,23 +1135,14 @@
           ]
         },
         {
-          "name": "Service de la dette",
-          "children": [
-            {
-              "name": "Service de la dette directe",
-              "amount": 5821000
-            },
-            {
-              "name": "Intérêts sur le compte des régimes de retraite",
-              "amount": 1394000
-            },
-            {
-              "name": "Intérêts sur le régime de rentes de survivants",
-              "amount": 1000
-            }
-          ]
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 2965500
         }
       ]
+    },
+    {
+      "name": "Versement des revenus dédiés au fonds des génération",
+      "amount": 2491000
     },
     {
       "name": "Forêts, Faune et Parcs",
@@ -1084,6 +1180,10 @@
               "amount": 55919.7
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 471500
         }
       ]
     },
@@ -1109,6 +1209,10 @@
         {
           "name": "Provision pour augmenter, avec l'approbation du Conseil du trésor, tout crédit pour la réalisation d'activités soutenant l'intégration et la francisation des immigrants",
           "amount": 165749.5
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 6000
         }
       ]
     },
@@ -1203,6 +1307,10 @@
               "amount": 1115.8
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 167400
         }
       ]
     },
@@ -1237,6 +1345,10 @@
               "amount": 4600.3
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 6400
         }
       ]
     },
@@ -1362,6 +1474,11 @@
               "amount": 94889.5
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 4472200,
+          "isMutable": false
         }
       ]
     },
@@ -1442,6 +1559,31 @@
               "amount": 6252.8
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 558300
+        }
+      ]
+    },
+    {
+      "name": "Service de la dette",
+      "children": [
+        {
+          "name": "Service de la dette directe",
+          "amount": 5821000
+        },
+        {
+          "name": "Intérêts sur le compte des régimes de retraite",
+          "amount": 1394000
+        },
+        {
+          "name": "Intérêts sur le régime de rentes de survivants",
+          "amount": 1000
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 2220000
         }
       ]
     },
@@ -1463,6 +1605,10 @@
         {
           "name": "Régie des installations olympiques",
           "amount": 41367.3
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 158600
         }
       ]
     },
@@ -1506,6 +1652,10 @@
               "amount": 7326.8
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 4107800
         }
       ]
     },
@@ -1571,8 +1721,19 @@
               "amount": 6387.8
             }
           ]
+        },
+        {
+          "name": "Dépenses consolidées des fonds et organismes autres que budgétaires",
+          "amount": 721800
         }
       ]
+    }
+  ],
+  "adjustments": [
+    {
+      "type": "spending",
+      "name": "Éliminations interportefeuilles",
+      "amount": -3626000
     }
   ]
 }

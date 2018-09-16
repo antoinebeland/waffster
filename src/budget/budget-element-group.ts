@@ -21,6 +21,7 @@ export class BudgetElementGroup extends BudgetElement {
     this._children = [];
     this._group = new PolygonsSuperGroup(polygonsGroupConfig, Config.BUDGET_SUB_ELEMENTS_SPACING);
     this._hasFocus = false;
+    this.isMutable = config.isMutable;
   }
 
   get activeLevel(): number {
@@ -112,7 +113,6 @@ export class BudgetElementGroup extends BudgetElement {
   }
 
   get children() {
-    // TODO: If all the elements are equals, sort by id or name?
     return this._children.sort((a, b) => descending(a.amount, b.amount));
   }
 
@@ -121,6 +121,9 @@ export class BudgetElementGroup extends BudgetElement {
   }
 
   reset() {
+    if (!this.isMutable) {
+      return;
+    }
     this._children.forEach(c => c.reset());
   }
 
@@ -128,6 +131,9 @@ export class BudgetElementGroup extends BudgetElement {
     element.activeLevel = this._activeLevel;
     element.level = this._level + 1;
     element.parent = this;
+    if (!this.isMutable) {
+      element.isMutable = false;
+    }
 
     this._children.push(element);
     this._group.addGroup(element.polygonsGroup);

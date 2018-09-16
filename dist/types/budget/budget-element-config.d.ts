@@ -12,6 +12,7 @@ export interface BudgetElementConfig {
     description: string;
     type: BudgetElementType;
     minAmount: number;
+    isMutable: boolean;
     feedbackMessages: FeedbackMessage[];
 }
 export declare function isBudgetElementConfig(config: any): config is BudgetElementConfig;

@@ -1,4 +1,4 @@
-import { descending } from 'd3-array';
+import { ascending, descending } from 'd3-array';
 
 import { AbstractPolygonsGroup } from './abstract-polygons-group';
 import { Polygon } from './polygon';
@@ -11,6 +11,7 @@ enum PolygonsSuperGroupState {
 
 export class PolygonsSuperGroup extends AbstractPolygonsGroup {
   private readonly _children: AbstractPolygonsGroup[];
+  private _isMutable: boolean;
   private _spacing: number;
   private _state: PolygonsSuperGroupState;
 
@@ -23,6 +24,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
   constructor(config: PolygonsGroupConfig, spacing: number) {
     super(config);
     this._children = [];
+    this._isMutable = true;
     this._spacing = spacing;
     this._state = PolygonsSuperGroupState.COLLAPSED;
   }
@@ -45,15 +47,22 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
     if (this.count === count) {
       return;
     }
+    if (!this._isMutable) {
+      throw new Error('the group cannot be modified.');
+    }
+
+    const invariableCount = this.invariableCount;
+    count -= invariableCount;
     if (count < 0) {
-      throw new RangeError('Invalid count specified.');
+      throw new RangeError('Invalid count specified. Be sure to specify a number above the invariable count.');
     }
     if (this.temporaryCount !== 0) {
       throw new Error('You should not have temporary element before to set a new count.');
     }
     let diffCount = 0;
-    const children = this.children;
-    const currentCount = this.count;
+    const children = this.children.filter(c => c.isMutable);
+    const currentCount = this.count - invariableCount;
+
     children.forEach(c => {
       let ratio;
       if (currentCount === 0) {
@@ -81,6 +90,19 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
         return adjustment >= 0;
       });
     }
+  }
+
+  get isMutable(): boolean {
+    return this._isMutable;
+  }
+
+  set isMutable(isMutable: boolean) {
+    this._isMutable = isMutable;
+    this.children.forEach(c => c.isMutable = isMutable);
+  }
+
+  get invariableCount(): number {
+    return this._children.reduce((total, child) => total + child.invariableCount, 0);
   }
 
   /**
@@ -138,7 +160,13 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
    * @returns {AbstractPolygonsGroup[]}     The children of the super group.
    */
   get children(): AbstractPolygonsGroup[] {
-    return this._children.sort((a, b) => descending(a.count, b.count));
+    return this._children.sort((a, b) => {
+      let compare = descending(a.count, b.count);
+      if (compare === 0) { // Compare IDs if the counts are equals.
+        compare = ascending(a.id, b.id);
+      }
+      return compare;
+    });
   }
 
   /**

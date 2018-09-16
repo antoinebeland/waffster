@@ -1,12 +1,20 @@
 import { BudgetElement } from './budget-element';
-interface BudgetElementConfig {
+import { BudgetElementType } from './budget-element-config';
+export interface BudgetAdjustment {
+    amount: number;
+    name: string;
+    type: BudgetElementType;
+}
+interface BudgetItemConfig {
     amount?: number;
     children?: BudgetElement[];
+    isMutable?: boolean;
     name: string;
 }
 export interface BudgetConfig {
-    incomes: BudgetElementConfig[];
-    spendings: BudgetElementConfig[];
+    adjustments?: BudgetAdjustment[];
+    incomes: BudgetItemConfig[];
+    spendings: BudgetItemConfig[];
     year: number;
 }
 export declare function isBudgetConfig(budgetConfig: any): budgetConfig is BudgetConfig;

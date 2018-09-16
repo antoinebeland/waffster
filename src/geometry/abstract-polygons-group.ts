@@ -8,9 +8,7 @@ import { Translation } from './translation';
  * Defines the base of a polygons group.
  */
 export abstract class AbstractPolygonsGroup {
-  private readonly _translation: Translation;
-  private _boundary = [];
-  private _selectionCount = 0;
+  readonly id: number;
 
   // TODO: Put variable private and use public accessors.
   protected _boundingBox: BoundingBox;
@@ -19,11 +17,17 @@ export abstract class AbstractPolygonsGroup {
   protected _sideLength: number;
   protected _startingPosition;
 
+  private static _currentId = 0;
+  private readonly _translation: Translation;
+  private _boundary = [];
+  private _selectionCount = 0;
+
   protected constructor(config: PolygonsGroupConfig) {
     this.config = config;
     this._boundary = [];
     this._boundingBox = new BoundingBox();
     this._translation = { x: 0, y: 0 };
+    this.id = ++AbstractPolygonsGroup._currentId;
   }
 
   /**
@@ -39,6 +43,12 @@ export abstract class AbstractPolygonsGroup {
    * @param {number} count          The polygons count to set.
    */
   abstract set count(count: number);
+
+  abstract get isMutable(): boolean;
+
+  abstract set isMutable(isMutable: boolean);
+
+  abstract get invariableCount(): number;
 
   /**
    * Gets the polygons of the group.

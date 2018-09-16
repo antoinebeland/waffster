@@ -3,7 +3,7 @@ import { descending } from 'd3-array';
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
 
-import { isBudgetConfig, BudgetConfig } from './budget-config';
+import { isBudgetConfig, BudgetAdjustment, BudgetConfig } from './budget-config';
 import { BudgetElement } from './budget-element';
 import { BudgetElementConfig, BudgetElementType } from './budget-element-config';
 import { BudgetElementGroup } from './budget-element-group';
@@ -33,6 +33,7 @@ export interface BudgetSummary {
  */
 export class Budget {
   readonly year: number;
+  readonly adjustments: BudgetAdjustment[] = [];
   readonly incomes: BudgetElement[] = [];
   readonly spendings: BudgetElement[] = [];
   readonly minAmount: number;
@@ -59,6 +60,11 @@ export class Budget {
     this.minAmount = minAmount;
     this.year = budgetConfig.year;
     this._polygonsGroupConfig = polygonsGroupConfig;
+
+    this.adjustments = budgetConfig.adjustments.map(a => {
+      a.amount = Math.round(a.amount / minAmount) * minAmount;
+      return a;
+    });
 
     const initialize = (e, type, elements) => {
       if (e.children && e.children.length > 0) {
@@ -91,10 +97,21 @@ export class Budget {
    * @returns {BudgetSummary}       The summary of the budget.
    */
   get summary(): BudgetSummary {
-    const incomesAmount = this.incomes.reduce(
+    let incomesAmount = this.incomes.reduce(
       (total, income) => total + income.amount + income.temporaryAmount, 0);
-    const spendingsAmount = this.spendings.reduce(
+    let spendingsAmount = this.spendings.reduce(
       (total, spending) => total + spending.amount + spending.temporaryAmount, 0);
+
+    this.adjustments.forEach(a => {
+      switch (a.type) {
+        case BudgetElementType.INCOME:
+          incomesAmount += a.amount;
+          break;
+        case BudgetElementType.SPENDING:
+          spendingsAmount += a.amount;
+      }
+    });
+
     const delta = incomesAmount - spendingsAmount;
     let state = BudgetState.BALANCED;
     if (delta < 0) {
@@ -152,6 +169,7 @@ export class Budget {
     return {
       description: element.description || '',
       feedbackMessages: element.feedback || [],
+      isMutable: element.isMutable !== undefined ? element.isMutable : true,
       minAmount: this.minAmount,
       name: element.name,
       type: type,

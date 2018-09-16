@@ -59,6 +59,11 @@ export interface BudgetElementConfig {
   minAmount: number;
 
   /**
+   * Indicates if the element is mutable.
+   */
+  isMutable: boolean;
+
+  /**
    * The feedback messages to use.
    */
   feedbackMessages: FeedbackMessage[];

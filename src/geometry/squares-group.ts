@@ -9,6 +9,8 @@ import { Square } from './square';
  * Defines a group of squares.
  */
 export class SquaresGroup extends AbstractPolygonsGroup {
+  isMutable: boolean;
+
   private readonly _position: Point;
   private _count: number;
   private _squares: Square[];
@@ -25,6 +27,7 @@ export class SquaresGroup extends AbstractPolygonsGroup {
       throw new RangeError('Invalid count specified.');
     }
     super(config);
+    this.isMutable = true; // TODO: Set the mutable with config.
     this._count = count;
     this._position = { x: 0, y: 0 };
     this._squares = range(this._startingPosition, this._count + this._startingPosition)
@@ -76,6 +79,9 @@ export class SquaresGroup extends AbstractPolygonsGroup {
     if (this._count === count) {
       return;
     }
+    if (!this.isMutable) {
+      throw new Error('The group cannot be modified.');
+    }
     if (count < 0) {
       throw new RangeError(`Invalid count specified (${count}).`);
     }
@@ -85,6 +91,10 @@ export class SquaresGroup extends AbstractPolygonsGroup {
     this.updateCount(this._count, count);
     this._count = count;
     this.updateBoundingBox();
+  }
+
+  get invariableCount(): number {
+    return !this.isMutable ? this._count : 0;
   }
 
   /**

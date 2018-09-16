@@ -12,6 +12,9 @@ export class DeleteCommand implements UndoableCommand {
   private readonly _layout: Layout;
 
   constructor(element: BudgetElement, rendering: RenderingVisitor, layout: Layout) {
+    if (!element.isMutable) {
+      throw new Error('The specified element cannot be modified.');
+    }
     this.amount = Math.abs(element.temporaryAmount);
     this.element = element;
     this._rendering = rendering;

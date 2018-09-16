@@ -127,7 +127,7 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
     if (children.length <= 0) {
       return;
     }
-    count = Math.max(-this.count, count);
+    count = Math.max(!this.isMutable ? -this.count : -this.count + this.invariableCount, count);
 
     // Create new elements
     if (count > 0) {

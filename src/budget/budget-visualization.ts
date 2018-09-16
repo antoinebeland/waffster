@@ -3,6 +3,7 @@ import d3Tip from 'd3-tip';
 
 import { Config } from '../config';
 import { PolygonsGroupConfig } from '../geometry/polygons-group-configs';
+import { Event } from '../utils/event';
 import { Formatter } from '../utils/formatter';
 import { D3Selection } from '../utils/types';
 
@@ -10,6 +11,7 @@ import { Budget } from './budget';
 import { BudgetElement } from './budget-element';
 import { BudgetElementGroup } from './budget-element-group';
 import { AddCommand } from './commands/add-command';
+import { Command } from './commands/command';
 import { CommandInvoker } from './commands/command-invoker';
 import { DeleteCommand } from './commands/delete-command';
 import { Layout } from './layouts/layout';
@@ -24,6 +26,9 @@ export class BudgetVisualization {
   readonly rendering: RenderingVisitor;
   readonly tip: d3Tip;
 
+  readonly onActionExecuted: Event<Command> = new Event<Command>();
+  readonly onInvalidActionExecuted: Event<BudgetElement> = new Event<BudgetElement>();
+
   private _layout: Layout;
   private _isEnabled = true;
   private _isInitialized = false;
@@ -36,12 +41,14 @@ export class BudgetVisualization {
     this._layout = layout;
     this.commandInvoker = commandInvoker;
     this.rendering = rendering;
+
     this.tip = d3Tip()
       .html(d => {
         let str = `<strong>${d.name} (${Formatter.formatAmount(d.amount + d.temporaryAmount)})</strong>`;
         str += d.description ? `<p>${d.description}</p>` : '';
         return str;
       });
+    this.commandInvoker.onCommandInvoked.register(command => this.onActionExecuted.invoke(command));
   }
 
   set activeLevel(activeLevel: number) {
@@ -82,10 +89,24 @@ export class BudgetVisualization {
 
     const executeCommand = () => {
       if (selectedElement !== undefined && selectedElement.temporaryAmount !== 0) {
-        if (selectedElement.temporaryAmount > 0) {
-          this.commandInvoker.invoke(new AddCommand(selectedElement, this.rendering, this._layout));
+        if (selectedElement.isMutable) {
+          if (selectedElement.temporaryAmount > 0) {
+            this.commandInvoker.invoke(new AddCommand(selectedElement, this.rendering, this._layout));
+          } else {
+            this.commandInvoker.invoke(new DeleteCommand(selectedElement, this.rendering, this._layout));
+          }
         } else {
-          this.commandInvoker.invoke(new DeleteCommand(selectedElement, this.rendering, this._layout));
+          selectedElement.temporaryAmount = 0;
+          this.rendering.transitionDuration = 0;
+          selectedElement.accept(this.rendering);
+          this.rendering.resetTransitionDuration();
+
+          const root = selectedElement.root;
+          if (root !== selectedElement) {
+            root.accept(this.rendering);
+          }
+          this._layout.render();
+          this.onInvalidActionExecuted.invoke(selectedElement);
         }
       }
     };

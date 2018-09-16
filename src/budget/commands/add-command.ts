@@ -13,6 +13,9 @@ export class AddCommand implements UndoableCommand {
   private _isFirstTime = true;
 
   constructor(element: BudgetElement, rendering: RenderingVisitor, layout: Layout) {
+    if (!element.isMutable) {
+      throw new Error('The specified element cannot be modified.');
+    }
     this.amount = element.temporaryAmount;
     this.element = element;
     this._rendering = rendering;

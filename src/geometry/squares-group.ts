@@ -27,7 +27,7 @@ export class SquaresGroup extends AbstractPolygonsGroup {
       throw new RangeError('Invalid count specified.');
     }
     super(config);
-    this.isMutable = true; // TODO: Set the mutable with config.
+    this.isMutable = true;
     this._count = count;
     this._position = { x: 0, y: 0 };
     this._squares = range(this._startingPosition, this._count + this._startingPosition)

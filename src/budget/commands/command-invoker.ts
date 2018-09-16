@@ -3,7 +3,7 @@ import { Event } from '../../utils/event';
 import { isUndoableCommand, Command, UndoableCommand } from './command';
 
 export class CommandInvoker {
-  onCommandInvoked: Event<Command> = new Event<Command>();
+  readonly onCommandInvoked: Event<Command> = new Event<Command>();
 
   private _commands: UndoableCommand[] = [];
   private _currentIndex = -1;

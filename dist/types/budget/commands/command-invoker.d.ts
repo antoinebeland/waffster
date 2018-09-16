@@ -1,7 +1,7 @@
 import { Event } from '../../utils/event';
 import { Command } from './command';
 export declare class CommandInvoker {
-    onCommandInvoked: Event<Command>;
+    readonly onCommandInvoked: Event<Command>;
     private _commands;
     private _currentIndex;
     readonly canUndo: boolean;

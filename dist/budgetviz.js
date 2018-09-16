@@ -483,7 +483,7 @@
               if (children.length <= 0) {
                   return;
               }
-              count = Math.max(-this.count, count);
+              count = Math.max(!this.isMutable ? -this.count : -this.count + this.invariableCount, count);
               if (count > 0) {
                   if (this.count > 0) {
                       children[children.length - 1].temporaryCount = count;
@@ -1730,9 +1730,35 @@
   })));
   });
 
+  var Event = (function () {
+      function Event() {
+          this._handlers = [];
+      }
+      Event.prototype.register = function (handler, context) {
+          if (!context) {
+              context = this;
+          }
+          this._handlers.push({ handler: handler, context: context });
+      };
+      Event.prototype.unregister = function (handler, context) {
+          if (!context) {
+              context = this;
+          }
+          this._handlers = this._handlers.filter(function (h) { return h.handler !== handler && h.context !== context; });
+      };
+      Event.prototype.invoke = function (data) {
+          this._handlers.slice(0).forEach(function (h) { return h.handler.call(h.context, data); });
+      };
+      return Event;
+  }());
+  //# sourceMappingURL=event.js.map
+
   var AddCommand = (function () {
       function AddCommand(element, rendering, layout) {
           this._isFirstTime = true;
+          if (!element.isMutable) {
+              throw new Error('The specified element cannot be modified.');
+          }
           this.amount = element.temporaryAmount;
           this.element = element;
           this._rendering = rendering;
@@ -1765,29 +1791,6 @@
       return AddCommand;
   }());
   //# sourceMappingURL=add-command.js.map
-
-  var Event = (function () {
-      function Event() {
-          this._handlers = [];
-      }
-      Event.prototype.register = function (handler, context) {
-          if (!context) {
-              context = this;
-          }
-          this._handlers.push({ handler: handler, context: context });
-      };
-      Event.prototype.unregister = function (handler, context) {
-          if (!context) {
-              context = this;
-          }
-          this._handlers = this._handlers.filter(function (h) { return h.handler !== handler && h.context !== context; });
-      };
-      Event.prototype.invoke = function (data) {
-          this._handlers.slice(0).forEach(function (h) { return h.handler.call(h.context, data); });
-      };
-      return Event;
-  }());
-  //# sourceMappingURL=event.js.map
 
   function isCommand(command) {
       return command !== undefined && command.execute !== undefined;
@@ -1844,6 +1847,9 @@
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
+          if (!element.isMutable) {
+              throw new Error('The specified element cannot be modified.');
+          }
           this.amount = Math.abs(element.temporaryAmount);
           this.element = element;
           this._rendering = rendering;
@@ -1999,11 +2005,15 @@
       };
       return RenderingVisitor;
   }());
+  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
           if (commandInvoker === void 0) { commandInvoker = new CommandInvoker(); }
           if (rendering === void 0) { rendering = new RenderingVisitor(Config.TRANSITION_DURATION); }
+          var _this = this;
+          this.onActionExecuted = new Event();
+          this.onInvalidActionExecuted = new Event();
           this._isEnabled = true;
           this._isInitialized = false;
           this.budget = budget;
@@ -2017,6 +2027,7 @@
               str += d.description ? "<p>" + d.description + "</p>" : '';
               return str;
           });
+          this.commandInvoker.onCommandInvoked.register(function (command) { return _this.onActionExecuted.invoke(command); });
       }
       Object.defineProperty(BudgetVisualization.prototype, "activeLevel", {
           set: function (activeLevel) {
@@ -2064,11 +2075,25 @@
           this.svgElement.call(this.tip);
           var executeCommand = function () {
               if (selectedElement !== undefined && selectedElement.temporaryAmount !== 0) {
-                  if (selectedElement.temporaryAmount > 0) {
-                      _this.commandInvoker.invoke(new AddCommand(selectedElement, _this.rendering, _this._layout));
+                  if (selectedElement.isMutable) {
+                      if (selectedElement.temporaryAmount > 0) {
+                          _this.commandInvoker.invoke(new AddCommand(selectedElement, _this.rendering, _this._layout));
+                      }
+                      else {
+                          _this.commandInvoker.invoke(new DeleteCommand(selectedElement, _this.rendering, _this._layout));
+                      }
                   }
                   else {
-                      _this.commandInvoker.invoke(new DeleteCommand(selectedElement, _this.rendering, _this._layout));
+                      selectedElement.temporaryAmount = 0;
+                      _this.rendering.transitionDuration = 0;
+                      selectedElement.accept(_this.rendering);
+                      _this.rendering.resetTransitionDuration();
+                      var root = selectedElement.root;
+                      if (root !== selectedElement) {
+                          root.accept(_this.rendering);
+                      }
+                      _this._layout.render();
+                      _this.onInvalidActionExecuted.invoke(selectedElement);
                   }
               }
           };
@@ -2271,7 +2296,6 @@
       };
       return BudgetVisualization;
   }());
-  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {

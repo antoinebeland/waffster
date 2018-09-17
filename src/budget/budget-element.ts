@@ -168,7 +168,11 @@ export abstract class BudgetElement {
     }
     const percent = Math.round(this.amount / initialAmount * 100);
     const feedback = this._feedbackMessages.find(f => f.interval[0] <= percent && f.interval[1] >= percent);
-    return feedback ? feedback.message : '';
+    let message = feedback ? feedback.message : '';
+    if (!feedback && this.parent !== undefined) {
+      message = this.parent.feedbackMessage;
+    }
+    return message;
   }
 
   /**

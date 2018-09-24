@@ -86,7 +86,7 @@
   function isBudgetConfig(budgetConfig) {
       return !isNaN(budgetConfig.year) &&
           budgetConfig.adjustments === undefined ||
-          (budgetConfig.adjustments.length > 0 && budgetConfig.adjustments.every(function (a) { return isBudgetAdjustment(a); })) &&
+          (budgetConfig.adjustments.length >= 0 && budgetConfig.adjustments.every(function (a) { return isBudgetAdjustment(a); })) &&
               budgetConfig.incomes.length > 0 && budgetConfig.incomes.every(function (s) { return isBudgetElement(s); }) &&
               budgetConfig.spendings.length > 0 && budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
   }

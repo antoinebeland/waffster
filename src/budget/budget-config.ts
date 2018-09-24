@@ -60,7 +60,7 @@ function isBudgetElement(budgetElement: any): budgetElement is BudgetElement {
 export function isBudgetConfig(budgetConfig: any): budgetConfig is BudgetConfig {
   return !isNaN(budgetConfig.year) &&
     budgetConfig.adjustments === undefined ||
-    (budgetConfig.adjustments.length > 0 && budgetConfig.adjustments.every(a => isBudgetAdjustment(a))) &&
+    (budgetConfig.adjustments.length >= 0 && budgetConfig.adjustments.every(a => isBudgetAdjustment(a))) &&
     budgetConfig.incomes.length > 0 && budgetConfig.incomes.every(s => isBudgetElement(s)) &&
     budgetConfig.spendings.length > 0 && budgetConfig.spendings.every(s => isBudgetElement(s));
 }

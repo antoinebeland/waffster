@@ -1905,9 +1905,9 @@
           RenderingVisitor.updateBoundary(group);
           group.children.forEach(function (c, i) {
               c.accept(_this);
-              c.svgElement.transition()
+              c.svgElement.classed("group" + i, (c.level - 1 === c.activeLevel && Config.IS_USING_DISTINCT_COLORS))
+                  .transition()
                   .duration(_this._transitionDuration)
-                  .attr('class', (c.level - 1 === c.activeLevel && Config.IS_USING_DISTINCT_COLORS) ? "group" + i : '')
                   .attr('transform', "translate(" + c.polygonsGroup.translation.x + ", " + c.polygonsGroup.translation.y + ")");
           });
           if (group.activeLevel - group.level === 1) {

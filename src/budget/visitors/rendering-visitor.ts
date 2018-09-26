@@ -42,9 +42,9 @@ export class RenderingVisitor implements BudgetElementVisitor {
     RenderingVisitor.updateBoundary(group);
     group.children.forEach((c, i) => {
       c.accept(this);
-      c.svgElement.transition()
+      c.svgElement.classed(`group${i}`, (c.level - 1 === c.activeLevel && Config.IS_USING_DISTINCT_COLORS))
+        .transition()
         .duration(this._transitionDuration)
-        .attr('class', (c.level - 1 === c.activeLevel && Config.IS_USING_DISTINCT_COLORS) ? `group${i}` : '')
         .attr('transform',
           `translate(${c.polygonsGroup.translation.x}, ${c.polygonsGroup.translation.y})`);
     });

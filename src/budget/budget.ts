@@ -71,7 +71,7 @@ export class Budget {
         const group = new BudgetElementGroup(this.getBudgetElementConfig(e, type), this._polygonsGroupConfig);
         e.children.forEach(c => this.initializeBudgetElement(c, type, group));
         elements.push(group);
-      } else if (this.isAcceptableAmount(e.amount)) {
+      } else {
         elements.push(new SimpleBudgetElement(this.getBudgetElementConfig(e, type), e.amount,
           this._polygonsGroupConfig));
       }

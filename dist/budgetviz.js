@@ -1270,7 +1270,7 @@
                   e.children.forEach(function (c) { return _this.initializeBudgetElement(c, type, group_1); });
                   elements.push(group_1);
               }
-              else if (_this.isAcceptableAmount(e.amount)) {
+              else {
                   elements.push(new SimpleBudgetElement(_this.getBudgetElementConfig(e, type), e.amount, _this._polygonsGroupConfig));
               }
               elements.sort(function (a, b) { return d3Array.descending(a.amount, b.amount); });

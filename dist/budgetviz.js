@@ -78,7 +78,7 @@
       if (budgetElement.children && budgetElement.children.length > 0) {
           isValid = budgetElement.children.every(function (c) { return isBudgetElement(c); });
       }
-      else if (budgetElement.amount && !isNaN(budgetElement.amount)) {
+      else if (!isNaN(budgetElement.amount) && budgetElement.amount >= 0) {
           isValid = true;
       }
       return isValid && budgetElement.name;

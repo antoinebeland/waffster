@@ -2212,21 +2212,21 @@
                       }
                   });
                   element.svgElement.on('mouseenter', function () {
-                      if (self._isEnabled && element.isActive) {
+                      if (self._isEnabled && element.isActive || element.hasFocus) {
                           hoveredElement = element;
                           hoveredElement.svgElement.classed('hovered', true);
                           showTooltip();
                       }
                   });
                   element.svgElement.on('mouseover', function () {
-                      if (self._isEnabled && element.isActive) {
+                      if (self._isEnabled && element.isActive || element.hasFocus) {
                           hoveredElement = element;
                           hoveredElement.svgElement.classed('hovered', true);
                           showTooltip();
                       }
                   });
                   element.svgElement.on('mouseleave', function () {
-                      if (self._isEnabled && element.isActive && hoveredElement) {
+                      if ((self._isEnabled && element.isActive || element.hasFocus) && hoveredElement) {
                           hoveredElement.svgElement.classed('hovered', false);
                           hoveredElement = undefined;
                           self.tip.hide();

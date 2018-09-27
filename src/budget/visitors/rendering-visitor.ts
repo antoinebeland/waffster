@@ -103,6 +103,8 @@ export class RenderingVisitor implements BudgetElementVisitor {
     const polygons = element.svgElement.select('.squares').selectAll('.square')
       .data(element.polygonsGroup.polygons, d => (d as any).id);
     let selectedAmount = element.selectedAmount;
+    element.svgElement.selectAll('.empty')
+      .remove();
 
     RenderingVisitor.updateBoundary(element);
     polygons.enter()

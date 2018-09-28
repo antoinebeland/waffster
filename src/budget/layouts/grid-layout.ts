@@ -69,7 +69,7 @@ export class GridLayout extends Layout {
 
       const labelLines = textGroup.select('.element-name')
         .attr('text-anchor', 'middle')
-        .attr('y', this._config.amountTextHeight * 0.3)
+        .attr('y', this._config.amountTextHeightY)
         .selectAll('tspan')
         .data(lines);
 

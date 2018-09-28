@@ -1,5 +1,6 @@
 export class LayoutConfig {
   amountTextHeight: number;
+  amountTextHeightY: number;
   averageCharSize: number;
   horizontalMinSpacing: number;
   horizontalPadding: number;
@@ -13,6 +14,7 @@ export class LayoutConfig {
 
 export function isLayoutConfig(config: any): config is LayoutConfig {
   return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
+    !isNaN(config.amountTextHeightY) && config.amountTextHeightY >= 0 &&
     !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
     !isNaN(config.horizontalMinSpacing) && config.horizontalMinSpacing >= 0 &&
     !isNaN(config.horizontalPadding) && config.horizontalPadding >= 0 &&

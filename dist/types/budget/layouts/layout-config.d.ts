@@ -1,5 +1,6 @@
 export declare class LayoutConfig {
     amountTextHeight: number;
+    amountTextHeightY: number;
     averageCharSize: number;
     horizontalMinSpacing: number;
     horizontalPadding: number;

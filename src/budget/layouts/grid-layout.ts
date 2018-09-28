@@ -14,6 +14,7 @@ export class GridLayout extends Layout {
   private readonly _countPerLine: number;
   private readonly _spacing: number;
   private readonly _budgetWidth: number;
+  private readonly _gaugeHeight: number;
 
   constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig, minCountPerLine = MIN_COUNT_PER_LINE) {
     super(budget, svgElement, config);
@@ -23,6 +24,7 @@ export class GridLayout extends Layout {
     const maxCountElements = Math.max(budget.spendings.length, budget.incomes.length);
     this._countPerLine = Math.min(minCountPerLine, maxCountElements);
     this._spacing = (this._countPerLine > 1) ? this._config.horizontalMinSpacing : 0;
+    this._gaugeHeight = this._config.gaugeConfig.height * 1.5 + 10;
 
     this._budgetWidth = 2 * (2 * this._config.horizontalPadding + this._countPerLine *
       this._config.polygonLength + (this._countPerLine - 1) * this._spacing);
@@ -32,7 +34,8 @@ export class GridLayout extends Layout {
     this._budgetGroup.attr('viewBox', `0 0 ${this._budgetWidth} ${this._height}`);
     if (this._gaugeGroup) {
       this._gaugeGroup.attr('transform',
-          `translate(${this._width / 2 - this._config.gaugeConfig.width / 2}, ${this._height - 110})`);
+        `translate(${this._width / 2 - this._config.gaugeConfig.width / 2},` +
+        `${this._height - this._gaugeHeight})`);
     }
 
     const initializeLabel = (d, i, nodes) => {
@@ -155,7 +158,7 @@ export class GridLayout extends Layout {
     const maxHeightsSum = maxGroupHeights.map(d => sum(d));
     const index = maxHeightsSum.indexOf(Math.max(...maxHeightsSum));
     const computedHeight = maxHeightsSum[index] + 2 * this._config.verticalPadding +
-      (maxGroupHeights[index].length - 1) * this._config.verticalMinSpacing + 100;
+      (maxGroupHeights[index].length - 1) * this._config.verticalMinSpacing + this._gaugeHeight;
 
     if (computedHeight !== (this._budgetGroup.datum() as any).computedHeight) {
       (this._budgetGroup.datum() as any).computedHeight = computedHeight;

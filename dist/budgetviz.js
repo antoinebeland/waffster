@@ -1368,7 +1368,7 @@
                   Budget._amountStack[Budget._amountStack.length - 1] += totalAmount;
               }
           }
-          else if (parent && this.isAcceptableAmount(data.amount)) {
+          else if (parent && (this.isAcceptableAmount(data.amount) || data.mustBeKeep)) {
               if (Budget._amountStack.length > 0) {
                   Budget._amountStack[Budget._amountStack.length - 1] += data.amount;
               }

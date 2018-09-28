@@ -18,6 +18,7 @@ interface BudgetItemConfig {
   children?: BudgetElement[];
   isMutable?: boolean;
   name: string;
+  mustBeKeep: boolean;
 }
 
 /**

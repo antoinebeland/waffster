@@ -10,6 +10,7 @@ interface BudgetItemConfig {
     children?: BudgetElement[];
     isMutable?: boolean;
     name: string;
+    mustBeKeep: boolean;
 }
 export interface BudgetConfig {
     adjustments?: BudgetAdjustment[];

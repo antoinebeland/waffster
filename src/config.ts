@@ -1,3 +1,4 @@
+import { GaugeConfig } from './budget/layouts/layout-config';
 import { PolygonsGroupConfig, PolygonsGroupOrientation } from './geometry/polygons-group-configs';
 
 /**
@@ -22,7 +23,7 @@ export class Config {
   /**
    * The configuration of the gauge.
    */
-  static readonly GAUGE_CONFIG = {
+  static readonly GAUGE_CONFIG: GaugeConfig = {
     barWidth: 12.5,
     height: 55,
     interval: [-26000000, 26000000],

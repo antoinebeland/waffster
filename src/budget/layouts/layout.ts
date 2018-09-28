@@ -2,7 +2,6 @@ import { ascending, descending } from 'd3-array';
 import * as d3 from 'd3-selection';
 import d3SimpleGauge from 'd3-simple-gauge';
 
-import { Config } from '../../config';
 import { Formatter } from '../../utils/formatter';
 import { D3Selection } from '../../utils/types';
 import { Budget } from '../budget';
@@ -72,24 +71,24 @@ export abstract class Layout {
           .attr('class', 'budget-gauge-group');
 
         this._gaugeGroup.append('rect')
-          .attr('width', Config.GAUGE_CONFIG.width)
-          .attr('height', Config.GAUGE_CONFIG.height + 45)
+          .attr('width', this._config.gaugeConfig.width)
+          .attr('height', this._config.gaugeConfig.height + 45)
           .attr('fill', '#fff');
 
         this._gaugeGroup.append('text')
           .attr('text-anchor', 'middle')
-          .attr('x', Config.GAUGE_CONFIG.width / 2)
+          .attr('x', this._config.gaugeConfig.width / 2)
           .attr('y', 95);
 
         // Associate the gauge with the group.
         this._gaugeGroup.datum(new d3SimpleGauge.SimpleGauge({
-          barWidth: Config.GAUGE_CONFIG.barWidth,
+          barWidth: this._config.gaugeConfig.barWidth,
           el: this._gaugeGroup.append('g'),
-          height: Config.GAUGE_CONFIG.height,
-          interval: Config.GAUGE_CONFIG.interval,
-          needleRadius: Config.GAUGE_CONFIG.needleRadius,
+          height: this._config.gaugeConfig.height,
+          interval: this._config.gaugeConfig.interval,
+          needleRadius: this._config.gaugeConfig.needleRadius,
           sectionsCount: 2,
-          width: Config.GAUGE_CONFIG.width
+          width: this._config.gaugeConfig.width
         }));
       }
     }
@@ -99,7 +98,7 @@ export abstract class Layout {
         .datum({});
 
       if (this._config.isGaugeDisplayed) {
-        this._budgetGroup.attr('height', this._height - Config.GAUGE_CONFIG.height);
+        this._budgetGroup.attr('height', this._height - this._config.gaugeConfig.height);
       } else {
         this._budgetGroup.attr('height', this._height);
       }

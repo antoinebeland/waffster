@@ -10,10 +10,20 @@ export class LayoutConfig {
   verticalMinSpacing: number;
   verticalPadding: number;
   isGaugeDisplayed?: boolean;
+  gaugeConfig: GaugeConfig;
 }
 
+export class GaugeConfig {
+  barWidth: number;
+  height: number;
+  interval: number[];
+  needleRadius: number;
+  width: number;
+}
+
+/* tslint:disable:cyclomatic-complexity */
 export function isLayoutConfig(config: any): config is LayoutConfig {
-  return !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
+  return config && !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
     !isNaN(config.amountTextHeightY) && config.amountTextHeightY >= 0 &&
     !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
     !isNaN(config.horizontalMinSpacing) && config.horizontalMinSpacing >= 0 &&
@@ -22,5 +32,15 @@ export function isLayoutConfig(config: any): config is LayoutConfig {
     !isNaN(config.titleLineHeight) && config.titleLineHeight > 0 &&
     !isNaN(config.transitionDuration) && config.transitionDuration >= 0 &&
     !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
-    !isNaN(config.verticalPadding) && config.verticalPadding >= 0;
+    !isNaN(config.verticalPadding) && config.verticalPadding >= 0 &&
+    isGaugeConfig(config.gaugeConfig);
+}
+
+export function isGaugeConfig(config: any): config is GaugeConfig {
+  return config && !isNaN(config.barWidth) && config.barWidth >= 0 &&
+    !isNaN(config.height) && config.height > 0 &&
+    !isNaN(config.needleRadius) && config.needleRadius >= 0 &&
+    !isNaN(config.width) && config.width > 0 &&
+    config.interval && config.interval.length === 2 && !isNaN(config.interval[0]) &&
+    !isNaN(config.interval[1]) && config.interval[0] <= config.interval[1];
 }

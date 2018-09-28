@@ -2,7 +2,6 @@ import { sum } from 'd3-array';
 import * as d3 from 'd3-selection';
 import 'd3-transition';
 
-import { Config } from '../../config';
 import { D3Selection } from '../../utils/types';
 import { Budget } from '../budget';
 
@@ -33,7 +32,7 @@ export class GridLayout extends Layout {
     this._budgetGroup.attr('viewBox', `0 0 ${this._budgetWidth} ${this._height}`);
     if (this._gaugeGroup) {
       this._gaugeGroup.attr('transform',
-          `translate(${this._width / 2 - Config.GAUGE_CONFIG.width / 2}, ${this._height - 110})`);
+          `translate(${this._width / 2 - this._config.gaugeConfig.width / 2}, ${this._height - 110})`);
     }
 
     const initializeLabel = (d, i, nodes) => {

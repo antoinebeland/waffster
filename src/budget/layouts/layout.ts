@@ -72,13 +72,13 @@ export abstract class Layout {
 
         this._gaugeGroup.append('rect')
           .attr('width', this._config.gaugeConfig.width)
-          .attr('height', this._config.gaugeConfig.height + 45)
+          .attr('height', this._config.gaugeConfig.height * 1.5 + 10)
           .attr('fill', '#fff');
 
         this._gaugeGroup.append('text')
           .attr('text-anchor', 'middle')
           .attr('x', this._config.gaugeConfig.width / 2)
-          .attr('y', 95);
+          .attr('y', this._config.gaugeConfig.height * 1.5);
 
         // Associate the gauge with the group.
         this._gaugeGroup.datum(new d3SimpleGauge.SimpleGauge({

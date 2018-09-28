@@ -2762,12 +2762,12 @@
                       .attr('class', 'budget-gauge-group');
                   this._gaugeGroup.append('rect')
                       .attr('width', this._config.gaugeConfig.width)
-                      .attr('height', this._config.gaugeConfig.height + 45)
+                      .attr('height', this._config.gaugeConfig.height * 1.5 + 10)
                       .attr('fill', '#fff');
                   this._gaugeGroup.append('text')
                       .attr('text-anchor', 'middle')
                       .attr('x', this._config.gaugeConfig.width / 2)
-                      .attr('y', 95);
+                      .attr('y', this._config.gaugeConfig.height * 1.5);
                   this._gaugeGroup.datum(new d3SimpleGauge$1.SimpleGauge({
                       barWidth: this._config.gaugeConfig.barWidth,
                       el: this._gaugeGroup.append('g'),
@@ -2852,7 +2852,6 @@
       };
       return Layout;
   }());
-  //# sourceMappingURL=layout.js.map
 
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
@@ -3097,6 +3096,7 @@
       };
       return GridLayout;
   }(Layout));
+  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);

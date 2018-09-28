@@ -1229,7 +1229,10 @@
           visitor.visitSimpleBudgetElement(this);
       };
       SimpleBudgetElement.prototype.reset = function () {
-          this.polygonsGroup.count = Math.ceil(this.initialAmount / this._minAmount);
+          var isMutable = this.isMutable;
+          this.isMutable = true;
+          this.amount = this.initialAmount;
+          this.isMutable = isMutable;
       };
       return SimpleBudgetElement;
   }(BudgetElement));

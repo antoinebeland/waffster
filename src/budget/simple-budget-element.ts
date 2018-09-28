@@ -80,6 +80,9 @@ export class SimpleBudgetElement extends BudgetElement {
   }
 
   reset() {
-    this.polygonsGroup.count = Math.ceil(this.initialAmount / this._minAmount);
+    const isMutable = this.isMutable;
+    this.isMutable = true;
+    this.amount = this.initialAmount;
+    this.isMutable = isMutable;
   }
 }

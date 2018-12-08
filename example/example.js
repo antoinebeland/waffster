@@ -19,6 +19,7 @@
           averageCharSize: 10,
           horizontalMinSpacing: 30,
           horizontalPadding: 40,
+          isAmountsDisplayed: false,
           isGaugeDisplayed: false,
           polygonLength: Config.SIDE_LENGTH * Config.MAX_COUNT_PER_LINE,
           titleLineHeight: 18,

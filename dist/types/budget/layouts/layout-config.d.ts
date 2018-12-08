@@ -9,6 +9,7 @@ export declare class LayoutConfig {
     transitionDuration: number;
     verticalMinSpacing: number;
     verticalPadding: number;
+    isAmountsDisplayed?: boolean;
     isGaugeDisplayed?: boolean;
     gaugeConfig?: GaugeConfig;
 }

@@ -33,6 +33,7 @@ export abstract class Layout {
     this._svgElement = svgElement;
     this._config = config;
     this._config.isGaugeDisplayed = config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true;
+    this._config.isAmountsDisplayed = config.isAmountsDisplayed !== false;
     this._defaultTransitionDuration = config.transitionDuration;
 
     // Gets the SVG bounding box.
@@ -104,15 +105,17 @@ export abstract class Layout {
       }
     }
 
+    const self = this;
     function initializeBudgetElement(d) {
       const g = d3.select(this);
       const textGroup = g.append('g')
         .attr('class', 'text-group');
 
-      textGroup.append('text')
-        .attr('class', 'element-amount')
-        .text(Formatter.formatAmount(d.amount));
-
+      if (self._config.isAmountsDisplayed) {
+        textGroup.append('text')
+          .attr('class', 'element-amount')
+          .text(Formatter.formatAmount(d.amount));
+      }
       textGroup.append('text')
         .attr('class', 'element-name');
 

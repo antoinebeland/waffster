@@ -2697,13 +2697,13 @@
   var d3SimpleGauge$1 = unwrapExports(d3SimpleGauge);
 
   function isLayoutConfig(config) {
-      return config && !isNaN(config.amountTextHeight) && config.amountTextHeight > 0 &&
+      return config && !isNaN(config.amountTextHeight) && config.amountTextHeight >= 0 &&
           !isNaN(config.amountTextHeightY) && config.amountTextHeightY >= 0 &&
-          !isNaN(config.averageCharSize) && config.averageCharSize > 0 &&
+          !isNaN(config.averageCharSize) && config.averageCharSize >= 0 &&
           !isNaN(config.horizontalMinSpacing) && config.horizontalMinSpacing >= 0 &&
           !isNaN(config.horizontalPadding) && config.horizontalPadding >= 0 &&
           !isNaN(config.polygonLength) && config.polygonLength > 0 &&
-          !isNaN(config.titleLineHeight) && config.titleLineHeight > 0 &&
+          !isNaN(config.titleLineHeight) && config.titleLineHeight >= 0 &&
           !isNaN(config.transitionDuration) && config.transitionDuration >= 0 &&
           !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
           !isNaN(config.verticalPadding) && config.verticalPadding >= 0 &&
@@ -2717,7 +2717,6 @@
           config.interval && config.interval.length === 2 && !isNaN(config.interval[0]) &&
           !isNaN(config.interval[1]) && config.interval[0] <= config.interval[1];
   }
-  //# sourceMappingURL=layout-config.js.map
 
   var Layout = (function () {
       function Layout(budget, svgElement, config) {
@@ -2728,6 +2727,7 @@
           this._svgElement = svgElement;
           this._config = config;
           this._config.isGaugeDisplayed = config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true;
+          this._config.isAmountsDisplayed = config.isAmountsDisplayed !== false;
           this._defaultTransitionDuration = config.transitionDuration;
           var bbox = this._svgElement.node().getBoundingClientRect();
           this._width = bbox.width;
@@ -2790,13 +2790,16 @@
                   this._budgetGroup.attr('height', this._height);
               }
           }
+          var self = this;
           function initializeBudgetElement(d) {
               var g = d3.select(this);
               var textGroup = g.append('g')
                   .attr('class', 'text-group');
-              textGroup.append('text')
-                  .attr('class', 'element-amount')
-                  .text(Formatter.formatAmount(d.amount));
+              if (self._config.isAmountsDisplayed) {
+                  textGroup.append('text')
+                      .attr('class', 'element-amount')
+                      .text(Formatter.formatAmount(d.amount));
+              }
               textGroup.append('text')
                   .attr('class', 'element-name');
               d.svgElement = g.append('g')
@@ -3100,6 +3103,7 @@
       };
       return GridLayout;
   }(Layout));
+  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);

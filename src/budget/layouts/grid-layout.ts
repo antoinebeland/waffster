@@ -26,7 +26,10 @@ export class GridLayout extends Layout {
     this._spacing = (this._countPerLine > 1) ? this._config.horizontalMinSpacing : 0;
     this._gaugeHeight = this._config.isGaugeDisplayed ? this._config.gaugeConfig.height * 1.5 + 10 : 0;
 
-    this._budgetWidth = 2 * (2 * this._config.horizontalPadding + this._countPerLine *
+    // Adjustment factor if there is no spending or incomes.
+    const factor = budget.spendings.length === 0 || budget.incomes.length === 0 ? 1 : 2;
+
+    this._budgetWidth = factor * (2 * this._config.horizontalPadding + this._countPerLine *
       this._config.polygonLength + (this._countPerLine - 1) * this._spacing);
   }
 
@@ -93,7 +96,7 @@ export class GridLayout extends Layout {
       .attr('transform', 'translate(0, 0)');
 
     this._layoutElement.select('#spendings-group')
-      .attr('transform', `translate(${this._budgetWidth / 2}, 0)`);
+      .attr('transform', `translate(${this._budget.incomes.length === 0 ? 0 : this._budgetWidth / 2}, 0)`);
 
     this._incomeGroups.each(initializeLabel);
     this._spendingGroups.each(initializeLabel);

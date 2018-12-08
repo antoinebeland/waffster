@@ -14,54 +14,19 @@
     const visualizationConfigs = [
       {
         layout: new GridLayout(budget, svg, {
-          amountTextHeight: 15,
-          averageCharSize: Config.AVERAGE_CHAR_SIZE,
-          horizontalMinSpacing: 30,
-          horizontalPadding: 20,
-          polygonLength: Config.SIDE_LENGTH * Config.MAX_COUNT_PER_LINE,
-          titleLineHeight: 15,
-          transitionDuration: 500,
-          verticalMinSpacing: 50,
-          verticalPadding: 30,
-          isGaugeDisplayed: true
-        }),
-        polygonsGroupConfig: Config.DEFAULT_POLYGONS_GROUP_CONFIG
-      },
-      {
-        layout: new HorizontalBarsLayout(budget, svg, {
-          amountTextHeight: 15,
-          averageCharSize: Config.AVERAGE_CHAR_SIZE,
-          horizontalMinSpacing: 30,
-          horizontalPadding: 20,
-          polygonLength: 5 * 5,
-          titleLineHeight: 15,
-          transitionDuration: 500,
-          verticalMinSpacing: 20,
-          verticalPadding: 30
-        }),
-        polygonsGroupConfig: {
-          maxCountPerLine: 5,
-          orientation: Orientation.VERTICAL,
-          sideLength: 5
-        }
-      },
-      {
-        layout: new BarsLayout(budget, svg, {
-          amountTextHeight: 15,
-          averageCharSize: Config.AVERAGE_CHAR_SIZE,
+          amountTextHeight: 20,
+          amountTextHeightY: 7,
+          averageCharSize: 10,
           horizontalMinSpacing: 30,
           horizontalPadding: 40,
-          polygonLength: 12 * 5,
-          titleLineHeight: 15,
+          isGaugeDisplayed: false,
+          polygonLength: Config.SIDE_LENGTH * Config.MAX_COUNT_PER_LINE,
+          titleLineHeight: 18,
           transitionDuration: 500,
-          verticalMinSpacing: 30,
+          verticalMinSpacing: 40,
           verticalPadding: 30
-        }),
-        polygonsGroupConfig: {
-          maxCountPerLine: 12,
-          orientation: Orientation.HORIZONTAL,
-          sideLength: 5
-        }
+        }, 6),
+        polygonsGroupConfig: Config.DEFAULT_POLYGONS_GROUP_CONFIG
       }
     ];
 

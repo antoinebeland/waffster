@@ -24,7 +24,7 @@ export class GridLayout extends Layout {
     const maxCountElements = Math.max(budget.spendings.length, budget.incomes.length);
     this._countPerLine = Math.min(minCountPerLine, maxCountElements);
     this._spacing = (this._countPerLine > 1) ? this._config.horizontalMinSpacing : 0;
-    this._gaugeHeight = this._config.gaugeConfig.height * 1.5 + 10;
+    this._gaugeHeight = this._config.isGaugeDisplayed ? this._config.gaugeConfig.height * 1.5 + 10 : 0;
 
     this._budgetWidth = 2 * (2 * this._config.horizontalPadding + this._countPerLine *
       this._config.polygonLength + (this._countPerLine - 1) * this._spacing);

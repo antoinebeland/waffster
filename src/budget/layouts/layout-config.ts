@@ -10,7 +10,7 @@ export class LayoutConfig {
   verticalMinSpacing: number;
   verticalPadding: number;
   isGaugeDisplayed?: boolean;
-  gaugeConfig: GaugeConfig;
+  gaugeConfig?: GaugeConfig;
 }
 
 export class GaugeConfig {
@@ -33,7 +33,7 @@ export function isLayoutConfig(config: any): config is LayoutConfig {
     !isNaN(config.transitionDuration) && config.transitionDuration >= 0 &&
     !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
     !isNaN(config.verticalPadding) && config.verticalPadding >= 0 &&
-    isGaugeConfig(config.gaugeConfig);
+    config.isGaugeDisplayed === false || isGaugeConfig(config.gaugeConfig);
 }
 
 export function isGaugeConfig(config: any): config is GaugeConfig {

@@ -10,7 +10,7 @@ export declare class LayoutConfig {
     verticalMinSpacing: number;
     verticalPadding: number;
     isGaugeDisplayed?: boolean;
-    gaugeConfig: GaugeConfig;
+    gaugeConfig?: GaugeConfig;
 }
 export declare class GaugeConfig {
     barWidth: number;

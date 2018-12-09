@@ -36,10 +36,15 @@ export abstract class Layout {
     this._config.isAmountsDisplayed = config.isAmountsDisplayed !== false;
     this._defaultTransitionDuration = config.transitionDuration;
 
-    // Gets the SVG bounding box.
-    const bbox = this._svgElement.node().getBoundingClientRect();
-    this._width = bbox.width;
-    this._height = bbox.height;
+    if (this._config.size) {
+      this._width = this._config.size.width;
+      this._height = this._config.size.height;
+    } else {
+      // Gets the SVG bounding box.
+      const bbox = this._svgElement.node().getBoundingClientRect();
+      this._width = bbox.width;
+      this._height = bbox.height;
+    }
   }
 
   get transitionDuration(): number {

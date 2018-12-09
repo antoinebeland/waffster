@@ -12,6 +12,7 @@ export declare class LayoutConfig {
     isAmountsDisplayed?: boolean;
     isGaugeDisplayed?: boolean;
     gaugeConfig?: GaugeConfig;
+    size?: Size;
 }
 export declare class GaugeConfig {
     barWidth: number;
@@ -20,5 +21,10 @@ export declare class GaugeConfig {
     needleRadius: number;
     width: number;
 }
+export declare class Size {
+    height: number;
+    width: number;
+}
 export declare function isLayoutConfig(config: any): config is LayoutConfig;
 export declare function isGaugeConfig(config: any): config is GaugeConfig;
+export declare function isSize(size: any): size is Size;

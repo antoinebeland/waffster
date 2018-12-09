@@ -12,6 +12,7 @@ export class LayoutConfig {
   isAmountsDisplayed?: boolean;
   isGaugeDisplayed?: boolean;
   gaugeConfig?: GaugeConfig;
+  size?: Size;
 }
 
 export class GaugeConfig {
@@ -19,6 +20,11 @@ export class GaugeConfig {
   height: number;
   interval: number[];
   needleRadius: number;
+  width: number;
+}
+
+export class Size {
+  height: number;
   width: number;
 }
 
@@ -34,7 +40,8 @@ export function isLayoutConfig(config: any): config is LayoutConfig {
     !isNaN(config.transitionDuration) && config.transitionDuration >= 0 &&
     !isNaN(config.verticalMinSpacing) && config.verticalMinSpacing >= 0 &&
     !isNaN(config.verticalPadding) && config.verticalPadding >= 0 &&
-    config.isGaugeDisplayed === false || isGaugeConfig(config.gaugeConfig);
+    config.isGaugeDisplayed === false || isGaugeConfig(config.gaugeConfig) &&
+    !config.size || isSize(config.size);
 }
 
 export function isGaugeConfig(config: any): config is GaugeConfig {
@@ -44,4 +51,9 @@ export function isGaugeConfig(config: any): config is GaugeConfig {
     !isNaN(config.width) && config.width > 0 &&
     config.interval && config.interval.length === 2 && !isNaN(config.interval[0]) &&
     !isNaN(config.interval[1]) && config.interval[0] <= config.interval[1];
+}
+
+export function isSize(size: any): size is Size {
+  return size && !isNaN(size.height) && size.height >= 0 &&
+    !isNaN(size.width) && size.width >= 0;
 }

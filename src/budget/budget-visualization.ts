@@ -67,7 +67,13 @@ export class BudgetVisualization {
   set isEnabled(isEnabled: boolean) {
     this._isEnabled = isEnabled;
     this.svgElement.classed('disabled', !isEnabled);
+
     if (!isEnabled) {
+      this.budget.elements.forEach(e => {
+        e.hasFocus = false;
+        e.svgElement.classed('hovered', false);
+        e.accept(this.rendering);
+      });
       this.activeLevel = 0;
     }
   }

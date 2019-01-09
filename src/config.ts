@@ -18,7 +18,7 @@ export class Config {
   /**
    * The spacing to use for the sub elements of the budget when these elements are active.
    */
-  static readonly BUDGET_SUB_ELEMENTS_SPACING = 3;
+  static readonly BUDGET_SUB_ELEMENTS_SPACING = 8;
 
   /**
    * The configuration of the gauge.

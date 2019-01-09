@@ -26,6 +26,7 @@ export class BudgetVisualization {
   readonly rendering: RenderingVisitor;
   readonly tip: d3Tip;
 
+  readonly onElementSelected: Event<BudgetElement> = new Event<BudgetElement>();
   readonly onActionExecuted: Event<Command> = new Event<Command>();
   readonly onInvalidActionExecuted: Event<BudgetElement> = new Event<BudgetElement>();
 
@@ -233,6 +234,7 @@ export class BudgetVisualization {
               selectedElement = undefined;
             } else {
               selectedElement = element;
+              self.onElementSelected.invoke(element);
             }
           }
         });

@@ -14,6 +14,7 @@ export declare class BudgetVisualization {
     readonly svgElement: D3Selection;
     readonly rendering: RenderingVisitor;
     readonly tip: d3Tip;
+    readonly onElementSelected: Event<BudgetElement>;
     readonly onActionExecuted: Event<Command>;
     readonly onInvalidActionExecuted: Event<BudgetElement>;
     private _layout;

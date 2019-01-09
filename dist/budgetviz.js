@@ -31,7 +31,7 @@
       }
       Config.AVERAGE_CHAR_SIZE = 7.5;
       Config.BUDGET_ELEMENTS_ORIENTATION = exports.Orientation.HORIZONTAL;
-      Config.BUDGET_SUB_ELEMENTS_SPACING = 3;
+      Config.BUDGET_SUB_ELEMENTS_SPACING = 8;
       Config.GAUGE_CONFIG = {
           barWidth: 12.5,
           height: 55,
@@ -845,6 +845,14 @@
                   .attr('y1', 0)
                   .attr('x2', 0)
                   .attr('y2', 0);
+              if (this.level === 0) {
+                  svgElement.append('line')
+                      .attr('class', 'reference-line')
+                      .attr('x1', 0)
+                      .attr('y1', 0)
+                      .attr('x2', 0)
+                      .attr('y2', 0);
+              }
               this.children.forEach(function (c) {
                   c.svgElement = svgElement.append('g');
               });
@@ -1898,6 +1906,18 @@
           var _this = this;
           if (this._levelStack.length === 0) {
               group.polygonsGroup.update();
+              var boundingBox = group.polygonsGroup.boundingBox;
+              var halfWidth = boundingBox.width / 2;
+              group.svgElement.select('.reference-line')
+                  .transition()
+                  .duration(this._transitionDuration)
+                  .style('stroke-dasharray', 1)
+                  .style('stroke', '#999')
+                  .style('stroke-width', '1px')
+                  .attr('x1', halfWidth)
+                  .attr('y1', 0)
+                  .attr('x2', halfWidth)
+                  .attr('y2', boundingBox.height);
           }
           this._levelStack.push(0);
           group.svgElement.selectAll('.empty')
@@ -2011,6 +2031,7 @@
           if (commandInvoker === void 0) { commandInvoker = new CommandInvoker(); }
           if (rendering === void 0) { rendering = new RenderingVisitor(Config.TRANSITION_DURATION); }
           var _this = this;
+          this.onElementSelected = new Event();
           this.onActionExecuted = new Event();
           this.onInvalidActionExecuted = new Event();
           this._isEnabled = true;
@@ -2210,6 +2231,7 @@
                           }
                           else {
                               selectedElement = element;
+                              self.onElementSelected.invoke(element);
                           }
                       }
                   });

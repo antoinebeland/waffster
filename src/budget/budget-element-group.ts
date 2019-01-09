@@ -105,6 +105,15 @@ export class BudgetElementGroup extends BudgetElement {
       .attr('x2', 0)
       .attr('y2', 0);
 
+    if (this.level === 0) {
+      svgElement.append('line')
+        .attr('class', 'reference-line')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 0);
+    }
+
     this.children.forEach(c => {
       c.svgElement = svgElement.append('g');
     });

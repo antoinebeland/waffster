@@ -34,6 +34,19 @@ export class RenderingVisitor implements BudgetElementVisitor {
   visitBudgetElementGroup(group: BudgetElementGroup) {
     if (this._levelStack.length === 0) { // TODO: Be more efficient!
       group.polygonsGroup.update();
+
+      const boundingBox = group.polygonsGroup.boundingBox;
+      const halfWidth = boundingBox.width / 2;
+      group.svgElement.select('.reference-line')
+        .transition()
+        .duration(this._transitionDuration)
+        .style('stroke-dasharray', 1)
+        .style('stroke', '#999')
+        .style('stroke-width', '1px')
+        .attr('x1', halfWidth)
+        .attr('y1', 0)
+        .attr('x2', halfWidth)
+        .attr('y2', boundingBox.height);
     }
     this._levelStack.push(0);
     group.svgElement.selectAll('.empty')

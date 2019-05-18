@@ -1,0 +1,129 @@
+/* ===== General ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong {
+  font-weight: 600;
+}
+
+h1 {
+  text-transform: uppercase;
+}
+
+p,
+figcaption {
+  line-height: 1.2em;
+  text-align: justify;
+}
+
+.wrapper {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* ===== Header ===== */
+header {
+  margin-bottom: 1em;
+  border-bottom: 1px solid #ccc;
+}
+
+header h1 {
+  margin-bottom: 0;
+  color: #333;
+}
+
+header h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+  font-weight: normal;
+  color: #666;
+}
+
+/* ===== Main Content ===== */
+main {
+  margin-bottom: 1em;
+}
+
+main article {
+  max-width: 100%;
+  padding: 0 1em;
+  margin: 0 auto 2em;
+  color: #444;
+  flex-basis: 50%;
+}
+
+main article > h1 {
+  padding-bottom: 0.25em;
+  margin-bottom: 0;
+  border-bottom: 1px solid #ccc;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.teaser {
+  padding: 0;
+}
+
+.teaser figure {
+  margin: 0 1em;
+}
+
+.teaser img {
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.team {
+  display: flex;
+  padding: 0;
+  margin-top: 2em;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.team li {
+  list-style: none;
+  flex: 1;
+}
+
+.team li:hover {
+  opacity: 0.8;
+  transition: all 0.2s ease-out;
+}
+
+.team li a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.team li img {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 0.5em;
+  border: 1px solid #444;
+  border-radius: 50%;
+  filter: grayscale(100%);
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.team li strong {
+  font-size: 1.1em;
+  line-height: 1.5em;
+}

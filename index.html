@@ -4,33 +4,35 @@
   <meta charset="UTF-8">
   <title>Waffster: Hierarchical Waffle Charts for User-Friendly Public Budget Consumption</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles/font-awesome.min.css">
   <link rel="stylesheet" href="assets/styles/normalize.css">
   <link rel="stylesheet" href="assets/styles/style.css">
 </head>
 <body>
+<nav>
+  <ul>
+    <li>
+      <a href="#abstract">Abstract</a>
+    </li>
+    <li>
+      <a href="#survey">Survey</a>
+    </li>
+    <li>
+      <a href="#experiment">Experiment</a>
+    </li>
+    <li>
+      <a href="#code">Code</a>
+    </li>
+    <li>
+      <a href="#team">Team</a>
+    </li>
+  </ul>
+</nav>
 <div class="wrapper">
   <header>
-    <nav class="pull-right">
-      <ul>
-        <li>
-          <a href="#abstract">Abstract</a>
-        </li>
-        <li>
-          <a href="#survey">Survey</a>
-        </li>
-        <li>
-          <a href="#experiment">Experiment</a>
-        </li>
-        <li>
-          <a href="#code">Code</a>
-        </li>
-        <li>
-          <a href="#team">Team</a>
-        </li>
-      </ul>
-    </nav>
     <h1>Waffster</h1>
     <h2>Hierarchical Waffle Charts for User-Friendly Public Budget Consumption</h2>
   </header>
@@ -45,10 +47,11 @@
           digging into the two depth level Economy and Environment heading.
         </figcaption>
       </figure>
-      <button class="btn"><i class="fa fa-play"></i>&nbsp; Execute demo</button>
+      <button class="btn green"><i class="fa fa-play"></i>&nbsp; Execute demo</button>
     </article>
     <div class="content">
-      <article id="abstract">
+      <article>
+        <div id="abstract"></div>
         <h1>Abstract</h1>
         <p>
           Understanding and consuming public budget data is a key issue, helping citizens in gaining insight into their
@@ -64,26 +67,40 @@
           <strong>Keywords:</strong> Public budget, data visualization, design study.
         </p>
       </article>
-      <article id="survey">
+      <article>
+        <div id="survey"></div>
         <h1>Survey of Public Data Visualizations</h1>
         <p>
           A survey was conducted
+
+          <a class="btn pull-right" href="https://docs.google.com/spreadsheets/d/1DtKPO3wXqG4YMaVlMugWLBQjfG06Ysn_Ytb-45c5ZkE/edit?usp=sharing">
+            View Survey &nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+          </a>
         </p>
       </article>
-      <article id="experiment">
+      <article>
+        <div id="experiment"></div>
         <h1>Controlled Experiment</h1>
         <p>
           ...
+          <a class="btn pull-right" href="#">
+            View Experiment &nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+          </a>
         </p>
       </article>
-      <article id="code">
+      <article>
+        <div id="code"></div>
         <h1>Source Code</h1>
         <p>
           Waffster was implemented as a web-application using TypeScript and d3.js.
           Waffster is open source and uses GPLv3 license.
+          <a class="btn pull-right" href="https://github.com/antoinebeland/waffster">
+            View on GitHub &nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+          </a>
         </p>
       </article>
-      <article id="team">
+      <article>
+        <div id="team"></div>
         <h1>Team</h1>
         <ul class="team">
           <li>
@@ -112,10 +129,24 @@
     </div>
   </main>
   <footer>
-    <a href="http://www.nserc-crsng.gc.ca/index_eng.asp" target="_blank">
-      <img class="pull-right" alt="NSERC" src="assets/images/nserc.png" style="width: 100px; margin: 20px 0;">
-    </a>
     <p>We acknowledge the support of the Natural Sciences and Engineering Council of Canada (NSERC).</p>
+    <ul class="partners">
+      <li>
+        <a href="https://www.polymtl.ca/en" target="_blank">
+          <img alt="Polytechnique Montreal" src="assets/images/polymtl.svg">
+        </a>
+      </li>
+      <li>
+        <a href="https://www.ledevoir.com/" target="_blank">
+          <img alt="Le Devoir" src="assets/images/ledevoir.svg">
+        </a>
+      </li>
+      <li>
+        <a href="http://www.nserc-crsng.gc.ca/index_eng.asp" target="_blank">
+          <img alt="NSERC" src="assets/images/nserc.svg">
+        </a>
+      </li>
+    </ul>
   </footer>
 </div>
 </body>

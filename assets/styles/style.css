@@ -46,7 +46,7 @@ figcaption {
 
 .content {
   display: flex;
-  max-width: 80%;
+  max-width: 75%;
   margin: auto;
   flex-wrap: wrap;
   clear: both;
@@ -75,6 +75,10 @@ figcaption {
   border: 1px solid #ccc;
   color: white;
   background-color: #45a146;
+}
+
+.align-right {
+  text-align: right;
 }
 
 .pull-right {
@@ -228,7 +232,7 @@ footer {
 
 .partners {
   display: flex;
-  max-width: 80%;
+  max-width: 75%;
   padding: 0;
   margin: 2em auto auto;
   flex-wrap: wrap;

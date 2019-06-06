@@ -1,13 +1,13 @@
-/*! budgetviz v0.5.0 | (c) Antoine Béland | GNU GPLv3 */
+/*! waffster v1.0.0 | (c) Antoine Béland | GNU GPLv3 */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-array'), require('d3-collection'), require('d3-selection'), require('d3-transition'), require('d3-shape'), require('d3-ease'), require('d3-scale')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'd3-array', 'd3-collection', 'd3-selection', 'd3-transition', 'd3-shape', 'd3-ease', 'd3-scale'], factory) :
-  (factory((global.budgetviz = {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
-}(this, (function (exports,d3Array,d3Collection,d3,d3Transition,d3Shape,d3Ease,d3Scale) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-array'), require('d3-selection'), require('d3-collection'), require('d3-transition'), require('d3-shape'), require('d3-ease'), require('d3-scale')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'd3-array', 'd3-selection', 'd3-collection', 'd3-transition', 'd3-shape', 'd3-ease', 'd3-scale'], factory) :
+  (global = global || self, factory(global.waffster = {}, global.d3, global.d3, global.d3, global.d3, global.d3, global.d3, global.d3));
+}(this, function (exports, d3Array, d3, d3Collection, d3Transition, d3Shape, d3Ease, d3Scale) { 'use strict';
 
   var d3Array__default = 'default' in d3Array ? d3Array['default'] : d3Array;
-  d3Collection = d3Collection && d3Collection.hasOwnProperty('default') ? d3Collection['default'] : d3Collection;
   var d3__default = 'default' in d3 ? d3['default'] : d3;
+  d3Collection = d3Collection && d3Collection.hasOwnProperty('default') ? d3Collection['default'] : d3Collection;
   d3Transition = d3Transition && d3Transition.hasOwnProperty('default') ? d3Transition['default'] : d3Transition;
   d3Shape = d3Shape && d3Shape.hasOwnProperty('default') ? d3Shape['default'] : d3Shape;
   d3Ease = d3Ease && d3Ease.hasOwnProperty('default') ? d3Ease['default'] : d3Ease;
@@ -25,7 +25,6 @@
           (config.startingPosition === undefined ||
               config.startingPosition >= 0 && config.startingPosition < config.maxCountPerLine);
   }
-  //# sourceMappingURL=polygons-group-configs.js.map
 
   var Config = (function () {
       function Config() {
@@ -53,7 +52,6 @@
       };
       return Config;
   }());
-  //# sourceMappingURL=config.js.map
 
   (function (BudgetElementType) {
       BudgetElementType["DEFICIT"] = "deficit";
@@ -70,7 +68,6 @@
           !isNaN(config.minAmount) && config.minAmount > 0 && (config.feedbackMessages === undefined ||
           config.feedbackMessages !== undefined && config.feedbackMessages.every(function (f) { return isFeedbackMessage(f); }));
   }
-  //# sourceMappingURL=budget-element-config.js.map
 
   function isBudgetAdjustment(adjustment) {
       return !isNaN(adjustment.amount) && adjustment.name && adjustment.type && adjustment.type &&
@@ -93,7 +90,6 @@
               budgetConfig.incomes.length >= 0 && budgetConfig.incomes.every(function (s) { return isBudgetElement(s); }) &&
               budgetConfig.spendings.length >= 0 && budgetConfig.spendings.every(function (s) { return isBudgetElement(s); });
   }
-  //# sourceMappingURL=budget-config.js.map
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -162,7 +158,6 @@
       };
       return BoundingBox;
   }());
-  //# sourceMappingURL=bounding-box.js.map
 
   var AbstractPolygonsGroup = (function () {
       function AbstractPolygonsGroup(config) {
@@ -375,7 +370,6 @@
       AbstractPolygonsGroup._currentId = 0;
       return AbstractPolygonsGroup;
   }());
-  //# sourceMappingURL=abstract-polygons-group.js.map
 
   var PolygonsSuperGroupState;
   (function (PolygonsSuperGroupState) {
@@ -625,18 +619,25 @@
       };
       return PolygonsSuperGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=polygons-super-group.js.map
 
+  var DEFAULT_LOCALE = 'fr';
   var Formatter = (function () {
       function Formatter() {
       }
-      Formatter.formatAmount = function (amount) {
+      Formatter.formatAmount = function (amount, locale) {
+          if (locale === void 0) { locale = DEFAULT_LOCALE; }
           var result = amount / Math.pow(10, 6);
           if (Math.abs(result) >= 1) {
-              return result.toFixed(2).replace('.', ',') + " G$";
+              if (locale === DEFAULT_LOCALE) {
+                  return result.toFixed(2).replace('.', ',') + " G$";
+              }
+              return "$" + result.toFixed(2) + "B";
           }
           result = amount / Math.pow(10, 3);
-          return result.toFixed(0).replace('.', ',') + " M$";
+          if (locale === DEFAULT_LOCALE) {
+              return result.toFixed(0).replace('.', ',') + " M$";
+          }
+          return "$" + result.toFixed(0) + "M";
       };
       Formatter.formatId = function (name, spaceCharacter) {
           if (spaceCharacter === void 0) { spaceCharacter = '-'; }
@@ -644,7 +645,6 @@
       };
       return Formatter;
   }());
-  //# sourceMappingURL=formatter.js.map
 
   var BudgetElement = (function () {
       function BudgetElement(config) {
@@ -750,7 +750,6 @@
       });
       return BudgetElement;
   }());
-  //# sourceMappingURL=budget-element.js.map
 
   var BudgetElementGroup = (function (_super) {
       __extends(BudgetElementGroup, _super);
@@ -897,7 +896,6 @@
       };
       return BudgetElementGroup;
   }(BudgetElement));
-  //# sourceMappingURL=budget-element-group.js.map
 
   var Square = (function () {
       function Square(position, sideLength) {
@@ -978,7 +976,6 @@
       Square._currentId = 0;
       return Square;
   }());
-  //# sourceMappingURL=square.js.map
 
   var SquaresGroup = (function (_super) {
       __extends(SquaresGroup, _super);
@@ -1159,7 +1156,6 @@
       };
       return SquaresGroup;
   }(AbstractPolygonsGroup));
-  //# sourceMappingURL=squares-group.js.map
 
   var SimpleBudgetElement = (function (_super) {
       __extends(SimpleBudgetElement, _super);
@@ -1248,7 +1244,6 @@
       };
       return SimpleBudgetElement;
   }(BudgetElement));
-  //# sourceMappingURL=simple-budget-element.js.map
 
   var BudgetState;
   (function (BudgetState) {
@@ -1394,7 +1389,6 @@
       Budget._amountStack = [];
       return Budget;
   }());
-  //# sourceMappingURL=budget.js.map
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1409,7 +1403,7 @@
   var C__Users_Antoine_Desktop_budgetviz_node_modules_d3Tip_dist = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
     module.exports = factory(d3Collection, d3__default);
-  }(commonjsGlobal, (function (d3Collection$$1,d3Selection) {
+  }(commonjsGlobal, (function (d3Collection,d3Selection) {
     /**
      * d3.tip
      * Copyright (c) 2013-2017 Justin Palmer
@@ -1575,7 +1569,7 @@
       function d3TipOffset() { return [0, 0] }
       function d3TipHTML() { return ' ' }
 
-      var directionCallbacks = d3Collection$$1.map({
+      var directionCallbacks = d3Collection.map({
             n:  directionNorth,
             s:  directionSouth,
             e:  directionEast,
@@ -1765,7 +1759,6 @@
       };
       return Event;
   }());
-  //# sourceMappingURL=event.js.map
 
   var AddCommand = (function () {
       function AddCommand(element, rendering, layout) {
@@ -1804,7 +1797,6 @@
       };
       return AddCommand;
   }());
-  //# sourceMappingURL=add-command.js.map
 
   function isCommand(command) {
       return command !== undefined && command.execute !== undefined;
@@ -1812,7 +1804,6 @@
   function isUndoableCommand(command) {
       return isCommand(command) && command.undo !== undefined;
   }
-  //# sourceMappingURL=command.js.map
 
   var CommandInvoker = (function () {
       function CommandInvoker() {
@@ -1857,7 +1848,6 @@
       };
       return CommandInvoker;
   }());
-  //# sourceMappingURL=command-invoker.js.map
 
   var DeleteCommand = (function () {
       function DeleteCommand(element, rendering, layout) {
@@ -1890,7 +1880,6 @@
       };
       return DeleteCommand;
   }());
-  //# sourceMappingURL=delete-command.js.map
 
   var RenderingVisitor = (function () {
       function RenderingVisitor(defaultTransitionDuration) {
@@ -2036,7 +2025,6 @@
       };
       return RenderingVisitor;
   }());
-  //# sourceMappingURL=rendering-visitor.js.map
 
   var BudgetVisualization = (function () {
       function BudgetVisualization(budget, svgElement, layout, commandInvoker, rendering) {
@@ -2055,7 +2043,7 @@
           this.rendering = rendering;
           this.tip = C__Users_Antoine_Desktop_budgetviz_node_modules_d3Tip_dist()
               .html(function (d) {
-              var str = "<strong>" + d.name + " (" + Formatter.formatAmount(d.amount + d.temporaryAmount) + ")</strong>";
+              var str = "<strong>" + d.name + " (" + Formatter.formatAmount(d.amount + d.temporaryAmount, layout.locale) + ")</strong>";
               str += d.description ? "<p>" + d.description + "</p>" : '';
               return str;
           });
@@ -2741,7 +2729,6 @@
       return size && !isNaN(size.height) && size.height >= 0 &&
           !isNaN(size.width) && size.width >= 0;
   }
-  //# sourceMappingURL=layout-config.js.map
 
   var Layout = (function () {
       function Layout(budget, svgElement, config) {
@@ -2753,6 +2740,7 @@
           this._config = config;
           this._config.isGaugeDisplayed = config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true;
           this._config.isAmountsDisplayed = config.isAmountsDisplayed !== false;
+          this._config.locale = config.locale !== undefined ? config.locale : 'fr';
           this._defaultTransitionDuration = config.transitionDuration;
           if (this._config.size) {
               this._width = this._config.size.width;
@@ -2764,6 +2752,13 @@
               this._height = bbox.height;
           }
       }
+      Object.defineProperty(Layout.prototype, "locale", {
+          get: function () {
+              return this._config.locale;
+          },
+          enumerable: true,
+          configurable: true
+      });
       Object.defineProperty(Layout.prototype, "transitionDuration", {
           get: function () {
               return this._config.transitionDuration;
@@ -2810,6 +2805,26 @@
                   }));
               }
           }
+          if (this._config.legend) {
+              var legend = this._layoutElement.select('#budget-legend');
+              if (legend.size() <= 0) {
+                  legend = this._layoutElement.append('g')
+                      .attr('id', 'budget-legend')
+                      .attr('class', 'budget-legend')
+                      .attr('transform', "translate(" + this._config.horizontalPadding + ",\n            " + (this._height - this._config.verticalPadding / 2) + ")");
+                  legend.append('rect')
+                      .attr('class', 'square')
+                      .attr('x', 0)
+                      .attr('y', 0)
+                      .attr('width', this._config.legend.sideLength)
+                      .attr('height', this._config.legend.sideLength);
+                  legend.append('text')
+                      .attr('x', 1.5 * this._config.legend.sideLength)
+                      .attr('y', this._config.legend.sideLength)
+                      .style('font-size', 1.8 * this._config.legend.sideLength + "px")
+                      .text("= " + Formatter.formatAmount(this._config.legend.minAmount, this._config.locale));
+              }
+          }
           if (this._layoutElement.select('#budget-group')) {
               this._budgetGroup = this._layoutElement.append('svg')
                   .attr('id', 'budget-group')
@@ -2854,10 +2869,11 @@
           this.initializeLayout();
       };
       Layout.prototype.render = function () {
+          var locale = this._config.locale;
           function updateAmount(d) {
               d3.select(this)
                   .select('.element-amount')
-                  .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
+                  .text(Formatter.formatAmount(d.amount + d.temporaryAmount, locale));
           }
           this._incomeGroups = this._incomeGroups
               .sort(Layout.sortElements)
@@ -2870,7 +2886,7 @@
               this._gaugeGroup.datum().value = delta;
               this._layoutElement.select('#budget-gauge-group')
                   .select('text')
-                  .text(Formatter.formatAmount(delta));
+                  .text(Formatter.formatAmount(delta, locale));
           }
           this.renderLayout();
       };
@@ -2886,7 +2902,6 @@
       };
       return Layout;
   }());
-  //# sourceMappingURL=layout.js.map
 
   var BarsLayout = (function (_super) {
       __extends(BarsLayout, _super);
@@ -2992,7 +3007,6 @@
       };
       return BarsLayout;
   }(Layout));
-  //# sourceMappingURL=bars-layout.js.map
 
   var MIN_COUNT_PER_LINE = 5;
   var GridLayout = (function (_super) {
@@ -3004,7 +3018,9 @@
               throw new RangeError('The min count per line must be a positive number.');
           }
           var maxCountElements = Math.max(budget.spendings.length, budget.incomes.length);
-          _this._countPerLine = Math.min(minCountPerLine, maxCountElements);
+          _this._countPerLine = !_this._config.countPerLine
+              ? Math.min(minCountPerLine, maxCountElements)
+              : _this._config.countPerLine;
           _this._spacing = (_this._countPerLine > 1) ? _this._config.horizontalMinSpacing : 0;
           _this._gaugeHeight = _this._config.isGaugeDisplayed ? _this._config.gaugeConfig.height * 1.5 + 10 : 0;
           var factor = budget.spendings.length === 0 || budget.incomes.length === 0 ? 1 : 2;
@@ -3134,7 +3150,6 @@
       };
       return GridLayout;
   }(Layout));
-  //# sourceMappingURL=grid-layout.js.map
 
   var HorizontalBarsLayout = (function (_super) {
       __extends(HorizontalBarsLayout, _super);
@@ -3246,26 +3261,23 @@
       };
       return HorizontalBarsLayout;
   }(Layout));
-  //# sourceMappingURL=horizontal-bars-layout.js.map
 
-  //# sourceMappingURL=main.js.map
-
+  exports.AddCommand = AddCommand;
+  exports.BarsLayout = BarsLayout;
   exports.Budget = Budget;
   exports.BudgetElement = BudgetElement;
   exports.BudgetElementGroup = BudgetElementGroup;
   exports.BudgetVisualization = BudgetVisualization;
-  exports.SimpleBudgetElement = SimpleBudgetElement;
-  exports.AddCommand = AddCommand;
-  exports.DeleteCommand = DeleteCommand;
   exports.CommandInvoker = CommandInvoker;
-  exports.BarsLayout = BarsLayout;
+  exports.Config = Config;
+  exports.DeleteCommand = DeleteCommand;
+  exports.Formatter = Formatter;
   exports.GridLayout = GridLayout;
   exports.HorizontalBarsLayout = HorizontalBarsLayout;
   exports.RenderingVisitor = RenderingVisitor;
-  exports.Config = Config;
-  exports.Formatter = Formatter;
+  exports.SimpleBudgetElement = SimpleBudgetElement;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
-//# sourceMappingURL=budgetviz.js.map
+}));
+//# sourceMappingURL=waffster.js.map

@@ -45,7 +45,7 @@ export class BudgetVisualization {
 
     this.tip = d3Tip()
       .html(d => {
-        let str = `<strong>${d.name} (${Formatter.formatAmount(d.amount + d.temporaryAmount)})</strong>`;
+        let str = `<strong>${d.name} (${Formatter.formatAmount(d.amount + d.temporaryAmount, layout.locale)})</strong>`;
         str += d.description ? `<p>${d.description}</p>` : '';
         return str;
       });

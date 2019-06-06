@@ -22,7 +22,9 @@ export class GridLayout extends Layout {
       throw new RangeError('The min count per line must be a positive number.');
     }
     const maxCountElements = Math.max(budget.spendings.length, budget.incomes.length);
-    this._countPerLine = Math.min(minCountPerLine, maxCountElements);
+    this._countPerLine = !this._config.countPerLine
+      ? Math.min(minCountPerLine, maxCountElements)
+      : this._config.countPerLine;
     this._spacing = (this._countPerLine > 1) ? this._config.horizontalMinSpacing : 0;
     this._gaugeHeight = this._config.isGaugeDisplayed ? this._config.gaugeConfig.height * 1.5 + 10 : 0;
 

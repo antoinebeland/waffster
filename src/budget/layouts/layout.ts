@@ -34,6 +34,7 @@ export abstract class Layout {
     this._config = config;
     this._config.isGaugeDisplayed = config.isGaugeDisplayed !== undefined ? config.isGaugeDisplayed : true;
     this._config.isAmountsDisplayed = config.isAmountsDisplayed !== false;
+    this._config.locale = config.locale !== undefined ? config.locale : 'fr';
     this._defaultTransitionDuration = config.transitionDuration;
 
     if (this._config.size) {
@@ -45,6 +46,10 @@ export abstract class Layout {
       this._width = bbox.width;
       this._height = bbox.height;
     }
+  }
+
+  get locale(): string {
+    return this._config.locale;
   }
 
   get transitionDuration(): number {
@@ -98,6 +103,32 @@ export abstract class Layout {
         }));
       }
     }
+
+    // Initializes the legend
+    if (this._config.legend) {
+      let legend = this._layoutElement.select('#budget-legend');
+      if (legend.size() <= 0) {
+        legend = this._layoutElement.append('g')
+          .attr('id', 'budget-legend')
+          .attr('class', 'budget-legend')
+          .attr('transform', `translate(${this._config.horizontalPadding},
+            ${this._height - this._config.verticalPadding / 2})`);
+
+        legend.append('rect')
+          .attr('class', 'square')
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('width', this._config.legend.sideLength)
+          .attr('height', this._config.legend.sideLength);
+
+        legend.append('text')
+          .attr('x', 1.5 * this._config.legend.sideLength)
+          .attr('y', this._config.legend.sideLength)
+          .style('font-size', `${1.8 * this._config.legend.sideLength}px`)
+          .text(`= ${Formatter.formatAmount(this._config.legend.minAmount, this._config.locale)}`);
+      }
+    }
+
     if (this._layoutElement.select('#budget-group')) {
       this._budgetGroup = this._layoutElement.append('svg')
         .attr('id', 'budget-group')
@@ -149,10 +180,11 @@ export abstract class Layout {
   }
 
   render() {
+    const locale = this._config.locale;
     function updateAmount(d) {
       d3.select(this)
         .select('.element-amount')
-        .text(Formatter.formatAmount(d.amount + d.temporaryAmount));
+        .text(Formatter.formatAmount(d.amount + d.temporaryAmount, locale));
     }
     this._incomeGroups = this._incomeGroups
       .sort(Layout.sortElements)
@@ -167,7 +199,7 @@ export abstract class Layout {
       this._gaugeGroup.datum().value = delta;
       this._layoutElement.select('#budget-gauge-group')
         .select('text')
-        .text(Formatter.formatAmount(delta));
+        .text(Formatter.formatAmount(delta, locale));
 
     }
     this.renderLayout();

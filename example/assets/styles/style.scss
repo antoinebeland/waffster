@@ -17,7 +17,7 @@ $header-btn-group-height: $header-height - 16px;
 $header-h1-font-size: 1.5em;
 
 // Misc
-$font: 'Roboto', sans-serif;
+$font: 'Arial', sans-serif;
 
 // ***** General Style *****
 * {
@@ -144,8 +144,38 @@ main {
   position: relative;
 }
 
+aside {
+  position: absolute;
+  right: 0;
+  bottom: 25px;
+  text-align: left;
+  font-size: 0.8em;
+}
+
 // ***** SVG *****
 main > svg {
   width: 100%;
   height: calc(100vh - #{$header-height});
+}
+
+.budget-visualization {
+  text {
+    font-size: 15px;
+  }
+
+  .element-amount {
+    font-size: 15px;
+  }
+
+  .element-name {
+    font-size: 13px;
+  }
+
+  .boundary {
+    stroke-width: 2px;
+  }
+
+  &:not(.disabled) .level-group:hover > line {
+    stroke-width: 2px;
+  }
 }

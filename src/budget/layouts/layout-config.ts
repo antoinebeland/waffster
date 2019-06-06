@@ -9,8 +9,14 @@ export class LayoutConfig {
   transitionDuration: number;
   verticalMinSpacing: number;
   verticalPadding: number;
+  countPerLine?: number;
+  legend?: {
+    minAmount: number,
+    sideLength: number
+  };
   isAmountsDisplayed?: boolean;
   isGaugeDisplayed?: boolean;
+  locale?: string;
   gaugeConfig?: GaugeConfig;
   size?: Size;
 }

@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Example | BudgetViz</title>
+  <title>Example | Waffster</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
   <link href="assets/styles/normalize.css" rel="stylesheet">
-  <link href="../dist/budgetviz.css" rel="stylesheet">
+  <link href="../dist/waffster.css" rel="stylesheet">
   <link href="assets/styles/style.css" rel="stylesheet">
 </head>
 <body>
+<!--
 <header>
   <div class="pull-right">
     <div class="btn-group">
@@ -21,10 +22,10 @@
       </button>
     </div>
     <div class="btn-group">
-      <button id="undo" title="Annuler" disabled>
+      <button id="undo" title="Undo" disabled>
         <img alt='Undo' src="assets/images/undo.svg">
       </button>
-      <button id="redo" title="Rétablir" disabled>
+      <button id="redo" title="Redo" disabled>
         <img alt='Redo' src="assets/images/redo.svg">
       </button>
     </div>
@@ -42,11 +43,18 @@
   </div>
   <h1><img alt="logo" src="assets/images/lys.svg"> Budget du Québec 2018</h1>
 </header>
+-->
 <main>
   <svg id="budget-visualization"></svg>
+  <aside>
+    Data source: Quebec Government 2022-2023 projected budget
+  </aside>
 </main>
+<footer>
+
+</footer>
 <script type="text/javascript" src="../node_modules/d3/dist/d3.min.js"></script>
-<script type="text/javascript" src="../dist/budgetviz.js"></script>
+<script type="text/javascript" src="../dist/waffster.js"></script>
 <script type="text/javascript" src="./example.js"></script>
 </body>
 </html>

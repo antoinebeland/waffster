@@ -1,11 +1,19 @@
+const DEFAULT_LOCALE = 'fr';
+
 export class Formatter {
-  static formatAmount(amount: number): string {
+  static formatAmount(amount: number, locale = DEFAULT_LOCALE): string {
     let result = amount / Math.pow(10, 6);
     if (Math.abs(result) >= 1) {
-      return `${result.toFixed(2).replace('.', ',')} G$`;
+      if (locale === DEFAULT_LOCALE) {
+        return `${result.toFixed(2).replace('.', ',')} G$`;
+      }
+      return `$${result.toFixed(2)}B`;
     }
     result = amount / Math.pow(10, 3);
-    return `${result.toFixed(0).replace('.', ',')} M$`;
+    if (locale === DEFAULT_LOCALE) {
+      return `${result.toFixed(0).replace('.', ',')} M$`;
+    }
+    return `$${result.toFixed(0)}M`;
   }
 
   /**

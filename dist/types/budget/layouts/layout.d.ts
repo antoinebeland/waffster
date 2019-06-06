@@ -14,6 +14,7 @@ export declare abstract class Layout {
     protected _width: number;
     private readonly _defaultTransitionDuration;
     protected constructor(budget: Budget, svgElement: D3Selection, config: LayoutConfig);
+    readonly locale: string;
     transitionDuration: number;
     initialize(): void;
     render(): void;

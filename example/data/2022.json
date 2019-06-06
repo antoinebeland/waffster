@@ -1,0 +1,249 @@
+{
+  "year": 2022,
+  "incomes": [
+    {
+      "name": "Contributions to the Health Services Fund",
+      "amount": 6649000
+    },
+    {
+      "name": "Duties and Permits",
+      "amount": 4475000
+    },
+    {
+      "name": "Government Enterprises",
+      "amount": 5257000
+    },
+    {
+      "name": "Income Taxes",
+      "children": [
+        {
+          "name": "Personal Income Tax",
+          "amount": 36486000
+        },
+        {
+          "name": "Corporation Income Tax",
+          "amount": 8795000
+        },
+        {
+          "name": "School Tax",
+          "amount": 1948000
+        }
+      ]
+    },
+    {
+      "name": "Other Revenue Sources",
+      "amount": 12070000
+    },
+    {
+      "name": "Consumption Taxes",
+      "amount": 23236000
+    },
+    {
+      "name": "Federal Transfers",
+      "amount": 25586000,
+      "isMutable": false
+    }
+  ],
+  "spendings": [
+    {
+      "name": "Economy and Environment",
+      "children": [
+        {
+          "name": "Economic Development, Innovation and Export Trade (department)",
+          "amount": 1060600
+        },
+        {
+          "name": "Société d'habitation du Québec",
+          "amount": 1201400
+        },
+        {
+          "name": "Société de financement des infrastructures locales du Québec",
+          "amount": 687300
+        },
+        {
+          "name": "Transportation, Sustainable Mobility and Transport Electrification",
+          "children": [
+            {
+              "name": "Departmental Expenditures",
+              "amount": 727900
+            },
+            {
+              "name": "Land Transportation Network Fund",
+              "amount": 3740800,
+              "isMutable": false
+            },
+            {
+              "name": "Société de l'assurance automobile du Québec",
+              "amount": 288900
+            }
+          ]
+        },
+        {
+          "name": "Green Fund",
+          "amount": 826000,
+          "isMutable": false
+        },
+        {
+          "name": "Natural Resources Fund (Sustainable Forest Management)",
+          "amount": 561100,
+          "isMutable": false
+        },
+        {
+          "name": "La Financière agricole du Québec",
+          "amount": 420300
+        },
+        {
+          "name": "Refundable Tax Credits Relating to the Economy and the Environment",
+          "amount": 1485100
+        },
+        {
+          "name": "Others",
+          "amount": 4689800
+        }
+      ]
+    },
+    {
+      "name": "Education and Culture",
+      "children": [
+        {
+          "name": "School Boards",
+          "amount": 14830000
+        },
+        {
+          "name": "Cégeps, Université du Québec and its constituents",
+          "amount": 4626500
+        },
+        {
+          "name": "Financial Assistance for Studies",
+          "amount": 958700
+        },
+        {
+          "name": "Culture and Communications (department)",
+          "amount": 818800
+        },
+        {
+          "name": "Immigration, Diversity and Inclusion (department)",
+          "amount": 382300
+        },
+        {
+          "name": "Refundable Tax Credits for Education and Culture",
+          "amount": 544800
+        },
+        {
+          "name": "Others",
+          "amount": 4802500
+        }
+      ]
+    },
+    {
+      "name": "Administration and Justice",
+      "children": [
+        {
+          "name": "Treasury Board (Department) and Government Administration",
+          "amount": 1086200
+        },
+        {
+          "name": "Public Safety (Department)",
+          "amount": 1730000
+        },
+        {
+          "name": "Quebec Revenue Agency",
+          "amount": 1324700
+        },
+        {
+          "name": "National Assembly and Designated Persons",
+          "amount": 357300
+        },
+        {
+          "name": "Executive Board (Department)",
+          "amount": 504400
+        },
+        {
+          "name": "Administration of Justice, Criminal and Penal Prosecution and Judicial Activity",
+          "amount": 712500
+        },
+        {
+          "name": "Refundable Tax Credits for Administration and Justice",
+          "amount": 786600
+        },
+        {
+          "name": "Others",
+          "amount": 2086200
+        }
+      ]
+    },
+    {
+      "name": "Contingency Fund Reserve",
+      "amount": 400000,
+      "isMutable": false
+    },
+    {
+      "name": "Health and Social Services",
+      "children": [
+        {
+          "name": "Health and Social Services Institutions",
+          "amount": 30305400
+        },
+        {
+          "name": "Medical Remuneration",
+          "amount": 8739400
+        },
+        {
+          "name": "Drug Insurance",
+          "amount": 4195600
+        },
+        {
+          "name": "Refundable Tax Credits Related to Health",
+          "amount": 832300
+        },
+        {
+          "name": "Others",
+          "amount": 3899900
+        }
+      ]
+    },
+    {
+      "name": "Debt Service",
+      "amount": 9344000,
+      "isMutable": false
+    },
+    {
+      "name": "Support for Individuals and Families",
+      "children": [
+        {
+          "name": "Educational Childcare Fund",
+          "amount": 2639700,
+          "isMutable": false
+        },
+        {
+          "name": "Refundable Tax Credits Relating to Support for Individuals and Families",
+          "amount": 3897000
+        },
+        {
+          "name": "Financial Assistance Measures",
+          "amount": 3283600
+        },
+        {
+          "name": "Access to Justice and Compensation and Recognition",
+          "amount": 360600
+        },
+        {
+          "name": "Others",
+          "amount": 894400
+        }
+      ]
+    },
+    {
+      "name": "Deposits of Dedicated Revenues in the Generation Fund",
+      "amount": 3502000,
+      "isMutable": false
+    }
+  ],
+  "adjustments": [
+    {
+      "type": "spending",
+      "name": "Adjustment",
+      "amount": -100000
+    }
+  ]
+}

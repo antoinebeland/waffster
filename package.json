@@ -1,8 +1,8 @@
 {
-  "name": "budgetviz",
-  "version": "0.5.0",
+  "name": "waffster",
+  "version": "1.0.0",
   "description": "Budget visualization tool",
-  "main": "dist/budgetviz.js",
+  "main": "dist/waffster.js",
   "types": "dist/types/main.d.ts",
   "scripts": {
     "build": "rollup -c",

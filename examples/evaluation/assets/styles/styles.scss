@@ -1,0 +1,309 @@
+@import 'constants';
+@import '../../../node_modules/normalize.css/normalize.css';
+
+// ***** General *****
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family;
+  background-color: $page-background-color;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong {
+  font-weight: 700;
+}
+
+p {
+  font-size: 1.15em;
+  line-height: 1.5em;
+  text-align: justify;
+}
+
+button {
+  cursor: pointer;
+  outline: none;
+  transition: background-color $hovered-transition;
+}
+
+a,
+.btn-link {
+  color: $blue;
+  text-decoration: none;
+
+  &:hover {
+    color: $dark-blue;
+  }
+}
+
+.btn-link {
+  background-color: transparent;
+  border: 0;
+}
+
+.btn {
+  padding: 8px 12px;
+  color: $white;
+  border: 1px solid $medium-light-gray;
+  outline: 0;
+
+  &.animation {
+    animation: button-flicker-animation 0.7s ease-out infinite;
+    animation-direction: alternate;
+  }
+
+  &:hover:not([disabled]) {
+    animation: none;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.4;
+    animation: none;
+  }
+
+  &.blue {
+    background-color: $blue;
+    border-color: $medium-dark-gray;
+
+    &:hover:not([disabled]) {
+      background-color: $dark-blue;
+    }
+  }
+
+  &.green {
+    background-color: $green;
+    border-color: $medium-dark-gray;
+
+    &:hover:not([disabled]) {
+      background-color: $dark-green;
+    }
+  }
+
+  &.dark {
+    color: $white;
+    background-color: $medium-gray;
+    border-color: $medium-light-gray;
+
+    &:hover:not([disabled]) {
+      background-color: $medium-dark-gray;
+    }
+  }
+
+  &.light {
+    color: $medium-gray;
+    background-color: $white;
+
+    &:hover:not([disabled]) {
+      color: $dark-gray;
+      background-color: $light-gray;
+    }
+  }
+}
+
+@keyframes button-flicker-animation {
+  from {
+    background-color: $dark-blue;
+  }
+
+  to {
+    background-color: $light-blue;
+  }
+}
+
+.pull-right {
+  float: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.alert {
+  padding: 20px;
+  margin: 1.5em 0;
+  font-size: 1.1em;
+  line-height: 1.5em;
+  text-align: justify;
+  border: 1px solid transparent;
+
+  &.warning {
+    color: $dark-yellow;
+    background-color: $light-yellow;
+    border-color: $yellow;
+    border-left-width: 5px;
+  }
+}
+
+.row {
+  display: flex;
+
+  .col {
+    flex: 1;
+  }
+}
+
+// ***** Colors *****
+.red-text,
+.green-text {
+  font-weight: 500;
+}
+
+.text-red,
+.red-text {
+  color: $red;
+}
+
+.text-green,
+.green-text {
+  color: $green;
+}
+
+.blue-text {
+  color: $neutral-blue;
+}
+
+.orange-text {
+  color: $orange;
+}
+
+// ***** Form *****
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  margin: 1em 0;
+  font-size: 1.1em;
+}
+
+.scale-container,
+.slider-container {
+  display: flex;
+  margin: 1.5em 0 1em;
+  align-items: center;
+
+  .min {
+    padding-right: 10px;
+  }
+
+  .max {
+    padding-left: 10px;
+  }
+
+  .min,
+  .max {
+    font-weight: 500;
+    flex: 0;
+  }
+
+  .scale,
+  .slider {
+    flex: 1;
+  }
+}
+
+.scale {
+  display: flex;
+  padding: 6px 10px;
+  background-color: $very-light-gray;
+
+  label {
+    text-align: center;
+    flex: 1;
+
+    input {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// sass-lint:disable no-vendor-prefixes
+.slider {
+  width: 100%;
+  height: 15px;
+  margin: 1em 0;
+  background: $gray;
+  border-radius: 5px;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  -webkit-appearance: none;
+  -webkit-transition: 0.2s;
+}
+
+// sass-lint:disable no-vendor-prefixes
+.slider::-webkit-slider-thumb {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  background: $blue;
+  border-radius: 50%;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover {
+    background: $dark-blue;
+  }
+}
+
+// sass-lint:disable no-vendor-prefixes
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  background: $blue;
+  border-radius: 50%;
+
+  &:hover {
+    background: $dark-blue;
+  }
+}
+
+.question,
+.directive,
+.feedback {
+  font-size: 1.3em;
+}
+
+.directive {
+  font-style: italic;
+}
+
+.choices {
+  margin: 1.5em 0 1.5em 0.75em;
+  font-size: 1.2em;
+
+  > div:not(:last-child) {
+    margin-bottom: 0.65em;
+  }
+
+  input {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.35em;
+  }
+}
+
+// ***** Mobile *****
+@media screen and (max-width: $medium-screen) {
+  html {
+    font-size: 0.85em;
+  }
+}

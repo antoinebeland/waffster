@@ -115,7 +115,7 @@ header h1 {
 
 header h2 {
   margin-top: 0;
-  margin-bottom: 1.5em;
+  margin-bottom: 1.1em;
   font-size: 1em;
   font-weight: normal;
   color: #555;
@@ -274,6 +274,68 @@ footer p {
   margin: 10px;
 }
 
+/* ===== Dialog Demo ===== */
+.dialog-demo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  background-color: white;
+}
+
+.dialog-demo:target {
+  top: 0 !important;
+  display: block;
+  visibility: inherit;
+}
+
+.dialog-demo .control-bar {
+  position: relative;
+  height: 35px;
+  line-height: 35px;
+  background: #444;
+  box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dialog-demo .control-bar h1 {
+  line-height: inherit;
+  margin: 0;
+  color: white;
+  font-size: 1.3em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.dialog-demo .control-bar a {
+  margin-right: 15px;
+  color: #ccc;
+  font-size: 1.5em;
+  text-decoration: none;
+}
+
+.dialog-demo .control-bar a:hover {
+  color: white;
+  transition: color ease-out 0.2s;
+}
+
+.dialog-demo iframe {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 35px);
+  border: 0;
+}
+
+#experiment-version-selector {
+  position: absolute;
+  margin-left: 15px;
+}
+
 /* ===== Mobile ===== */
 @media screen and (max-width: 850px) {
   :target {
@@ -290,6 +352,11 @@ footer p {
 
   .partners {
     max-width: 100%;
+  }
+
+  #experiment-version-selector {
+    position: relative;
+    float: left;
   }
 }
 

@@ -1,0 +1,84 @@
+{
+  "name": "Dépenses",
+  "children": [
+    {
+      "name": "Santé",
+      "children": [
+        {
+          "name": "Hôpitaux",
+          "amount": 126000
+        },
+        {
+          "name": "Médicaments",
+          "amount": 77000
+        },
+        {
+          "name": "Rémunération",
+          "amount": 83000
+        }
+      ]
+    },
+    {
+      "name": "Éducation",
+      "children": [
+        {
+          "name": "Université",
+          "amount": 22000
+        },
+        {
+          "name": "Collèges",
+          "amount": 16000
+        },
+        {
+          "name": "Écoles secondaires",
+          "amount": 37000
+        },
+        {
+          "name": "Écoles primaires",
+          "amount": 28000
+        },
+        {
+          "name": "Garderies",
+          "amount": 12000
+        }
+      ]
+    },
+    {
+      "name": "Dette",
+      "amount": 47000
+    },
+    {
+      "name": "Justice",
+      "children": [
+        {
+          "name": "Tribunaux",
+          "amount": 14000
+        },
+        {
+          "name": "Pénitenciers",
+          "amount": 10000
+        },
+        {
+          "name": "Police",
+          "amount": 23000
+        },
+        {
+          "name": "Administration",
+          "amount": 2000
+        }
+      ]
+    },
+    {
+      "name": "Économie",
+      "amount": 18000
+    },
+    {
+      "name": "Environnement",
+      "amount": 11000
+    },
+    {
+      "name": "Tourisme",
+      "amount": 7000
+    }
+  ]
+}

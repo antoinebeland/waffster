@@ -1,0 +1,84 @@
+{
+  "name": "Expenditures",
+  "children": [
+    {
+      "name": "Health",
+      "children": [
+        {
+          "name": "Hospitals",
+          "amount": 55000
+        },
+        {
+          "name": "Pharmaceuticals",
+          "amount": 28000
+        },
+        {
+          "name": "Remuneration",
+          "amount": 14000
+        }
+      ]
+    },
+    {
+      "name": "Education",
+      "children": [
+        {
+          "name": "University",
+          "amount": 27000
+        },
+        {
+          "name": "Colleges",
+          "amount": 21000
+        },
+        {
+          "name": "Secondary Schools",
+          "amount": 53000
+        },
+        {
+          "name": "Primary Schools",
+          "amount": 41000
+        },
+        {
+          "name": "Childcare",
+          "amount": 13000
+        }
+      ]
+    },
+    {
+      "name": "Debt",
+      "amount": 35000
+    },
+    {
+      "name": "Justice",
+      "children": [
+        {
+          "name": "Courts",
+          "amount": 5000
+        },
+        {
+          "name": "Penitentiaries",
+          "amount": 7000
+        },
+        {
+          "name": "Police",
+          "amount": 8000
+        },
+        {
+          "name": "Administration",
+          "amount": 1000
+        }
+      ]
+    },
+    {
+      "name": "Economy",
+      "amount": 15000
+    },
+    {
+      "name": "Environment",
+      "amount": 27000
+    },
+    {
+      "name": "Tourism",
+      "amount": 11000
+    }
+  ]
+}

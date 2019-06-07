@@ -1,0 +1,117 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0 50px;
+}
+
+button[disabled] {
+  opacity: 0.5;
+}
+
+.btn, .btn-group > button {
+  border: 1px solid #999;
+  background-color: #fff;
+  outline: 0;
+}
+
+.btn.selected, .btn-group > button.selected {
+  background-color: #eee;
+}
+
+.btn-group {
+  display: flex;
+}
+
+.btn-group > button {
+  height: inherit;
+  padding: 7px;
+  flex: 1;
+}
+
+.btn-group > button:not(:last-child) {
+  border-right: none;
+}
+
+.panel {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  max-width: 400px;
+  width: 100%;
+  border: 1px solid #999;
+}
+
+.panel > .title {
+  background-color: #eee;
+  padding: 4px 10px;
+  border-bottom: 1px solid #999;
+  color: #444;
+}
+
+.panel > .title > h1,
+.panel > .title > h2,
+.panel > .title > h3,
+.panel > .title > h4,
+.panel > .title > h5,
+.panel > .title > h6 {
+  font-size: 0.8em;
+  margin: 0;
+}
+
+.panel > .content {
+  padding: 4px 10px;
+}
+
+.pull-right {
+  float: right;
+}
+
+main {
+  position: relative;
+}
+
+main > svg {
+  width: 100%;
+  height: 100vh;
+  padding: 20px 0;
+}
+
+aside {
+  position: absolute;
+  right: 0;
+  bottom: 25px;
+  text-align: left;
+  font-size: 0.8em;
+}
+
+.budget-visualization text {
+  font-size: 17px;
+}
+
+.budget-visualization .element-amount {
+  font-size: 15px;
+}
+
+.budget-visualization .element-name {
+  font-size: 13px;
+}
+
+.budget-visualization .boundary {
+  stroke-width: 2px;
+}
+
+.budget-visualization:not(.disabled) .level-group:hover > line {
+  stroke-width: 2px;
+}
+
+footer {
+
+}

@@ -1,0 +1,5 @@
+{
+  "apiUrl": "http://localhost:3000/api",
+  "dataUrl": "http://localhost:3000/data",
+  "locale": "en"
+}

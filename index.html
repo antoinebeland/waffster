@@ -44,13 +44,15 @@
       <figure>
         <img alt="Teaser" src="assets/images/teaser.svg">
         <figcaption>
-          Waffster is a focus-plus-context unit-based representation based on hierarchical waffle charts enabling
-          novice users such as mass media readers to consume and explore public budget data. Here the user is exploring
-          the Quebec 2022-2023 public budget expenditure (right), revenue (left) and structure. Specifically, he is also
-          digging into the two depth level Economy and Environment heading.
+          Waffster is a focus-plus-context unit-based representation based on hierarchical waffle charts enabling users
+          such as mass media readers to consume and explore public budget data. Here the user is exploring the Quebec
+          Government 2022-2023 projected expenditures (right) and revenues (left). Specifically, he is digging into
+          the structure of "Economy and Environment" expenditures and "Income Taxes" revenues.
         </figcaption>
       </figure>
-      <button class="btn green"><i class="fa fa-play"></i>&nbsp; Execute demo</button>
+      <a class="btn green" href="#demo">
+        <i class="fa fa-play"></i>&nbsp; Execute demo
+      </a>
     </article>
     <div class="content">
       <article>
@@ -58,13 +60,14 @@
         <h1>Abstract</h1>
         <p>
           Understanding and consuming public budget data is a key issue, helping citizens in gaining insight into their
-          democracy and political systems. The goal of this work is to present Waffster, a user-friendly representation
-          supporting the understanding of such data. The proposed representation enables several tasks such as
+          democratic and political systems. The goal of this work is to present Waffster, a user-friendly representation
+          supporting the understanding of such data. The proposed representation enables several tasks such as data
           discovering, searching, presenting, identifying and comparing, where targets are budget headings and their
-          hierarchical relations. The contributions of this design study, that we carried out in close collaboration
-          with a mass media, are: a thorough survey of online public budget visualizations, a novel hierarchical design
-          based on waffle charts, a controlled user study to compare it to a tree-map based layout, and a case study
-          conducted with our collaborator during the last electoral campaign in Quebec.
+          hierarchical relations. The contributions of this design study, which was carried out in close collaboration
+          with <em>Le Devoir</em>, a Canadian newspaper, are: a thorough survey of online public budget visualizations,
+          a novel hierarchical design based on waffle charts, a controlled user study to compare it to a tree-map based
+          layout, and a case study conducted with <em>Le Devoir</em> during the Fall 2018 provincial election campaign
+          in Quebec.
         </p>
         <p>
           <strong>Keywords:</strong> Public budget, data visualization, design study.
@@ -89,7 +92,7 @@
           A controlled experiment was performed to compare Waffster to a tree-map based on two aspects: data
           understanding and user experience.
         </p>
-        <a class="btn pull-right" href="#">
+        <a class="btn pull-right" href="#experiment-demo">
           View Experiment &nbsp;<i class="fa fa-angle-double-right" aria-hidden="true"></i>
         </a>
       </article>
@@ -169,5 +172,65 @@
     </ul>
   </footer>
 </div>
+<article class="dialog-demo" id="demo">
+  <div class="control-bar">
+    <a class="pull-right" href="#" title="Close">
+      <i class="fa fa-times-circle" aria-hidden="true"></i>
+    </a>
+    <h1>Waffster Demo</h1>
+  </div>
+  <iframe data-src="./examples/demo/index.html">
+  </iframe>
+</article>
+<article class="dialog-demo" id="experiment-demo">
+  <div class="control-bar">
+    <a class="pull-right" href="#" title="Close">
+      <i class="fa fa-times-circle" aria-hidden="true"></i>
+    </a>
+    <label id="experiment-version-selector">
+      <select>
+        <option>Version 1 (V1/D1-V2/D2)</option>
+        <option>Version 2 (V1/D2-V2/D1)</option>
+        <option>Version 3 (V2/D1-V1/D2)</option>
+        <option>Version 4 (V2/D2-V1/D1)</option>
+      </select>
+    </label>
+    <h1>Experiment demo</h1>
+  </div>
+  <iframe data-src="./examples/evaluation/index.html?id=demo&version=1">
+  </iframe>
+</article>
+<script>
+  (() => {
+    const body = document.body;
+    function onHashChange() {
+      if (location.hash) {
+        const section = document.querySelector(location.hash);
+        if (section) {
+          const iframe = section.querySelector('iframe');
+          if (iframe && iframe.dataset.src) {
+            if (!iframe.src) {
+              iframe.src = iframe.dataset.src;
+            }
+            body.style.overflow = 'hidden';
+            return;
+          }
+        }
+      }
+      body.style.overflow =  'auto';
+    }
+    window.addEventListener('hashchange', onHashChange);
+    onHashChange();
+
+    const experimentSelector = document.querySelector('#experiment-version-selector > select');
+    experimentSelector.addEventListener('change', () => {
+      const iframe = document.querySelector(location.hash)
+          .querySelector('iframe');
+
+      const src = iframe.src;
+      iframe.src = src.substring(0, src.length - 1) + (+experimentSelector.selectedIndex + 1);
+    });
+  })();
+</script>
 </body>
 </html>

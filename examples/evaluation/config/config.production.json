@@ -1,0 +1,5 @@
+{
+  "apiUrl": "https://budgetviz-evaluation.herokuapp.com/api",
+  "dataUrl": "https://budgetviz-evaluation.herokuapp.com/data",
+  "locale": "en"
+}

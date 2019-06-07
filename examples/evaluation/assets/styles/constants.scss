@@ -1,0 +1,55 @@
+// ***** Colors *****
+$black: #000;
+$dark-gray: #333;
+$medium-dark-gray: #454545;
+$medium-gray: #666;
+$medium-light-gray: #c5c5c5;
+$gray: #ddd;
+$light-gray: #eee;
+$very-light-gray: #f1f1f1;
+$white: #fff;
+
+$neutral-blue: #4c7d95;
+$dark-blue: #2e5e94;
+$blue: #337ab7;
+$light-blue: #5c97b0;
+$turquoise: #00b1cc;
+$dark-green: #3b7a3b;
+$green: #4c914b;
+$light-green: #5bad5a;
+$red: #e04242;
+$orange: #f19c56;
+$light-yellow: #fcf8e3;
+$dark-yellow: #8a6d3b;
+$yellow: #fad784;
+$white: #fff;
+
+$dark-gray-transparent: rgba($dark-gray, 0.9);
+$gray-transparent: rgba($dark-gray, 0.1);
+$white-transparent: rgba($white, 0.8);
+
+// ***** Dimensions *****
+$small-screen: 576px;
+$medium-screen: 850px;
+$large-screen: 992px;
+$extra-large-screen: 1200px;
+
+// ***** General *****
+$font-family: 'Roboto', sans-serif;
+
+$content-max-width: 1100px;
+$content-border-color: $medium-light-gray;
+$content-margin: 1em auto 4em auto;
+$content-small-margin: 1em auto;
+
+$header-background-color: $medium-light-gray;
+$header-height: 10px;
+
+$main-background-color: $white;
+$main-padding: 30px 120px 80px;
+$main-error-padding: 30px 120px;
+$main-padding-mobile: 20px 30px 60px;
+$main-small-padding: 30px 40px;
+$page-background-color: $light-gray;
+
+$hovered-transition: ease-out 0.2s;

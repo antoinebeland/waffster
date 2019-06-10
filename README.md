@@ -27,7 +27,7 @@ Once you have included D3 in your dependencies, you have to include the followin
 1. The stylesheet file ([`waffster.css`](https://raw.githubusercontent.com/antoinebeland/waffster/master/dist/waffster.css));
 1. The main script file ([`waffster.js`](https://github.com/antoinebeland/waffster/blob/master/dist/waffster.js)).
 
-To know how to use Waffster API, you can take a look at the 
+To know how to use Waffster's API, you can take a look at the 
 [`example`](https://github.com/antoinebeland/waffster/tree/master/example) folder.
 
 Licence

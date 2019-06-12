@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualisation interactive de données budgétaires</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles/font-awesome.min.css">
+  <link rel="stylesheet" href="assets/styles/normalize.css">
+  <link rel="stylesheet" href="assets/styles/style.css">
+</head>
+<body>
+<div class="wrapper">
+  <header style="margin-top: 2em;">
+    <h1 style="font-size: 1.5em; margin-bottom: 0.75em">Visualisation interactive de données budgétaires</h1>
+  </header>
+  <main>
+    <article class="teaser">
+      <figure>
+        <div id="exemple"></div>
+        <img alt="Teaser" src="assets/images/teaser-fr.svg">
+        <figcaption>
+          Visualisation développée utilisant les données du budget projeté pour l’année 2022-2023 du rapport
+          préélectoral du Vérificateur général du Québec
+        </figcaption>
+      </figure>
+    </article>
+    <div class="content">
+      <article>
+        <div id="conclusion"></div>
+        <h1>Conclusion</h1>
+        <p>
+          Voici un extrait de la conclusion du mémoire¹ associé à ce projet de recherche:
+        </p>
+        <blockquote>
+          <p>
+            Dans l’optique de faciliter la communication de données budgétaires, un modèle de visualisation a été
+            proposé
+            dans le cadre de ce projet de recherche pour faciliter la compréhension des données présentées tout en
+            améliorant l’expérience de l’utilisateur. Le design de la visualisation budgétaire développée a comme
+            caractéristiques principales l’utilisation d’éléments discrets (<em>unit visualization</em>) et le maintien
+            d’une vue d’ensemble, peu importe le niveau de détail consulté (approche «<em>focus-plus-context</em>»).
+            En matière de fonctionnalités, la visualisation proposée offre la possibilité d’explorer des postes
+            budgétaires structurés de manière hiérarchique, et d’apporter des modifications à ces postes. De plus, un
+            mécanisme de rétroaction a été ajouté pour faciliter la compréhension. Tous ces éléments de la visualisation
+            ont pour but d’atteindre les trois objectifs de ce projet: 1) présenter ou modifier des propositions
+            budgétaires, 2) faire comprendre les enjeux d’un budget et 3) augmenter l’intérêt de l’utilisateur pour
+            ces données.
+          </p>
+          <p>
+            Pour valider la pertinence de la visualisation proposée, une évaluation en ligne a été réalisée auprès de
+            lecteurs du journal <em>Le Devoir</em>, qui a été un partenaire clé dans ce projet. Cette évaluation a été
+            séparée en deux expériences. Dans la première expérience, les participants ont évalué l’efficacité de la
+            <a href="#exemple">visualisation développée</a> (V1) comparativement à une
+            <a href="https://fr.wikipedia.org/wiki/Treemap">carte proportionnelle</a> (V2). Dans la deuxième expérience,
+            un autre échantillon de participants a évalué si l’ajout d’un mécanisme d’interaction et de rétroaction
+            permettait d’améliorer la rétention de données. Pour cette deuxième expérience, deux scénarios ont été
+            examinés, soit un scénario de visualisation sans interactivité ni rétroaction (S1), et un scénario de
+            visualisation avec interactivité et rétroaction (S2). Ces deux expériences dans l’évaluation avaient pour
+            but de valider les quatre hypothèses de recherche émises:
+          </p>
+          <table style="width:100%; margin-top: -1em; margin-left: 20px">
+            <tr>
+              <td style="width: 40px"><em>H1</em>:</td>
+              <td>V1 améliore la compréhension par rapport à V2;</td>
+            </tr>
+            <tr>
+              <td><em>H2</em>:</td>
+              <td>V1 améliore l’expérience utilisateur par rapport à V2;</td>
+            </tr>
+            <tr>
+              <td><em>H3</em>:</td>
+              <td>l’interactivité et la rétroaction améliorent la rétention et la compréhension;</td>
+            </tr>
+            <tr>
+              <td><em>H4</em>:</td>
+              <td>l’interactivité et la rétroaction améliorent l’expérience utilisateur.</td>
+            </tr>
+          </table>
+          <p>
+            Les résultats de cette étude reposent sur les données de l’évaluation. Les résultats démontrent que la
+            visualisation développée (V1) améliore la compréhension des informations, lorsque mesurée en termes
+            d’erreurs
+            d’estimation. En effet, les erreurs d’estimation sont moindres pour la visualisation développée (V1) que
+            pour
+            la carte proportionnelle (V2), cela pour la majorité des variables observées et de façon statistiquement
+            significative. Ainsi, ces résultats confirment la première hypothèse de recherche (<em>H1</em>).
+          </p>
+          <p>
+            Les résultats font ressortir également que les participants à l’évaluation ont nettement préféré la
+            visualisation développée (V1), en comparaison à la carte proportionnelle (V2), et cela de façon
+            statistiquement significative pour la majorité des variables. De plus, les résultats ont révélé un niveau
+            de satisfaction supérieur pour V1 que pour V2, de façon statistiquement significative. Ces deux résultats
+            confirment ainsi la deuxième hypothèse de recherche (<em>H2</em>).
+          </p>
+          <p>
+            Les autres résultats de l’évaluation pour l’expérience 1 portent sur la comparaison entre V1 et V2 du temps
+            de réponse et du niveau de compréhension. Pour l’expérience 2, ils portent sur la comparaison entre le
+            design
+            de base (S1) et le design avec interactivité et rétroaction (S2), sur la base de l’erreur d’estimation, du
+            niveau de compréhension ou de rétention et du niveau d’appréciation. Ces résultats ne sont toutefois pas
+            probants, soit parce qu’ils ne sont pas statistiquement significatifs et/ou soit parce qu’ils ne vont pas
+            suffisamment dans la direction des hypothèses de recherche. Ce qui suggère qu’il y a certaines limites à
+            représenter des ensembles ou sujets complexes dans une visualisation. Cela suggère également que les
+            fonctionnalités ajoutées (interactivité et rétroaction) méritent vraisemblablement d’être mieux définies ou
+            plus judicieusement appliquées. Ainsi, les hypothèses de recherche 3 et 4 (<em>H3</em> et <em>H4</em>)
+            n’ont pas pu être confirmées.
+          </p>
+        </blockquote>
+        <p class="ref">¹ Béland, A. (2019). <em>Visualisation interactive de données budgétaires</em>. (Mémoire de
+          maîtrise,
+          École Polytechnique de Montréal, Montréal, QC).</p>
+
+        <div id="equipe"></div>
+        <h1>Équipe de recherche</h1>
+        <ul class="team">
+          <li>
+            <a href="https://www.antoinebeland.com/" target="_blank">
+              <img alt="Antoine Béland" src="assets/images/abeland.png"><br>
+              <strong>Antoine Béland</strong><br>
+              Polytechnique Montréal
+            </a>
+          </li>
+          <li>
+            <a href="https://fdaudens.com/" target="_blank">
+              <img alt="Florent Daudens" src="assets/images/fdaudens.png"><br>
+              <strong>Florent Daudens</strong><br>
+              <em>Le Devoir</em>
+            </a>
+          </li>
+          <li>
+            <a href="http://www.professeurs.polymtl.ca/thomas.hurtut/" target="_blank">
+              <img alt="Thomas Hurtut" src="assets/images/thurtut.jpg"><br>
+              <strong>Thomas Hurtut</strong><br>
+              Polytechnique Montréal
+            </a>
+          </li>
+        </ul>
+      </article>
+    </div>
+  </main>
+  <footer>
+    <p>Cette recherche a été financée par le Conseil de recherches en sciences naturelles et en génie du Canada (CRSNG).</p>
+    <ul class="partners">
+      <li>
+        <a href="https://www.polymtl.ca/" target="_blank">
+          <img alt="Polytechnique Montréal" src="assets/images/polymtl-fr.svg">
+        </a>
+      </li>
+      <li>
+        <a href="https://www.ledevoir.com/" target="_blank">
+          <img alt="Le Devoir" src="assets/images/ledevoir.svg">
+        </a>
+      </li>
+      <li>
+        <a href="http://www.nserc-crsng.gc.ca/index_fra.asp" target="_blank">
+          <img alt="CRSNG" src="assets/images/nserc.svg">
+        </a>
+      </li>
+    </ul>
+  </footer>
+</div>
+</body>
+</html>

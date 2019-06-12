@@ -15,8 +15,23 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+a {
+  color: #376195;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 button {
   outline: 0;
+}
+
+blockquote {
+  padding-left: 20px;
+  margin-left: 20px;
+  border-left: 2px solid #ccc;
 }
 
 h1,

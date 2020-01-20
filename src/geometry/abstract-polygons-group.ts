@@ -167,7 +167,7 @@ export abstract class AbstractPolygonsGroup {
   /**
    * Computes the boundary of a polygons group.
    */
-  protected updateBoundary() {
+  protected updateBoundary(extraHeight = 0) {
     /* Boundary model
                  (1) *----->----* (2)
                      |          |
@@ -178,6 +178,7 @@ export abstract class AbstractPolygonsGroup {
       (6) *--------<--------* (5)
      */
     const boundingBox = this.getBoundingBox({ x: 0, y: 0 }, false);
+    boundingBox.height += extraHeight;
     const count = this.count + this._startingPosition || 1;
     const padding = 0;
     const hasMoreThanSingleLine = Math.ceil(count / this._maxCountPerLine) > 1;

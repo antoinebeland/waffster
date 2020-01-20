@@ -3,6 +3,7 @@ import { ascending, descending } from 'd3-array';
 import { AbstractPolygonsGroup } from './abstract-polygons-group';
 import { Polygon } from './polygon';
 import { PolygonsGroupConfig, PolygonsGroupOrientation } from './polygons-group-configs';
+import { Config } from '../config';
 
 enum PolygonsSuperGroupState {
   COLLAPSED,
@@ -274,6 +275,6 @@ export class PolygonsSuperGroup extends AbstractPolygonsGroup {
     }
     this._boundingBox.height = maximums.height;
     this._boundingBox.width = maximums.width;
-    this.updateBoundary();
+    this.updateBoundary(Config.SIDE_LENGTH / 4 * this._children.length);
   }
 }

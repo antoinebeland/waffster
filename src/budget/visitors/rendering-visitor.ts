@@ -59,7 +59,8 @@ export class RenderingVisitor implements BudgetElementVisitor {
         .transition()
         .duration(this._transitionDuration)
         .attr('transform',
-          `translate(${c.polygonsGroup.translation.x}, ${c.polygonsGroup.translation.y})`);
+          `translate(${c.polygonsGroup.translation.x}, ${c.polygonsGroup.translation.y + 
+          (group.isHovered && group.activeLevel <= group.level ? i * Config.SIDE_LENGTH / 4 : 0)})`);
     });
 
     if (group.activeLevel - group.level === 1) {

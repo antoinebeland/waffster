@@ -39,6 +39,11 @@ export abstract class BudgetElement {
    */
   parent: BudgetElement;
 
+  /**
+   * Indicates if the element is hovered over.
+   */
+  isHovered: boolean;
+
   protected _minAmount: number;
   protected _activeLevel = 0;
   protected _level = 0;

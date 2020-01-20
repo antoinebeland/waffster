@@ -163,6 +163,7 @@ export class BudgetVisualization {
       .on('click', () => {
         if (this._isEnabled && selectedElement && selectedElement.hasFocus) {
           selectedElement.hasFocus = false;
+          selectedElement.isHovered = false;
           selectedElement.accept(this.rendering);
         }
         executeCommand();
@@ -248,6 +249,10 @@ export class BudgetVisualization {
           if (self._isEnabled && element.isActive) {
             hoveredElement = element;
             hoveredElement.svgElement.classed('hovered', true);
+            hoveredElement.isHovered = true;
+            self.rendering.transitionDuration = 0;
+            hoveredElement.accept(self.rendering);
+            self.rendering.resetTransitionDuration();
             showTooltip();
           }
         });
@@ -255,12 +260,20 @@ export class BudgetVisualization {
           if (self._isEnabled && element.isActive) {
             hoveredElement = element;
             hoveredElement.svgElement.classed('hovered', true);
+            hoveredElement.isHovered = true;
+            self.rendering.transitionDuration = 0;
+            hoveredElement.accept(self.rendering);
+            self.rendering.resetTransitionDuration();
             showTooltip();
           }
         });
         element.svgElement.on('mouseleave', () => {
           if (self._isEnabled && element.isActive && hoveredElement) {
             hoveredElement.svgElement.classed('hovered', false);
+            hoveredElement.isHovered = false;
+            self.rendering.transitionDuration = 0;
+            hoveredElement.accept(self.rendering);
+            self.rendering.resetTransitionDuration();
             hoveredElement = undefined;
             self.tip.hide();
           }

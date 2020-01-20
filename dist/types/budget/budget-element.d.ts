@@ -8,6 +8,7 @@ export declare abstract class BudgetElement {
     readonly description: string;
     readonly type: BudgetElementType;
     parent: BudgetElement;
+    isHovered: boolean;
     protected _minAmount: number;
     protected _activeLevel: number;
     protected _level: number;

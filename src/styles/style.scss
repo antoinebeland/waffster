@@ -92,7 +92,8 @@
     }
 
     > * > .boundary {
-      stroke: $white;
+      //stroke: $white;
+      display: none;
     }
   }
 

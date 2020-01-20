@@ -29,7 +29,7 @@ export declare abstract class AbstractPolygonsGroup {
     translate(offset: number): void;
     protected getBaseConfig(): PolygonsGroupConfig;
     protected setBaseConfig(config: PolygonsGroupConfig): void;
-    protected updateBoundary(): void;
+    protected updateBoundary(extraHeight?: number): void;
     protected getBoundingBox(position: {
         x: any;
         y: any;

@@ -163,7 +163,7 @@ export class BudgetVisualization {
       .on('click', () => {
         if (this._isEnabled && selectedElement && selectedElement.hasFocus) {
           selectedElement.hasFocus = false;
-          selectedElement.isHovered = false;
+          selectedElement.isHovered = false
           selectedElement.accept(this.rendering);
         }
         executeCommand();
@@ -190,6 +190,9 @@ export class BudgetVisualization {
             if (!self._isEnabled) {
               return;
             }
+            if (hoveredElement) {
+              hoveredElement.isHovered = false;
+            }
             hoveredElement = undefined;
             self.tip.hide();
           })
@@ -201,8 +204,10 @@ export class BudgetVisualization {
             executeCommand();
             self.tip.hide();
             group.activeLevel = group.level;
+            group.isHovered = false;
             group.root.accept(self.rendering);
             self._layout.render();
+            group.svgElement.classed('hovered', false);
           });
         group.children.forEach(c => c.accept(this));
       }

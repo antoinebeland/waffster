@@ -112,7 +112,7 @@
 
 .budget-visualization.hovered > * > .boundary,
 .budget-visualization .hovered > * > .boundary {
-  stroke: #fff; }
+  display: none; }
 
 .budget-visualization .level-group > rect {
   fill: transparent; }

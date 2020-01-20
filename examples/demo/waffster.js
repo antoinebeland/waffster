@@ -377,6 +377,7 @@
       AbstractPolygonsGroup._currentId = 0;
       return AbstractPolygonsGroup;
   }());
+  //# sourceMappingURL=abstract-polygons-group.js.map
 
   var PolygonsSuperGroupState;
   (function (PolygonsSuperGroupState) {
@@ -2213,6 +2214,9 @@
                       if (!self._isEnabled) {
                           return;
                       }
+                      if (hoveredElement) {
+                          hoveredElement.isHovered = false;
+                      }
                       hoveredElement = undefined;
                       self.tip.hide();
                   })
@@ -2224,8 +2228,10 @@
                       executeCommand();
                       self.tip.hide();
                       group.activeLevel = group.level;
+                      group.isHovered = false;
                       group.root.accept(self.rendering);
                       self._layout.render();
+                      group.svgElement.classed('hovered', false);
                   });
                   group.children.forEach(function (c) { return c.accept(_this); });
               };
@@ -2358,7 +2364,6 @@
       };
       return BudgetVisualization;
   }());
-  //# sourceMappingURL=budget-visualization.js.map
 
   var d3SimpleGauge = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
